@@ -1,0 +1,8 @@
+.classpath
+.project
+.settings/
+classes/
+dist/
+lib/
+bin/
+exploded-archives/
