@@ -1,4 +1,4 @@
-package kz.sdu.microelectronicslab.model;
+package kz.sdu.microelectronicslab.model.user;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -19,11 +19,9 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
-import org.jboss.seam.annotations.security.management.UserEnabled;
-import org.jboss.seam.annotations.security.management.UserFirstName;
-import org.jboss.seam.annotations.security.management.UserLastName;
-import org.jboss.seam.annotations.security.management.UserPassword;
-import org.jboss.seam.annotations.security.management.UserPrincipal;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.management.UserRoles;
 
 @Entity
@@ -31,16 +29,17 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 		@UniqueConstraint(columnNames="username"),
 		@UniqueConstraint(columnNames="email")
 })
+@Name("user")
+@Scope(ScopeType.EVENT)
 public class User implements Serializable
 {
 	private long id;
 	private String username;
-	private String passwordHash;
+	private String password;
 	private Set<Role> roles = new HashSet<Role>();
 	private String firstname;
 	private String lastname;
 	private String email;
-	private boolean enabled;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -54,7 +53,6 @@ public class User implements Serializable
 		this.id = id;
 	}
 	
-	@UserPrincipal
 	@Column(name="username",nullable=false)
 	@NotNull
 	@Length(min=6)
@@ -68,20 +66,18 @@ public class User implements Serializable
 		this.username = username;
 	}
 	
-	@UserPassword(hash="md5")
 	@Column(name="password", nullable=false)
 	@NotNull
-	public String getPasswordHash()
+	public String getPassword()
 	{
-		return passwordHash;
+		return password;
 	}
 	
-	public void setPasswordHash(String passwordHash)
+	public void setPassword(String password)
 	{
-		this.passwordHash = passwordHash;
+		this.password = password;
 	}
 	
-	@UserFirstName
 	public String getFirstname()
 	{
 		return firstname;
@@ -92,7 +88,6 @@ public class User implements Serializable
 		this.firstname = firstname;
 	}
 
-	@UserLastName
 	public String getLastname()
 	{
 		return lastname;
@@ -103,20 +98,7 @@ public class User implements Serializable
 		this.lastname = lastname;
 	}
 
-	@UserEnabled
-	public boolean isEnabled()
-	{
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled)
-	{
-		this.enabled = enabled;
-	}
-	
-	
-	@Column(name="email", nullable=false)
-	@NotNull
+	@Column(name="email")
 	@Email
 	public String getEmail()
 	{

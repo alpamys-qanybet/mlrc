@@ -1,4 +1,4 @@
-package kz.sdu.microelectronicslab.model;
+package kz.sdu.microelectronicslab.model.user;
 
 import java.io.Serializable;
 
@@ -18,8 +18,7 @@ public class Role implements Serializable
 {
 	private long id;
 	private String name;
-	private boolean conditional;
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	public long getId()
@@ -32,7 +31,6 @@ public class Role implements Serializable
 		this.id = id;
 	}
 
-	@RoleName
 	public String getName()
 	{
 		return name;
@@ -41,16 +39,5 @@ public class Role implements Serializable
 	public void setName(String name)
 	{
 		this.name = name;
-	}
-	
-	@RoleConditional
-	public boolean isConditional()
-	{
-		return conditional;
-	}
-
-	public void setConditional(boolean conditional)
-	{
-		this.conditional = conditional;
 	}
 }

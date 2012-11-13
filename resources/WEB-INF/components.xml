@@ -47,13 +47,16 @@
    
    <event type="org.jboss.seam.security.notLoggedIn">
       <action execute="#{redirect.captureCurrentView}"/>
-      <action execute="#{identity.tryLogin()}"/>
    </event>
    <event type="org.jboss.seam.security.loginSuccessful">
       <action execute="#{redirect.returnToCapturedView}"/>
    </event>
 
    <mail:mail-session host="localhost" port="25"/>
+   <component name="passwordManager">
+   	<property name="digestAlgorithm">SHA-1</property>
+   	<property name="charset">UTF-8</property>
+   </component>
 
    <!-- For use with jBPM pageflow or process management -->
    <!--
