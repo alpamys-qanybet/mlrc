@@ -1,4 +1,4 @@
-package kz.sdu.microelectronicslab.model.user;
+package kz.sdu.microelectronicslab.action.user;
 
 import java.security.MessageDigest;
 

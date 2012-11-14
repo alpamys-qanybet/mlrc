@@ -37,8 +37,7 @@ public class User implements Serializable
 	private String username;
 	private String password;
 	private Set<Role> roles = new HashSet<Role>();
-	private String firstname;
-	private String lastname;
+	private String realname;
 	private String email;
 	
 	@Id
@@ -78,27 +77,18 @@ public class User implements Serializable
 		this.password = password;
 	}
 	
-	public String getFirstname()
+	public String getRealname()
 	{
-		return firstname;
+		return realname;
 	}
 
-	public void setFirstname(String firstname)
+	public void setRealname(String realname)
 	{
-		this.firstname = firstname;
+		this.realname = realname;
 	}
 
-	public String getLastname()
-	{
-		return lastname;
-	}
-
-	public void setLastname(String lastname)
-	{
-		this.lastname = lastname;
-	}
-
-	@Column(name="email")
+	@Column(name="email", nullable=false)
+	@NotNull
 	@Email
 	public String getEmail()
 	{

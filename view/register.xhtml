@@ -5,22 +5,16 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich">
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
     
-   <head>
-      <title>Register New User</title>
-   </head>
-   <body>
-         <h:form id="registerActionForm">
+   <ui:define name="body">
+	     <h:form id="registerActionForm">
    			<rich:panel>
    				<f:facet name="header">Registration</f:facet>
-   				<s:decorate id="firstNameField" template="layout/edit.xhtml">
-   					<ui:define name="label">First Name</ui:define>
-   					<h:inputText id="firstname" value="#{user.firstname}" required="true"/>
-   				</s:decorate>
-   				<s:decorate id="lastNameField" template="layout/edit.xhtml">
-   					<ui:define name="label">Last Name</ui:define>
-   					<h:inputText id="lastname" value="#{user.lastname}" required="true"/>
+   				<s:decorate id="realNameField" template="layout/edit.xhtml">
+   					<ui:define name="label">First name and last name</ui:define>
+   					<h:inputText id="realname" value="#{user.realname}" required="true"/>
    				</s:decorate>
    				<s:decorate id="emailField" template="layout/edit.xhtml">
    					<ui:define name="label">Email</ui:define>
@@ -49,6 +43,6 @@
    				</h:commandButton>
    			</div>
          </h:form>
-   </body>
+   </ui:define>
 
 </ui:composition>

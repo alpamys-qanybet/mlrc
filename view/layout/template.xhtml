@@ -10,17 +10,31 @@
 <html>
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-      <title>microelectronicslab</title>
+      <title>Research Center</title>
       <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
       <a:loadStyle src="/stylesheet/theme.xcss"/>
       <a:loadStyle src="/stylesheet/theme.css"/>
+      <script type="text/javascript" src="/js/jquery/jquery-1.8.2.min.js"></script>
+	  <script type="text/javascript" src="/js/bootstrap/bootstrap.js"></script>
+	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap.css" />
+	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap-responsive.css" />
+      
+      <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
       <ui:insert name="head"/>
    </head>
    <body>
       <ui:include src="menu.xhtml">
          <ui:param name="projectName" value="microelectronicslab"/>
       </ui:include>
-      <div class="body">
+      <div class="body,container-fluid">
          <h:messages id="messages" globalOnly="true" styleClass="message"
             errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
             rendered="#{showGlobalMessages != 'false'}"/>
