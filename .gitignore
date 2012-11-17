@@ -5,4 +5,5 @@ classes/
 dist/
 lib/
 bin/
+test-build/
 exploded-archives/

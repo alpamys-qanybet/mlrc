@@ -4,37 +4,6 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
    version="2.5">
 
-   <!-- RichFaces -->
-
-   <context-param>
-      <param-name>org.richfaces.SKIN</param-name>
-      <param-value>glassX</param-value>
-   </context-param>
-
-   <!-- Suppress spurious stylesheets -->
-
-   <context-param>
-      <param-name>org.richfaces.CONTROL_SKINNING</param-name>
-      <param-value>disable</param-value>
-   </context-param>
-
-   <context-param>
-      <param-name>org.richfaces.CONTROL_SKINNING_CLASSES</param-name>
-      <param-value>disable</param-value>
-   </context-param>
-
-   <!-- Change load strategy to DEFAULT to disable sending scripts/styles as packs -->
-
-   <context-param>
-      <param-name>org.richfaces.LoadStyleStrategy</param-name>
-      <param-value>ALL</param-value>
-   </context-param>
-
-   <context-param>
-      <param-name>org.richfaces.LoadScriptStrategy</param-name>
-      <param-value>ALL</param-value>
-   </context-param>
-
    <!-- Seam -->
 
    <listener>

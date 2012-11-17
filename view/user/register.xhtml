@@ -1,0 +1,54 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+    
+   <ui:define name="body">
+   
+   		<div class="page-canvas">
+		  <div class="signup-wrapper">
+		
+   			<h1>Registration</h1>
+			<h:form>
+				<div>
+					<h:outputLabel for="realname" value="Fullname" />
+					<h:inputText styleClass="span4" id="realname" value="#{user.realname}" required="true"/>
+				</div>
+				
+				<div>
+					<h:outputLabel for="email" value="Email" />
+					<h:inputText styleClass="span4" id="email" value="#{user.email}" required="true"/>
+				</div>
+				
+				<div>
+					<h:outputLabel for="username" value="Username" />
+					<h:inputText styleClass="span3" id="username" value="#{user.username}" required="true"/>
+				</div>
+				
+				<div>
+					<h:outputLabel for="password" value="Password" />
+					<h:inputSecret styleClass="span3" id="password" value="#{passwordBean.password}" required="true"/>
+				<div>
+				
+				</div>
+					<h:outputLabel for="confirm" value="Confirm password" />
+					<h:inputSecret styleClass="span3" id="confirm" value="#{passwordBean.confirm}" required="true"/>
+				</div>
+				
+	   			<div class="actionButtons">
+	   				<h:commandButton id="register" styleClass="btn btn-primary"  value="Register" action="#{register.register}">
+	   					<s:defaultAction/>
+	   				</h:commandButton>
+	   				<h:commandButton id="cancel" styleClass="btn"  value="Cancel" action="home" immediate="true" />
+	   			</div>
+	         </h:form>
+		  </div>
+		</div>
+	   </ui:define>
+
+</ui:composition>

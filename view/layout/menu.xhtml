@@ -38,18 +38,44 @@
               <li class="">
                 <a href="./javascript.html">JavaScript</a>
               </li>
+              
+              <s:fragment rendered="#{identity.hasRole('admin')}">
+	          	<li>
+		          <s:link view="/user/manage.xhtml" value="Users"/>
+		        </li>
+	          </s:fragment>
             </ul>
-            
-            <ul class="nav pull-right">
-              <li class="">
-                    <h:outputText id="menuWelcomeId" value="signed in as: #{credentials.username}" rendered="#{identity.loggedIn}"/>
-			        <s:link id="menuLoginId" view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
-			        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
-			 </li>
-			 <li class="">
-			    	<s:link view="/register.xhtml" value="Register" rendered="#{not identity.loggedIn}" propagation="none"/>
-			 </li>
-			</ul>
+             
+			<!-- The drop down menu -->
+	        <ul class="nav pull-right">
+	          <s:fragment rendered="#{not identity.loggedIn}">
+			      <li>
+		          	<s:link view="/user/register.xhtml" value="Sign Up" propagation="none"/>
+				  </li>
+		          
+	              <li class="divider-vertical"></li>
+		          <li class="dropdown">
+		            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+		            <div class="dropdown-menu dropdown-login">
+		               <h:form styleClass="form-signin">
+						<h:outputLabel for="name" value="Username" />
+						<h:inputText styleClass="span3" id="name" value="#{credentials.username}"/>
+				        
+						<h:outputLabel for="password" value="Password" />
+				        <h:inputSecret styleClass="span3" id="password" value="#{credentials.password}"/>
+				        
+				        <h:commandButton styleClass="btn btn-primary" value="Login" action="#{identity.login}"/>
+				      </h:form>
+		            </div>
+		          </li>
+	          </s:fragment>
+	          
+	          <s:fragment rendered="#{identity.loggedIn}">
+	          	<li>
+		          <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout"/>
+		        </li>
+	          </s:fragment>
+	        </ul>
           </div>
         </div>
       </div>

@@ -4,11 +4,14 @@ import javax.persistence.EntityManager;
 
 import kz.sdu.microelectronicslab.action.user.PasswordBean;
 import kz.sdu.microelectronicslab.action.user.PasswordManager;
+import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 
 @Name("register")
@@ -25,29 +28,49 @@ public class RegisterAction
 	
 	@In protected Identity identity;
     
+	@Logger Log log;
+	
 	public String register()
 	{
 		if (!passwordBean.verify())
 		{
-			facesMessages.addToControl("confirm", "value does not match password");
+//			facesMessages.addToControl("confirm", "value does not match password");
 			return null;
 		}
 		
 		String username = user.getUsername();
 		if ( !isUsernameAvailable(username) )
 		{
-			facesMessages.addToControl("username", "Username is already taken");
+//			facesMessages.addToControl("username", "Username is already taken");
 			return null;
 		}
 		
 		if ( !isEmailAvailable(user.getEmail()) )
 		{
-			facesMessages.addToControl("email", "Email already exists");
+//			facesMessages.addToControl("email", "Email already exists");
 			return null;
 		}
 		
 		String password = passwordBean.getPassword();
 		user.setPassword( passwordManager.hash(password) );
+		
+		if ( needsAdmin() )
+		{
+			Role roleAdmin = new Role();
+			roleAdmin.setName("admin");
+			em.persist(roleAdmin);
+			
+			user.getRoles().add(roleAdmin);
+			log.info("Role {0} is added to User {1}", roleAdmin.getName(), user.getUsername() );
+			
+			Role roleManager = new Role();
+			roleManager.setName("manager");
+			em.persist(roleManager);
+			
+			Role roleDeveloper = new Role();
+			roleDeveloper.setName("developer");
+			em.persist(roleDeveloper);
+		}
 		em.persist(user);
 		
 		identity.setUsername(username);
@@ -55,6 +78,12 @@ public class RegisterAction
 		identity.login();
 		
 		return "/home.seam";
+	}
+	
+	public boolean needsAdmin()
+	{
+		return em.createQuery("FROM User") // SELECT u FROM User u
+				.getResultList().isEmpty();
 	}
 	
 	public boolean isUsernameAvailable(String username)

@@ -12,9 +12,15 @@
                 <redirect view-id="/home.xhtml"/>
             </rule>
         </navigation>
+        
+        <navigation from-action="#{identity.login}">
+	      <rule if="#{identity.loggedIn}">
+	         <redirect view-id="/home.xhtml"/>
+	      </rule>
+	   </navigation>
     </page>
-
-    <exception class="org.jboss.seam.framework.EntityNotFoundException">
+    
+	<exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">
             <message severity="warn">Record not found</message>
         </redirect>
