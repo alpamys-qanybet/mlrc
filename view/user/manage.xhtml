@@ -1,0 +1,118 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+    template="/layout/template.xhtml">
+    
+   <ui:define name="body">
+   	<div class="page-canvas-wide">
+		<div class="signup-wrapper-wide">
+			<h1>Users</h1>
+			
+			<rich:dataTable styleClass="table table-striped table-bordered table-condensed table-hover" var="user" value="#{users}">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Username"/>
+					</f:facet>
+					<h:outputText value="#{user.username}"/>
+				</h:column>
+			
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Fullname"/>
+					</f:facet>
+					<h:outputText value="#{user.realname}"/>
+				</h:column>
+			
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Email"/>
+					</f:facet>
+					<h:outputText value="#{user.email}"/>
+				</h:column>
+				
+				
+				<h:column rendered="#{identity.hasRole('admin')}">
+					<f:facet name="header">
+						<h:outputText value="Manage"/>
+					</f:facet>
+					
+					<h:form>
+						<a href="javascript:ajaxManageUser(#{user.id})" class='btn btn-small'>Manage</a>
+						<h:commandButton styleClass="btn btn-small btn-danger" value="Del" action="#{userManager.delete()}"/>
+					</h:form>
+				</h:column>
+			</rich:dataTable>
+		</div>
+	</div>
+	
+	<a:form>
+		<a:jsFunction name="ajaxManageUser" action="#{userManager.prepareManageUserValues()}" 
+					  oncomplete="jQuery('#manageUserModal').modal('show');" reRender="manageUserPanel">
+			<a:actionparam name="userId" assignTo="#{userManager.userId}" />
+		</a:jsFunction>
+	</a:form>
+	
+	<div class="modal hide" id="manageUserModal">
+		<a:outputPanel id="manageUserPanel">		
+			<a:region>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					<h3>Manage <h:outputText value=" #{user.username}" /></h3>
+				</div>	
+				
+				<div class="modal-body">
+					<h:outputText value="#{userManager.userId}" /><br/>
+					<h:outputText value="#{user.id}" /><br/>
+					<h:outputText value="#{user.realname}" /><br/>
+					
+					<rich:dataTable styleClass="table table-striped table-bordered table-condensed table-hover" var="role" value="#{userRoles}">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Role"/>
+							</f:facet>
+							
+							<h:outputText value="#{role.name}"/>
+						</h:column>
+						
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Change"/>
+							</f:facet>
+							
+							<s:fragment rendered="#{not role.enabled}">
+	          					<a href="javascript:ajaxEnableRole(#{user.id}, #{role.id})" class='btn btn-small btn-primary'>Enable</a>
+							</s:fragment>
+							
+							<s:fragment rendered="#{role.enabled}">
+	          					<a href="javascript:ajaxDisableRole(#{user.id}, #{role.id})" class='btn btn-small btn-danger'>Disable</a>
+							</s:fragment>
+	          			</h:column>
+					</rich:dataTable>
+				</div>
+				<!-- <div class="modal-footer">
+					<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+		    	</div> -->
+			</a:region>
+		</a:outputPanel>
+		
+		<a:form>
+			<a:jsFunction name="ajaxEnableRole" action="#{userManager.enableRole()}" reRender="manageUserPanel">
+				<a:actionparam name="userId" assignTo="#{userManager.userId}" />
+				<a:actionparam name="roleId" assignTo="#{userManager.roleId}" />
+			</a:jsFunction>
+		
+			<a:jsFunction name="ajaxDisableRole" action="#{userManager.disableRole()}" reRender="manageUserPanel">
+				<a:actionparam name="userId" assignTo="#{userManager.userId}" />
+				<a:actionparam name="roleId" assignTo="#{userManager.roleId}" />
+			</a:jsFunction>
+		</a:form>
+	</div>
+   </ui:define>
+</ui:composition>

@@ -1,0 +1,135 @@
+package kz.sdu.microelectronicslab.action.user;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import kz.sdu.microelectronicslab.model.user.Role;
+import kz.sdu.microelectronicslab.model.user.User;
+
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.log.Log;
+
+@Name("userManager")
+public class UserManager
+{
+	@Logger Log log;
+	
+	@In("entityManager")
+	private EntityManager em;
+	
+	@DataModel(scope=ScopeType.PAGE)
+	private List<User> users;
+	
+	@DataModelSelection
+	@Out(required=false)
+	private User user;
+	
+	@Out(scope=ScopeType.PAGE,required=false)
+	private List<RoleBean> userRoles;
+	
+	@Factory("users")
+	public void retrieveUsers()
+	{
+		users = em.createQuery("FROM User").getResultList();
+	}
+	
+	public void manage()
+	{
+		
+	}
+	
+	public void delete()
+	{
+		log.info("deleting user {0}", user.getUsername());
+		
+		user = em.find(User.class, user.getId());
+		em.remove(user);
+		
+		retrieveUsers();
+	}
+
+	public void prepareManageUserValues()
+	{
+		user = em.find(User.class, userId);
+	
+		List<Role> roles = em.createQuery("FROM Role").getResultList();
+		
+		userRoles = new ArrayList<RoleBean>();
+		for (Role role: roles)
+		{
+			RoleBean roleBean = new RoleBean();
+			roleBean.setId(role.getId());
+			roleBean.setName(role.getName());
+			roleBean.setEnabled(isUserRoleEnabled(role));
+			userRoles.add(roleBean);
+		}
+	}
+	
+	public void enableRole()
+	{
+		log.info("enabling role id {0}", roleId);
+		
+		user = em.find(User.class, userId);
+		Role role = em.find(Role.class, roleId);
+		
+		user.getRoles().add(role);
+		em.persist(user);
+		
+		prepareManageUserValues();
+	}
+	
+	public void disableRole()
+	{
+		log.info("disabling role id {0}", roleId);
+		
+		user = em.find(User.class, userId);
+		Role role = em.find(Role.class, roleId);
+		
+		user.getRoles().remove(role);
+		em.persist(user);
+		
+		prepareManageUserValues();
+	}
+	
+	private boolean isUserRoleEnabled(Role role)
+	{
+		for (Role userRole: user.getRoles())
+			if (userRole.getId() == role.getId())
+				return true;
+				
+    	return false;
+	}
+	
+
+	private long userId;
+	private long roleId;
+	
+	public long getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(long userId)
+	{
+		this.userId = userId;
+	}
+
+	public long getRoleId()
+	{
+		return roleId;
+	}
+
+	public void setRoleId(long roleId)
+	{
+		this.roleId = roleId;
+	}
+}

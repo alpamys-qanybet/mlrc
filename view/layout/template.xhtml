@@ -12,8 +12,10 @@
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <title>Research Center</title>
       <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
-      <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
-	  <script type="text/javascript" src="js/bootstrap/bootstrap.js"></script>
+      
+	  <a:loadScript src="/js/jquery/jquery-1.8.2.min.js"/>
+	  <a:loadScript src="/js/bootstrap/bootstrap.js"/>
+			
 	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap.css" />
 	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap-responsive.css" />
       
@@ -26,10 +28,10 @@
         padding: 9px 0;
       }
       
-      .page-canvas
+      .page-canvas-narrow
 	   {
 			position:relative;
-			width:60%;
+			width:50%;
 			margin:0 auto;
 			border: 1px solid rgba(0, 0, 0, .1);
 			border-radius: 6px;
@@ -39,11 +41,53 @@
 			color: #333;
 	   }
 	   
-	   .signup-wrapper
+	   .signup-wrapper-narrow
 	   {
 	   		margin: 0 auto 10px;
 	   		display: block;
-			width: 40%;
+			width: 50%;
+			clear: both;
+		}
+		
+	   .page-canvas-mid
+	   {
+			position:relative;
+			width:75%;
+			margin:0 auto;
+			border: 1px solid rgba(0, 0, 0, .1);
+			border-radius: 6px;
+			background-clip: padding-box;
+			font-size: 14px;
+			line-height: 18px;
+			color: #333;
+	   }
+	   
+	   .signup-wrapper-mid
+	   {
+	   		margin: 0 auto 10px;
+	   		display: block;
+			width: 75%;
+			clear: both;
+		}
+		
+	   .page-canvas-wide
+	   {
+			position:relative;
+			width:90%;
+			margin:0 auto;
+			border: 1px solid rgba(0, 0, 0, .1);
+			border-radius: 6px;
+			background-clip: padding-box;
+			font-size: 14px;
+			line-height: 18px;
+			color: #333;
+	   }
+	   
+	   .signup-wrapper-wide
+	   {
+	   		margin: 0 auto 10px;
+	   		display: block;
+			width: 90%;
 			clear: both;
 		}
 		
