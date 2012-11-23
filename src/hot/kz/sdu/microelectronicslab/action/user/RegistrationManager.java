@@ -1,4 +1,6 @@
-package kz.sdu.microelectronicslab.action;
+package kz.sdu.microelectronicslab.action.user;
+
+import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
@@ -7,28 +9,42 @@ import kz.sdu.microelectronicslab.action.user.PasswordManager;
 import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 
-@Name("register")
-public class RegisterAction
+@Name("registrationManager")
+@Scope(ScopeType.PAGE)
+public class RegistrationManager implements Serializable
 {
+	@Logger Log log;
+	
+	@In protected Identity identity;
+	
 	@In("entityManager")
 	protected EntityManager em;
+	
+	@Out(required=true)
+	private User user;
+	
 	@In protected FacesMessages facesMessages;
+	
 	@In(create=true) 
 	protected PasswordManager passwordManager;
 	
-	@In protected User user;
-	@In protected PasswordBean passwordBean;
+	@In(create=true)
+	protected PasswordBean passwordBean;
 	
-	@In protected Identity identity;
-    
-	@Logger Log log;
+	public void preparePage()
+	{
+		user = new User();
+	}
 	
 	public String register()
 	{

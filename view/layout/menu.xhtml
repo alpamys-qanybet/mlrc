@@ -70,12 +70,33 @@
 		            </div>
 		          </li>
 	          </s:fragment>
-	          
 	          <s:fragment rendered="#{identity.loggedIn}">
-	          	<li>
-		          <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout"/>
-		        </li>
-	          </s:fragment>
+	          	  #{profileManager.preparePage()}
+	          	  <li class="dropdown">
+		            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Account <strong class="caret"></strong></a>
+		         
+		            <ul class="dropdown-menu">
+                       <li>
+	                        <s:link view="/user/profile.seam">
+		            			<img class="size32" src="#{user.avatar}" style="position: absolute; top: 12px; left: 21px"/>
+		            			<ul style="list-style-type: none; padding-left: 12px; padding-right: 2px;">
+		            				<li><strong><h:outputText value="#{user.realname}" /></strong></li>
+		            				<li><small class="muted">Profile</small></li>
+		            			</ul>
+		            		</s:link>
+                       </li>
+                       <li class="divider"></li>
+                       
+                       <li><a tabindex="-1" href="#">Another action</a></li>
+                       <li><a tabindex="-1" href="#">Something else here</a></li>
+                       <li class="divider"></li>
+                       
+                       <li>
+                       		<s:link view="/home.xhtml" action="#{identity.logout}" value="Logout"/>
+				       </li>
+                    </ul>
+		          </li>
+		      </s:fragment>
 	        </ul>
           </div>
         </div>

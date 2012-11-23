@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+    template="/layout/template.xhtml">
+    
+   <ui:define name="body">
+		<div class="page-canvas-narrow">
+			<div class="signup-wrapper-wide">
+				#{profileManager.preparePage()}
+				<div class="content-header">
+					<h4>Profile</h4>
+				</div>
+				
+				<div class="form-horizontal content">
+					<div class="control-group">
+						<h:form enctype="multipart/form-data">
+							<h:outputLabel for="avatar" value="Photo" styleClass="control-label"/>
+							<div class="controls">
+								<img id="avatar" class="size75" src="#{user.avatar}"/>
+								 <span class="fileinputs">
+									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
+												  accept="image/*" styleClass="file"/>
+						        	<button class="btn fakefile" >Change photo</button>
+									<h:commandButton styleClass="btn" value="Upload" actionListener="#{fileService.save()}"/>
+								</span>
+							</div>
+						</h:form>
+					</div>
+					
+					<h:form>
+						<div class="control-group">
+							<h:outputLabel for="realname" value="Name" styleClass="control-label"/>
+							<div class="controls">
+								<h:inputText id="realname" value="#{user.realname}"/>
+							</div>
+						</div>
+						
+						<div class="control-group">
+							<div class="controls">
+								<h:commandButton styleClass="btn btn-primary" value="Save changes" action="#{profileManager.save()}"/>
+							</div>
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</div>
+   </ui:define>
+</ui:composition>

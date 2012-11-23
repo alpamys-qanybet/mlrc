@@ -12,12 +12,25 @@
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <title>Research Center</title>
       <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
-      
-	  <a:loadScript src="/js/jquery/jquery-1.8.2.min.js"/>
-	  <a:loadScript src="/js/bootstrap/bootstrap.js"/>
-			
+
+      <a:loadScript src="/js/jquery/jquery-1.8.2.min.js"/>
+   	  <a:loadScript src="/js/bootstrap/bootstrap.min.js"/>
+ 			
 	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap.css" />
 	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap-responsive.css" />
+	  <script type="text/javascript">
+		//<![CDATA[
+			jQuery.noConflict();
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-31283417-1']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		//]]>
+		</script>
       
       <style type="text/css">
       body {
@@ -96,7 +109,61 @@
 			padding: 30px;
 			padding-bottom: 10px;
 		}
-	</style>
+		
+		/* file upload */
+		.fileinputs {
+			position: relative;
+		}
+		
+		.fakefile {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			z-index: 1;
+			margin-top: -6px;
+		}
+		
+		input.file
+		{
+			position: relative;
+			text-align: right;
+			width:116px;
+			-moz-opacity: 0;
+			filter:alpha(opacity: 0);
+			opacity: 0;
+			z-index: 2;
+			cursor: pointer;
+		}
+		
+		.size75
+		{
+			width: 75px;
+			height: 75px;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}
+		
+		.size32
+		{
+			width: 32px;
+			height: 32px;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+		}
+		
+		.content-header
+		{
+			margin-top: 5px;
+			border-bottom: 1px solid #EEE;
+		}
+		
+		.content
+		{
+			margin-top: 15px;
+		}
+		</style>
       <ui:insert name="head"/>
    </head>
    <body>
@@ -109,6 +176,17 @@
             rendered="#{showGlobalMessages != 'false'}"/>
          <ui:insert name="body"/>
       </div>
+
+   <script type="text/javascript">
+   // file upload
+   jQuery('input.file').mouseover(function() {
+     jQuery('.fakefile button').addClass("active");
+   });
+
+   jQuery('input.file').mouseout(function() {
+     jQuery('.fakefile button').removeClass("active");
+   });
+   </script>
    </body>
 </html>
 </f:view>

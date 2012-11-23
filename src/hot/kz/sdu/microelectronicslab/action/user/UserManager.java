@@ -1,5 +1,6 @@
 package kz.sdu.microelectronicslab.action.user;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +15,20 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 
 @Name("userManager")
-public class UserManager
+@Scope(ScopeType.PAGE)
+public class UserManager implements Serializable
 {
 	@Logger Log log;
 	
+	@In protected Identity identity;
+    
 	@In("entityManager")
 	private EntityManager em;
 	
@@ -42,21 +48,6 @@ public class UserManager
 		users = em.createQuery("FROM User").getResultList();
 	}
 	
-	public void manage()
-	{
-		
-	}
-	
-	public void delete()
-	{
-		log.info("deleting user {0}", user.getUsername());
-		
-		user = em.find(User.class, user.getId());
-		em.remove(user);
-		
-		retrieveUsers();
-	}
-
 	public void prepareManageUserValues()
 	{
 		user = em.find(User.class, userId);
@@ -109,7 +100,16 @@ public class UserManager
     	return false;
 	}
 	
-
+	public void delete()
+	{
+		log.info("deleting user {0}", user.getUsername());
+		
+		user = em.find(User.class, user.getId());
+		em.remove(user);
+		
+		retrieveUsers();
+	}
+	
 	private long userId;
 	private long roleId;
 	

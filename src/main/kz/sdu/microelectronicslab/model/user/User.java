@@ -19,9 +19,6 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.management.UserRoles;
 
 @Entity
@@ -29,8 +26,10 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 		@UniqueConstraint(columnNames="username"),
 		@UniqueConstraint(columnNames="email")
 })
+/*
 @Name("user")
-@Scope(ScopeType.EVENT)
+@Scope(ScopeType.PAGE)
+*/
 public class User implements Serializable
 {
 	private long id;
@@ -39,6 +38,7 @@ public class User implements Serializable
 	private Set<Role> roles = new HashSet<Role>();
 	private String realname;
 	private String email;
+	private String avatar="unknown.png";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -113,5 +113,17 @@ public class User implements Serializable
 	public void setRoles(Set<Role> roles)
 	{
 		this.roles = roles;
+	}
+
+	/* media */
+	@Column(name="avatar")
+	public String getAvatar()
+	{
+		return avatar;
+	}
+
+	public void setAvatar(String avatar)
+	{
+		this.avatar = avatar;
 	}
 }

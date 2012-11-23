@@ -9,42 +9,58 @@
     template="/layout/template.xhtml">
     
    <ui:define name="body">
-   
+   		
    		<div class="page-canvas-narrow">
-		  <div class="signup-wrapper-narrow">
-		
-   			<h1>Registration</h1>
-			<h:form>
-				<div>
-					<h:outputLabel for="realname" value="Fullname" />
-					<h:inputText styleClass="span4" id="realname" value="#{user.realname}" required="true"/>
+		  <div class="signup-wrapper-wide">
+			
+			#{registrationManager.preparePage()}
+			<div class="content-header">
+				<h4>Registration</h4>
+			</div>
+
+			<h:form styleClass="form-horizontal content">
+				<div class="control-group">
+					<h:outputLabel for="realname" value="Fullname" styleClass="control-label"/>
+					<div class="controls">
+						<h:inputText styleClass="span4" id="realname" value="#{user.realname}" required="true"/>
+					</div>
 				</div>
 				
-				<div>
-					<h:outputLabel for="email" value="Email" />
-					<h:inputText styleClass="span4" id="email" value="#{user.email}" required="true"/>
+				<div class="control-group">
+					<h:outputLabel for="email" value="Email" styleClass="control-label"/>
+					<div class="controls">
+						<h:inputText styleClass="span4" id="email" value="#{user.email}" required="true"/>
+					</div>
 				</div>
 				
-				<div>
-					<h:outputLabel for="username" value="Username" />
-					<h:inputText styleClass="span3" id="username" value="#{user.username}" required="true"/>
+				<div class="control-group">
+					<h:outputLabel for="username" value="Username" styleClass="control-label"/>
+					<div class="controls">
+						<h:inputText styleClass="span3" id="username" value="#{user.username}" required="true"/>
+					</div>
 				</div>
 				
-				<div>
-					<h:outputLabel for="password" value="Password" />
-					<h:inputSecret styleClass="span3" id="password" value="#{passwordBean.password}" required="true"/>
-				<div>
-				
-				</div>
-					<h:outputLabel for="confirm" value="Confirm password" />
-					<h:inputSecret styleClass="span3" id="confirm" value="#{passwordBean.confirm}" required="true"/>
+				<div class="control-group">
+					<h:outputLabel for="password" value="Password" styleClass="control-label"/>
+					<div class="controls">
+						<h:inputSecret styleClass="span3" id="password" value="#{passwordBean.password}" required="true"/>
+					</div>
 				</div>
 				
-	   			<div class="actionButtons">
-	   				<h:commandButton id="register" styleClass="btn btn-primary"  value="Register" action="#{register.register}">
-	   					<s:defaultAction/>
-	   				</h:commandButton>
-	   				<h:commandButton id="cancel" styleClass="btn"  value="Cancel" action="home" immediate="true" />
+				<div class="control-group">
+					<h:outputLabel for="confirm" value="Confirm" styleClass="control-label"/>
+					<div class="controls">
+						<h:inputSecret styleClass="span3" id="confirm" value="#{passwordBean.confirm}" required="true"/>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<h:commandButton id="register" styleClass="btn btn-primary"  value="Register" action="#{registrationManager.register()}">
+		   					<s:defaultAction/>
+		   				</h:commandButton>
+		   				<h:commandButton styleClass="btn"  value="Cancel" action="home" immediate="true" />
+			   		</div>
 	   			</div>
 	         </h:form>
 		  </div>
