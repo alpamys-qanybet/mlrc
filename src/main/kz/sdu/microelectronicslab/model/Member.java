@@ -10,14 +10,11 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
-import org.jboss.seam.annotations.Name;
 
 @Entity
-@Name("member")
 @Table(name="members")
 public class Member implements Serializable
 {
-	private static final long serialVersionUID = -1567059583516293539L;
 	private long id;
 	private String username;
 	private String password;

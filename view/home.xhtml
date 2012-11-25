@@ -9,6 +9,12 @@
     template="/layout/template.xhtml">
 
     <ui:define name="body">
+    	<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#navHome').addClass('active');
+				jQuery('#navHome').siblings().removeClass('active');
+			});
+		</script>
 		<h1>Welcome to Seam!</h1>
         <rich:panel>
             <h:panelGrid columns="2">

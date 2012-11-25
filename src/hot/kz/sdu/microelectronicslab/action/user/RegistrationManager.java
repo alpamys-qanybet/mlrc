@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
+import kz.sdu.microelectronicslab.action.ConfigurationBean;
 import kz.sdu.microelectronicslab.action.user.PasswordBean;
 import kz.sdu.microelectronicslab.action.user.PasswordManager;
+import kz.sdu.microelectronicslab.model.project.ProjectStatus;
 import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
@@ -40,6 +42,9 @@ public class RegistrationManager implements Serializable
 	
 	@In(create=true)
 	protected PasswordBean passwordBean;
+	
+	@In(create=true)
+	protected ConfigurationBean configurationBean;
 	
 	public void preparePage()
 	{
@@ -86,7 +91,21 @@ public class RegistrationManager implements Serializable
 			Role roleDeveloper = new Role();
 			roleDeveloper.setName("developer");
 			em.persist(roleDeveloper);
+			
+			ProjectStatus projectStatusSeed = new ProjectStatus();
+			projectStatusSeed.setName("seed");
+			em.persist(projectStatusSeed);
+			
+			ProjectStatus projectStatusStartup = new ProjectStatus();
+			projectStatusStartup.setName("startup");
+			em.persist(projectStatusStartup);
+			
+			ProjectStatus projectStatusFinished = new ProjectStatus();
+			projectStatusFinished.setName("finished");
+			em.persist(projectStatusFinished);
 		}
+		
+		user.setAvatar(configurationBean.getFileServerHost() + "/user/avatar/unknown.png");
 		em.persist(user);
 		
 		identity.setUsername(username);

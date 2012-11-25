@@ -9,7 +9,7 @@
     xmlns:a="http://richfaces.org/a4j">
 
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -20,33 +20,37 @@
           <a class="brand" href="http://www.sdu.edu.kz">SDU</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="">
+              <li class="navs" id="navHome">
               	<s:link view="/home.seam" value="Home"/>
               </li>
-              <li class="active">
+              
+              <li class="navs">
                 <a href="./getting-started.html">Get started</a>
               </li>
-              <li class="">
+              
+              <li class="navs">
                 <a href="./scaffolding.html">Scaffolding</a>
               </li>
-              <li class="">
+              
+              <li class="navs">
                 <a href="./base-css.html">Base CSS</a>
               </li>
-              <li class="">
-                <a href="./components.html">Components</a>
+              
+              <li class="navs" id="navProjects">
+                <s:link view="/project/home.xhtml" value="Projects"/>
               </li>
-              <li class="">
+              
+              <li class="navs">
                 <a href="./javascript.html">JavaScript</a>
               </li>
               
               <s:fragment rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}">
-	          	<li>
+	          	<li class="navs" id="navUsers">
 		          <s:link view="/user/manage.xhtml" value="Users"/>
 		        </li>
 	          </s:fragment>
             </ul>
              
-			<!-- The drop down menu -->
 	        <ul class="nav pull-right">
 	          <s:fragment rendered="#{not identity.loggedIn}">
 			      <li>
@@ -70,6 +74,7 @@
 		            </div>
 		          </li>
 	          </s:fragment>
+	          
 	          <s:fragment rendered="#{identity.loggedIn}">
 	          	  #{profileManager.preparePage()}
 	          	  <li class="dropdown">

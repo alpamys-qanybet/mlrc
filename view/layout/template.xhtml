@@ -29,6 +29,22 @@
 				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			})();
+
+			jQuery(document).ready(function()
+			{
+				jQuery('.navs').live('click', function(){
+			 		var maybe_active = jQuery(this).attr('class');
+	
+			 		console.log('Fuck');
+			 		
+			 		if (maybe_active.indexOf('active') != -1);
+			 		else
+			 		{
+			 			jQuery(this).addClass('active');
+			 			jQuery(this).siblings().removeClass('active');
+			 		}
+				});
+			});
 		//]]>
 		</script>
       
@@ -178,13 +194,16 @@
       </div>
 
    <script type="text/javascript">
-   // file upload
-   jQuery('input.file').mouseover(function() {
-     jQuery('.fakefile button').addClass("active");
-   });
+   jQuery(document).ready(function()
+   {
+   		// file upload
+   	    jQuery('input.file').mouseover(function() {
+   	    	jQuery('.fakefile button').addClass("active");
+   	    });
 
-   jQuery('input.file').mouseout(function() {
-     jQuery('.fakefile button').removeClass("active");
+    	jQuery('input.file').mouseout(function() {
+   	    	jQuery('.fakefile button').removeClass("active");
+   	   	});
    });
    </script>
    </body>

@@ -2,8 +2,10 @@ package kz.sdu.microelectronicslab.model.user;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,8 +15,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import kz.sdu.microelectronicslab.model.project.Project;
 
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
@@ -26,10 +31,6 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 		@UniqueConstraint(columnNames="username"),
 		@UniqueConstraint(columnNames="email")
 })
-/*
-@Name("user")
-@Scope(ScopeType.PAGE)
-*/
 public class User implements Serializable
 {
 	private long id;
@@ -38,7 +39,10 @@ public class User implements Serializable
 	private Set<Role> roles = new HashSet<Role>();
 	private String realname;
 	private String email;
-	private String avatar="unknown.png";
+	private String avatar;
+	private String bio;
+	
+	private List<Project> projectsManage;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -125,5 +129,23 @@ public class User implements Serializable
 	public void setAvatar(String avatar)
 	{
 		this.avatar = avatar;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "manager", cascade = CascadeType.ALL)
+	public List<Project> getProjectsManage() {
+		return projectsManage;
+	}
+
+	public void setProjectsManage(List<Project> projectsManage) {
+		this.projectsManage = projectsManage;
+	}
+
+	@Column(columnDefinition="TEXT")
+	public String getBio() {
+		return bio;
+	}
+
+	public void setBio(String bio) {
+		this.bio = bio;
 	}
 }

@@ -11,6 +11,13 @@
     template="/layout/template.xhtml">
     
    <ui:define name="body">
+   <script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('#navUsers').addClass('active');
+			jQuery('#navUsers').siblings().removeClass('active');
+		});
+	</script>
+	
    	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			<h1>Users</h1>
@@ -55,7 +62,7 @@
 	<a:form>
 		<a:jsFunction name="ajaxManageUser" action="#{userManager.prepareManageUserValues()}" 
 					  oncomplete="jQuery('#manageUserModal').modal('show');" reRender="manageUserPanel">
-			<a:actionparam name="userId" assignTo="#{userManager.userId}" />
+			<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
 		</a:jsFunction>
 	</a:form>
 	
@@ -68,7 +75,7 @@
 				</div>	
 				
 				<div class="modal-body">
-					<h:outputText value="#{userManager.userId}" /><br/>
+					<h:outputText value="#{roleManagementBean.userId}" /><br/>
 					<h:outputText value="#{user.id}" /><br/>
 					<h:outputText value="#{user.realname}" /><br/>
 					
@@ -104,13 +111,13 @@
 		
 		<a:form>
 			<a:jsFunction name="ajaxEnableRole" action="#{userManager.enableRole()}" reRender="manageUserPanel">
-				<a:actionparam name="userId" assignTo="#{userManager.userId}" />
-				<a:actionparam name="roleId" assignTo="#{userManager.roleId}" />
+				<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
+				<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
 			</a:jsFunction>
 		
 			<a:jsFunction name="ajaxDisableRole" action="#{userManager.disableRole()}" reRender="manageUserPanel">
-				<a:actionparam name="userId" assignTo="#{userManager.userId}" />
-				<a:actionparam name="roleId" assignTo="#{userManager.roleId}" />
+				<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
+				<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
 			</a:jsFunction>
 		</a:form>
 	</div>

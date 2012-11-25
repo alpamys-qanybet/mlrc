@@ -26,7 +26,6 @@ import org.jboss.seam.security.Identity;
 public class UserManager implements Serializable
 {
 	@Logger Log log;
-	
 	@In protected Identity identity;
     
 	@In("entityManager")
@@ -42,6 +41,9 @@ public class UserManager implements Serializable
 	@Out(scope=ScopeType.PAGE,required=false)
 	private List<RoleBean> userRoles;
 	
+	@In(create=true)
+	private RoleManagementBean roleManagementBean;
+	
 	@Factory("users")
 	public void retrieveUsers()
 	{
@@ -50,7 +52,7 @@ public class UserManager implements Serializable
 	
 	public void prepareManageUserValues()
 	{
-		user = em.find(User.class, userId);
+		user = em.find(User.class, roleManagementBean.getUserId());
 	
 		List<Role> roles = em.createQuery("FROM Role").getResultList();
 		
@@ -67,10 +69,10 @@ public class UserManager implements Serializable
 	
 	public void enableRole()
 	{
-		log.info("enabling role id {0}", roleId);
+		log.info("enabling role id {0}", roleManagementBean.getRoleId());
 		
-		user = em.find(User.class, userId);
-		Role role = em.find(Role.class, roleId);
+		user = em.find(User.class, roleManagementBean.getUserId());
+		Role role = em.find(Role.class, roleManagementBean.getRoleId());
 		
 		user.getRoles().add(role);
 		em.persist(user);
@@ -80,10 +82,10 @@ public class UserManager implements Serializable
 	
 	public void disableRole()
 	{
-		log.info("disabling role id {0}", roleId);
+		log.info("disabling role id {0}", roleManagementBean.getRoleId());
 		
-		user = em.find(User.class, userId);
-		Role role = em.find(Role.class, roleId);
+		user = em.find(User.class, roleManagementBean.getUserId());
+		Role role = em.find(Role.class, roleManagementBean.getRoleId());
 		
 		user.getRoles().remove(role);
 		em.persist(user);
@@ -108,28 +110,5 @@ public class UserManager implements Serializable
 		em.remove(user);
 		
 		retrieveUsers();
-	}
-	
-	private long userId;
-	private long roleId;
-	
-	public long getUserId()
-	{
-		return userId;
-	}
-
-	public void setUserId(long userId)
-	{
-		this.userId = userId;
-	}
-
-	public long getRoleId()
-	{
-		return roleId;
-	}
-
-	public void setRoleId(long roleId)
-	{
-		this.roleId = roleId;
 	}
 }
