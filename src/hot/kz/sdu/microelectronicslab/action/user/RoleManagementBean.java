@@ -9,7 +9,7 @@ import org.jboss.seam.annotations.Scope;
 public class RoleManagementBean
 {
 	private long userId;
-	private long roleId;
+	private boolean isRequestFromModal;
 	
 	public long getUserId()
 	{
@@ -21,13 +21,11 @@ public class RoleManagementBean
 		this.userId = userId;
 	}
 
-	public long getRoleId()
-	{
-		return roleId;
+	public boolean isRequestFromModal() {
+		return isRequestFromModal;
 	}
 
-	public void setRoleId(long roleId)
-	{
-		this.roleId = roleId;
+	public void setRequestFromModal(boolean isRequestFromModal) {
+		this.isRequestFromModal = isRequestFromModal;
 	}
 }

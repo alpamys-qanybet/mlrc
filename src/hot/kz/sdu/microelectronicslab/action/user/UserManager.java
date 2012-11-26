@@ -1,11 +1,16 @@
 package kz.sdu.microelectronicslab.action.user;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import kz.sdu.microelectronicslab.action.OperationService;
 import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
@@ -31,84 +36,148 @@ public class UserManager implements Serializable
 	@In("entityManager")
 	private EntityManager em;
 	
-	@DataModel(scope=ScopeType.PAGE)
+	@In(create=true)
+	private RoleManagementBean roleManagementBean;
+	
+	@In(create=true)
+	private OperationService operationService;
+	
+	@Out(scope=ScopeType.PAGE, required=false)
 	private List<User> users;
 	
-	@DataModelSelection
 	@Out(required=false)
 	private User user;
 	
 	@Out(scope=ScopeType.PAGE,required=false)
 	private List<RoleBean> userRoles;
 	
-	@In(create=true)
-	private RoleManagementBean roleManagementBean;
-	
-	@Factory("users")
-	public void retrieveUsers()
+	public void preparePage(String content)
 	{
-		users = em.createQuery("FROM User").getResultList();
-	}
-	
-	public void prepareManageUserValues()
-	{
-		user = em.find(User.class, roleManagementBean.getUserId());
-	
-		List<Role> roles = em.createQuery("FROM Role").getResultList();
+		if (content.equals("userList"))
+			users = em.createQuery("FROM User").getResultList();
 		
-		userRoles = new ArrayList<RoleBean>();
-		for (Role role: roles)
+		else if (content.equals("manageUser"))
 		{
-			RoleBean roleBean = new RoleBean();
-			roleBean.setId(role.getId());
-			roleBean.setName(role.getName());
-			roleBean.setEnabled(isUserRoleEnabled(role));
-			userRoles.add(roleBean);
+			user = em.find(User.class, roleManagementBean.getUserId());
+			List<Role> roles = em.createQuery("FROM Role").getResultList();
+		
+			if (!roleManagementBean.isRequestFromModal())
+			{
+				userRoles = new ArrayList<RoleBean>();
+			
+				for (Role role: roles)
+				{
+					String rolename = role.getName();
+					if ( !identity.hasRole("admin") && rolename.equals("admin") )
+						continue;
+					
+					RoleBean roleBean = new RoleBean();
+					roleBean.setId( role.getId() );
+					roleBean.setName( rolename );
+					roleBean.setEnabled( hasUserRole(user, rolename) );
+					userRoles.add(roleBean);
+				}
+			}
 		}
 	}
 	
+	private boolean hasUserRole(User user, String rolename)
+	{
+		for (Role userRole: user.getRoles())
+			if ( userRole.getName().equals(rolename) )
+				return true;
+		
+		return false;
+	}
+	
+	public boolean isUser(long userId, String rolename)
+	{
+		return hasUserRole( em.find(User.class, userId), rolename);
+	}
+	
+/*	
 	public void enableRole()
 	{
 		log.info("enabling role id {0}", roleManagementBean.getRoleId());
 		
-		user = em.find(User.class, roleManagementBean.getUserId());
+		user = em.find(User.class, user.getId());
 		Role role = em.find(Role.class, roleManagementBean.getRoleId());
 		
 		user.getRoles().add(role);
 		em.persist(user);
-		
-		prepareManageUserValues();
+/*
+		if (role.getName().equals("admin"))
+			operationService.redirectToSystemPage("user/manage.seam"); //.redirectToPage("http://web.mit.edu"); as page example
+* /		
+		roleManagementBean.setUserId(user.getId());
+		preparePage("manageUser");
 	}
 	
 	public void disableRole()
 	{
 		log.info("disabling role id {0}", roleManagementBean.getRoleId());
 		
-		user = em.find(User.class, roleManagementBean.getUserId());
+		user = em.find(User.class, user.getId());
 		Role role = em.find(Role.class, roleManagementBean.getRoleId());
 		
 		user.getRoles().remove(role);
 		em.persist(user);
 		
-		prepareManageUserValues();
+		roleManagementBean.setUserId(user.getId());
+		preparePage("manageUser");
+	}
+*/	
+
+	public void setRoleEnabled(long roleId, boolean isEnabled)
+	{
+		for (RoleBean roleBean: userRoles)
+			if (roleBean.getId() == roleId)
+			{	
+				roleBean.setEnabled(isEnabled);
+				break;
+			}
 	}
 	
-	private boolean isUserRoleEnabled(Role role)
+	public void edit()
 	{
-		for (Role userRole: user.getRoles())
-			if (userRole.getId() == role.getId())
-				return true;
-				
-    	return false;
+		log.info("*** saving changes {0}", "Haha");
+		user = em.find(User.class, user.getId());
+		
+		for (RoleBean roleBean:userRoles)
+		{
+			Role role = em.find( Role.class, roleBean.getId() );
+			
+			boolean userHasRole = false;
+			
+			for (Role r: user.getRoles())
+				if (r.getId() == roleBean.getId())
+				{
+					userHasRole = true;
+					break;
+				}
+			
+			if (roleBean.isEnabled())
+			{
+				if (!userHasRole)
+				{
+					user.getRoles().add(role);
+					em.persist(user);
+				}
+			}
+			else
+			{	
+				if (userHasRole)
+				{
+					user.getRoles().remove(role);
+					em.persist(user);
+				}
+			}	
+		}
 	}
 	
 	public void delete()
 	{
-		log.info("deleting user {0}", user.getUsername());
-		
 		user = em.find(User.class, user.getId());
 		em.remove(user);
-		
-		retrieveUsers();
 	}
 }

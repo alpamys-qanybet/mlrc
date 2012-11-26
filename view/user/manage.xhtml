@@ -13,113 +13,143 @@
    <ui:define name="body">
    <script type="text/javascript">
 		jQuery(document).ready(function() {
+			// navs: make current active 
 			jQuery('#navUsers').addClass('active');
 			jQuery('#navUsers').siblings().removeClass('active');
+
+			loadScripts();
 		});
+
+		function loadScripts() {
+			// edit icon
+			jQuery('.edit').hide();
+
+			jQuery('.user').mouseover(function() {
+				var userId = jQuery(this).attr('id').replace('user','');
+	   	    	jQuery('#edit'+userId).show();
+			});
+
+			jQuery('.user').mouseout(function() {
+	   	    	var userId = jQuery(this).attr('id').replace('user','');
+	   	    	jQuery('#edit'+userId).hide();
+			});
+		}
 	</script>
 	
    	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
-			<h1>Users</h1>
+			<div class="content-header">
+				<h4>Users</h4>
+			</div>
 			
-			<rich:dataTable styleClass="table table-striped table-bordered table-condensed table-hover" var="user" value="#{users}">
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Username"/>
-					</f:facet>
-					<h:outputText value="#{user.username}"/>
-				</h:column>
-			
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Fullname"/>
-					</f:facet>
-					<h:outputText value="#{user.realname}"/>
-				</h:column>
-			
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Email"/>
-					</f:facet>
-					<h:outputText value="#{user.email}"/>
-				</h:column>
-				
-				
-				<h:column rendered="#{identity.hasRole('admin')}">
-					<f:facet name="header">
-						<h:outputText value="Manage"/>
-					</f:facet>
-					
-					<h:form>
-						<a href="javascript:ajaxManageUser(#{user.id})" class='btn btn-small'>Manage</a>
-						<h:commandButton styleClass="btn btn-small btn-danger" value="Del" action="#{userManager.delete()}"/>
-					</h:form>
-				</h:column>
-			</rich:dataTable>
+			<div class="content">
+				<a:outputPanel id="userListPanel">
+					#{userManager.preparePage('userList')}
+					<table class="table table-striped table-bordered table-condensed table-hover">
+						<tr>
+		  					<th>Username</th>
+		  					<th>Fullname</th>
+		  					<th>Email</th>
+		  				</tr>
+		       			
+						<ui:repeat var="user" value="#{users}">
+							<tr id="user#{user.id}" class="user">
+								<td>
+									<h:outputText  value="#{user.username}"/>
+									<s:fragment rendered="#{identity.hasRole('admin') or ( identity.hasRole('manager') and (not userManager.isUser(user.id, 'admin')) )}"> <!-- here add condition does developer belongs to this manager's project -->
+					    				<span class="edit" id="edit#{user.id}">
+					    					<a href="javascript:ajaxManageUser('#{user.id}')"><i class="icon-edit"/></a>
+					    				</span>
+									</s:fragment>
+								</td>
+								<td>
+									<h:outputText  value="#{user.realname}"/>
+								</td>
+								<td>
+									<h:outputText  value="#{user.email}"/>
+								</td>
+							</tr>
+						</ui:repeat>
+					</table>
+				</a:outputPanel>
+			</div>
 		</div>
 	</div>
 	
 	<a:form>
-		<a:jsFunction name="ajaxManageUser" action="#{userManager.prepareManageUserValues()}" 
+		<a:jsFunction name="ajaxManageUser" action="#{userManager.preparePage('manageUser')}" 
 					  oncomplete="jQuery('#manageUserModal').modal('show');" reRender="manageUserPanel">
 			<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
 		</a:jsFunction>
+	
+		<a:jsFunction name="ajaxEnableRole" action="#{userManager.enableRole()}"
+					  oncomplete="javascript:loadScripts();" reRender="manageUserPanel,userListPanel">
+			<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
+		</a:jsFunction>
+	
+		<a:jsFunction name="ajaxDisableRole" action="#{userManager.disableRole()}"
+					  oncomplete="javascript:loadScripts();" reRender="manageUserPanel,userListPanel">
+			<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
+		</a:jsFunction>
 	</a:form>
 	
-	<div class="modal hide" id="manageUserModal">
-		<a:outputPanel id="manageUserPanel">		
-			<a:region>
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">×</button>
-					<h3>Manage <h:outputText value=" #{user.realname}" /></h3>
-				</div>	
-				
-				<div class="modal-body">
-					<h:outputText value="#{roleManagementBean.userId}" /><br/>
-					<h:outputText value="#{user.id}" /><br/>
-					<h:outputText value="#{user.realname}" /><br/>
+	<a:form id="manageUserForm">
+		<div class="modal hide" id="manageUserModal">
+			<a:outputPanel id="manageUserPanel">		
+				<a:region>
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">×</button>
+						<h3>Manage <h:outputText value=" @#{user.username}" /></h3>
+					</div>	
 					
-					<rich:dataTable styleClass="table table-striped table-bordered table-condensed table-hover" var="role" value="#{userRoles}">
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Role"/>
-							</f:facet>
-							
-							<h:outputText value="#{role.name}"/>
-						</h:column>
+					<div class="modal-body">
+						<img class="size32" src="#{user.avatar}" style="position: absolute; top: 68px; left: 21px"/>
+            			<ul style="list-style-type: none; padding-left: 18px; padding-right: 2px;">
+            				<li><strong><h:outputText value="#{user.realname}" /></strong></li>
+            				<li><small class="muted">Privileges</small></li>
+            			</ul>
 						
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Change"/>
-							</f:facet>
+						<table class="table table-striped table-bordered table-condensed table-hover">
+							<tr>
+								<th>Role</th>
+								<th>Change</th>
+							</tr>
 							
-							<s:fragment rendered="#{not role.enabled}">
-	          					<a href="javascript:ajaxEnableRole(#{user.id}, #{role.id})" class='btn btn-small btn-primary'>Enable</a>
-							</s:fragment>
-							
-							<s:fragment rendered="#{role.enabled}">
-	          					<a href="javascript:ajaxDisableRole(#{user.id}, #{role.id})" class='btn btn-small btn-danger'>Disable</a>
-							</s:fragment>
-	          			</h:column>
-					</rich:dataTable>
-				</div>
-				<!-- <div class="modal-footer">
-					<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-		    	</div> -->
-			</a:region>
-		</a:outputPanel>
-		
-		<a:form>
-			<a:jsFunction name="ajaxEnableRole" action="#{userManager.enableRole()}" reRender="manageUserPanel">
-				<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
-				<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
-			</a:jsFunction>
-		
-			<a:jsFunction name="ajaxDisableRole" action="#{userManager.disableRole()}" reRender="manageUserPanel">
-				<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
-				<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
-			</a:jsFunction>
-		</a:form>
-	</div>
-   </ui:define>
+							<ui:repeat var="role" value="#{userRoles}">
+								<tr>
+									<td>
+										<h:outputText value="#{role.name}"/>
+									</td>
+									
+									<td>
+										<a:commandLink styleClass="btn btn-small btn-primary" value="Enable" rendered="#{not role.enabled}"
+										               action="#{userManager.setRoleEnabled(role.id, true)}" reRender="manageUserPanel">
+											<a:actionparam name="isRequestFromModal" assignTo="#{roleManagementBean.requestFromModal}" value="true" />
+										</a:commandLink>
+										
+										<a:commandLink styleClass="btn btn-small btn-danger" value="Disable" rendered="#{role.enabled}"
+										               action="#{userManager.setRoleEnabled(role.id, false)}" reRender="manageUserPanel">
+										    <a:actionparam name="isRequestFromModal" assignTo="#{roleManagementBean.requestFromModal}" value="true" />
+										</a:commandLink>
+									</td>
+								</tr>
+							</ui:repeat>
+						</table>
+					</div>
+					
+					<div class="modal-footer">
+						<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+						<a:commandLink styleClass="btn btn-danger" value="Delete"
+						               action="#{userManager.delete()}" reRender="userListPanel"
+						               oncomplete="javascript:loadScripts(); jQuery('#manageUserModal').modal('hide');"/>
+						               
+						<a:commandLink styleClass="btn btn-primary" value="Save"
+									   action="#{userManager.edit()}" reRender="userListPanel"
+									   oncomplete="javascript:loadScripts(); jQuery('#manageUserModal').modal('hide');"/>
+					</div>
+				</a:region>
+			</a:outputPanel>
+		</div>
+   	</a:form>
+	</ui:define>
 </ui:composition>

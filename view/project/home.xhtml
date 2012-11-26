@@ -13,9 +13,15 @@
    <ui:define name="body">
    <script type="text/javascript">
    		jQuery(document).ready(function() {
+   	   		// navs: make current active 
 			jQuery('#navProjects').addClass('active');
 			jQuery('#navProjects').siblings().removeClass('active');
 
+			loadScripts();
+		});
+
+		function loadScripts() {
+			// project tabs
 			jQuery('#projectsTab a').click(function (e) {
 				e.preventDefault();
 				jQuery(this).tab('show');
@@ -25,11 +31,11 @@
 			    jQuery('#projectsTab a:first').tab('show');
 			});
 
+			// edit icon
 			jQuery('.edit').hide();
 
 			jQuery('.project').mouseover(function() {
 				var projectId = jQuery(this).attr('id').replace('project','');
-	   	    	
 	   	    	jQuery('#edit'+projectId).show();
 			});
 
@@ -37,68 +43,70 @@
 	   	    	var projectId = jQuery(this).attr('id').replace('project','');
 	   	    	jQuery('#edit'+projectId).hide();
 			});
-		});
+		}
 	</script>
 		
    	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
-			#{projectManager.preparePage('projectList')}
 			<div class="content-header">
 				<h4>Projects</h4>
 			</div>
 			
 			<div class="content">
-				<ul class="nav nav-tabs" id="projectsTab">
-					<ui:repeat var="status" value="#{projectStatuses}">
-       					<li>
-       						<a href="#statusTab#{status.id}">
-        						<h:outputText value="#{status.name}" />
-       						</a>
-       					</li>
-				    </ui:repeat>
-				</ul>
-				 
-				<div class="tab-content">
-					<ui:repeat var="status" value="#{projectStatuses}">
-       			  		<div class="tab-pane" id="statusTab#{status.id}">
-       			  			<table class="table table-striped table-bordered table-condensed table-hover">
-       			  				<tr>
-       			  					<th>Name</th>
-       			  				</tr>
-	       			  			<ui:repeat var="project" value="#{status.projects}">
-									<tr id="project#{project.id}" class="project">
-										<td>
-											<h:outputText  value="#{project.name}"/>
-											<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.isManagerEnabled(project.id))}">
-							    				<span class="edit" id="edit#{project.id}">
-							    					<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
-							    				</span>
-											</s:fragment>
-										</td>
-									</tr>
-								</ui:repeat>
-							</table>
-       					</div>
-					</ui:repeat>
-				</div>
+				<a:form id="projectListForm">
+					<a:outputPanel id="projectListPanel">
+						#{projectManager.preparePage('projectList')}
+						<ul class="nav nav-tabs" id="projectsTab">
+							<ui:repeat var="status" value="#{projectStatuses}">
+		       					<li>
+		       						<a href="#statusTab#{status.id}">
+		        						<h:outputText value="#{status.name}" />
+		       						</a>
+		       					</li>
+						    </ui:repeat>
+						</ul>
+						 
+						<div class="tab-content">
+							<ui:repeat var="status" value="#{projectStatuses}">
+		       			  		<div class="tab-pane" id="statusTab#{status.id}">
+		       			  			<table class="table table-striped table-bordered table-condensed table-hover">
+		       			  				<tr>
+		       			  					<th>Name</th>
+		       			  				</tr>
+			       			  			<ui:repeat var="project" value="#{status.projects}">
+											<tr id="project#{project.id}" class="project">
+												<td>
+													<h:outputText  value="#{project.name}"/>
+													<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.isManagerEnabled(project.id))}">
+									    				<span class="edit" id="edit#{project.id}">
+									    					<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
+									    				</span>
+													</s:fragment>
+												</td>
+											</tr>
+										</ui:repeat>
+									</table>
+		       					</div>
+							</ui:repeat>
+						</div>
+						
+						<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin')}"
+									   action="#{projectManager.preparePage('createProject')}" reRender="createProjectPanel" 
+									   oncomplete="javascript:jQuery('#createProjectModal').modal('show')"/>
+					</a:outputPanel>
+				</a:form>
 			</div>
-			
-			<a:commandLink onclick="javascript:ajaxPrepareCreateProject()" styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin')}"/>
 		</div>
 	</div>
 	
 	<a:form>
-		<a:jsFunction name="ajaxPrepareCreateProject" action="#{projectManager.preparePage('createProject')}" reRender="createProjectPanel" 
-					  oncomplete="javascript:jQuery('#createProjectModal').modal('show')">
-		</a:jsFunction>
-		
 		<a:jsFunction name="ajaxPrepareEditProject" action="#{projectManager.preparePage('editProject')}" reRender="editProjectPanel" 
 					  oncomplete="javascript:jQuery('#editProjectModal').modal('show')">
 			<a:actionparam name="projectId" assignTo="#{projectManagementBean.projectId}" />
 		</a:jsFunction>
 	</a:form>
 	
-	<h:form id="createProjectForm">
+	<a:form id="createProjectForm">
 	<div class="modal hide" id="createProjectModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -133,13 +141,16 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-			    <h:commandButton id="createProjectBtn" styleClass="btn btn-primary" value="Create" action="#{projectManager.create()}"/>
+			    
+			    <a:commandLink styleClass="btn btn-primary" value="Save"
+						        action="#{projectManager.create()}" reRender="projectListPanel"
+						        oncomplete="javascript:loadScripts(); jQuery('#createProjectModal').modal('hide');"/>
 			</div>
 		</a:outputPanel>
 	</div>
-	</h:form>
+	</a:form>
 	
-	<h:form id="editProjectForm">
+	<a:form id="editProjectForm">
 	<div class="modal hide" id="editProjectModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -185,12 +196,18 @@
 			</div>
 			
 			<div class="modal-footer">
-				<h:commandButton styleClass="btn btn-primary btn-danger" value="Delete" action="#{projectManager.delete()}" rendered="#{identity.hasRole('admin')}"/>
 				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-			    <h:commandButton id="createProjectBtn" styleClass="btn btn-primary" value="Edit" action="#{projectManager.edit()}"/>
+
+				<a:commandLink styleClass="btn btn-primary btn-danger" value="Delete" rendered="#{identity.hasRole('admin')}"
+						       action="#{projectManager.delete()}" reRender="projectListPanel"
+						       oncomplete="javascript:loadScripts(); jQuery('#editProjectModal').modal('hide');"/>
+				
+				<a:commandButton styleClass="btn btn-primary" value="Save"
+						       action="#{projectManager.edit()}" reRender="projectListPanel"
+						       oncomplete="javascript:loadScripts(); jQuery('#editProjectModal').modal('hide');"/>
 			</div>
 		</a:outputPanel>
 	</div>
-	</h:form>
+	</a:form>
 	</ui:define>
 </ui:composition>

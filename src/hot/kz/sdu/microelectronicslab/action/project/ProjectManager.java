@@ -104,10 +104,18 @@ public class ProjectManager implements Serializable
 	
 	public void edit()
 	{
+	
+		String name = project.getName();
+		String description = project.getDescription();
+		
 		project = em.find(Project.class, project.getId());
+		
+		project.setName(name);
+		project.setDescription(description);
 		project.setStatus( em.find(ProjectStatus.class, projectManagementBean.getStatusId()) );
 		project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
-		em.persist(project);
+//		em.persist(project);
+		em.merge(project);
 	}
 	
 	public void delete()
