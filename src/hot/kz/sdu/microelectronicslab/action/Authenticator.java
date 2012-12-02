@@ -42,7 +42,10 @@ public class Authenticator
 	        if (user.getRoles() != null)
 	        {
 	        	for (Role mr: user.getRoles())
+	        	{
 	        		identity.addRole(mr.getName());
+	        		break;
+	        	}
 	        }
 	        
 	        return true;

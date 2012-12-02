@@ -48,6 +48,9 @@ public class ProjectManager implements Serializable
 	@Out(scope=ScopeType.PAGE,required=false)
 	private List<User> managers;
 	
+	@Out(scope=ScopeType.PAGE,required=false)
+	private List<User> developers;
+	
 	public void preparePage(String content)
 	{
 		if (content.equals("projectList"))
@@ -68,12 +71,24 @@ public class ProjectManager implements Serializable
 		
 			if (identity.hasRole("admin"))
 				prepareManagers();
+			
+			if (identity.hasRole("manager"))
+				prepareDevelopers();
 		}
 	}
 	
-	public boolean isManagerEnabled(long projectId)
+	public boolean doesManagerBelongsToProject(long projectId)
 	{
 		return em.find(Project.class, projectId).getManager().getUsername().equals(identity.getUsername());
+	}
+	
+	public boolean doesDeveloperBelongsToProject(long userId)
+	{
+		for (User user: project.getDevelopers())
+			if (user.getId() == userId)
+				return true;
+		
+		return false;
 	}
 	
 	private void prepareManagers()
@@ -86,6 +101,16 @@ public class ProjectManager implements Serializable
 				managers.add(user);
 	}
 	
+	private void prepareDevelopers()
+	{
+		List<User> users = em.createQuery("FROM User").getResultList();
+		developers = new ArrayList<User>();
+		
+		for (User user: users)
+			if ( hasRole(user, "developer") )
+				developers.add(user);
+	}
+	
 	private boolean hasRole(User user, String rolename)
 	{
 		for (Role userRole: user.getRoles())
@@ -93,6 +118,20 @@ public class ProjectManager implements Serializable
 				return true;
 		
 		return false;
+	}
+	
+	public void addDeveloper(long userId)
+	{
+		project.getDevelopers().add( em.find(User.class, userId) );
+		em.merge(project);
+	}
+	
+	public void removeDeveloper(long userId)
+	{
+		log.info(" remove dev {0} ", userId);
+		project = em.find(Project.class, project.getId());
+		project.getDevelopers().remove( em.find(User.class, userId) );
+		em.persist(project);
 	}
 	
 	public void create()
@@ -113,7 +152,10 @@ public class ProjectManager implements Serializable
 		project.setName(name);
 		project.setDescription(description);
 		project.setStatus( em.find(ProjectStatus.class, projectManagementBean.getStatusId()) );
-		project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
+		
+		if (identity.hasRole("admin"))
+			project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
+		
 //		em.persist(project);
 		em.merge(project);
 	}

@@ -1,10 +1,13 @@
 package kz.sdu.microelectronicslab.action.user;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import kz.sdu.microelectronicslab.action.ConfigurationBean;
+import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
 import org.jboss.seam.ScopeType;
@@ -29,15 +32,42 @@ public class ProfileManager implements Serializable
 	
 	@In(create=true)
 	protected ConfigurationBean configurationBean;
+
+	@In(create=true)
+	private RoleManagementBean roleManagementBean;
 	
 	@Out(required=true)
 	protected User user;
+	
+	@Out(scope=ScopeType.PAGE,required=false)
+	private List<Role> roles;
 	
 	public void preparePage()
 	{
 		user = (User) em.createQuery("FROM User WHERE username = :username")
 				  .setParameter("username", identity.getUsername())
 				  .getSingleResult();
+		
+		roles = new ArrayList<Role>();
+		if (user.getRoles() != null)
+        {
+			for (Role role: user.getRoles())
+        		roles.add(role);
+        }
+		
+		String rolename = null;
+		
+		if ( identity.hasRole("admin") )
+			rolename = "admin";
+		else if ( identity.hasRole("manager") )
+			rolename = "manager";
+		else if ( identity.hasRole("developer") )
+			rolename = "developer";
+		
+		Role role = (Role) em.createQuery("FROM Role WHERE name = :name")
+						    .setParameter("name", rolename).getSingleResult();
+		
+		roleManagementBean.setRoleId( role.getId() );
 	}
 	
 	public String changeAvatar(String filename)
@@ -59,5 +89,14 @@ public class ProfileManager implements Serializable
 	{
 		log.info("*** profileManager save() {0}", user.getRealname());
 		em.merge(user);
+		
+		if (user.getRoles() != null)
+        {
+        	for (Role role: user.getRoles())
+        		identity.removeRole(role.getName());
+        	
+        	Role role = em.find(Role.class, roleManagementBean.getRoleId() );
+        	identity.addRole( role.getName() );
+        }
 	}
 }

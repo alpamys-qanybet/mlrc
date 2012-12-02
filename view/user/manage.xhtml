@@ -56,7 +56,7 @@
 							<tr id="user#{user.id}" class="user">
 								<td>
 									<h:outputText  value="#{user.username}"/>
-									<s:fragment rendered="#{identity.hasRole('admin') or ( identity.hasRole('manager') and (not userManager.isUser(user.id, 'admin')) )}"> <!-- here add condition does developer belongs to this manager's project -->
+									<s:fragment rendered="#{identity.hasRole('admin') or ( identity.hasRole('manager') and (not userManager.isUser(user.id, 'admin')) and (not userManager.isUser(user.id, 'manager')))}"> <!-- here add condition does developer belongs to this manager's project -->
 					    				<span class="edit" id="edit#{user.id}">
 					    					<a href="javascript:ajaxManageUser('#{user.id}')"><i class="icon-edit"/></a>
 					    				</span>
@@ -80,16 +80,6 @@
 		<a:jsFunction name="ajaxManageUser" action="#{userManager.preparePage('manageUser')}" 
 					  oncomplete="jQuery('#manageUserModal').modal('show');" reRender="manageUserPanel">
 			<a:actionparam name="userId" assignTo="#{roleManagementBean.userId}" />
-		</a:jsFunction>
-	
-		<a:jsFunction name="ajaxEnableRole" action="#{userManager.enableRole()}"
-					  oncomplete="javascript:loadScripts();" reRender="manageUserPanel,userListPanel">
-			<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
-		</a:jsFunction>
-	
-		<a:jsFunction name="ajaxDisableRole" action="#{userManager.disableRole()}"
-					  oncomplete="javascript:loadScripts();" reRender="manageUserPanel,userListPanel">
-			<a:actionparam name="roleId" assignTo="#{roleManagementBean.roleId}" />
 		</a:jsFunction>
 	</a:form>
 	
@@ -139,7 +129,7 @@
 					
 					<div class="modal-footer">
 						<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-						<a:commandLink styleClass="btn btn-danger" value="Delete"
+						<a:commandLink styleClass="btn btn-danger" value="Delete" rendered="#{identity.hasRole('admin')}"
 						               action="#{userManager.delete()}" reRender="userListPanel"
 						               oncomplete="javascript:loadScripts(); jQuery('#manageUserModal').modal('hide');"/>
 						               

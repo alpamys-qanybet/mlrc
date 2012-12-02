@@ -8,8 +8,11 @@ import org.jboss.seam.annotations.Scope;
 @Scope(ScopeType.EVENT)
 public class RoleManagementBean
 {
-	private long userId;
+	// userManager - manage.xhmtl
+	private long userId; 
 	private boolean isRequestFromModal;
+	
+	private long roleId; // profileManager - profile
 	
 	public long getUserId()
 	{
@@ -20,12 +23,20 @@ public class RoleManagementBean
 	{
 		this.userId = userId;
 	}
-
+	
 	public boolean isRequestFromModal() {
 		return isRequestFromModal;
 	}
 
 	public void setRequestFromModal(boolean isRequestFromModal) {
 		this.isRequestFromModal = isRequestFromModal;
+	}
+
+	public long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(long roleId) {
+		this.roleId = roleId;
 	}
 }

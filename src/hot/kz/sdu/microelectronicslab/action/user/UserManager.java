@@ -94,39 +94,6 @@ public class UserManager implements Serializable
 	{
 		return hasUserRole( em.find(User.class, userId), rolename);
 	}
-	
-/*	
-	public void enableRole()
-	{
-		log.info("enabling role id {0}", roleManagementBean.getRoleId());
-		
-		user = em.find(User.class, user.getId());
-		Role role = em.find(Role.class, roleManagementBean.getRoleId());
-		
-		user.getRoles().add(role);
-		em.persist(user);
-/*
-		if (role.getName().equals("admin"))
-			operationService.redirectToSystemPage("user/manage.seam"); //.redirectToPage("http://web.mit.edu"); as page example
-* /		
-		roleManagementBean.setUserId(user.getId());
-		preparePage("manageUser");
-	}
-	
-	public void disableRole()
-	{
-		log.info("disabling role id {0}", roleManagementBean.getRoleId());
-		
-		user = em.find(User.class, user.getId());
-		Role role = em.find(Role.class, roleManagementBean.getRoleId());
-		
-		user.getRoles().remove(role);
-		em.persist(user);
-		
-		roleManagementBean.setUserId(user.getId());
-		preparePage("manageUser");
-	}
-*/	
 
 	public void setRoleEnabled(long roleId, boolean isEnabled)
 	{

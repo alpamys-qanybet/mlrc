@@ -22,14 +22,14 @@
 				<div class="control-group">
 					<h:outputLabel for="realname" value="Fullname" styleClass="control-label"/>
 					<div class="controls">
-						<h:inputText styleClass="span4" id="realname" value="#{user.realname}" required="true"/>
+						<h:inputText styleClass="span3" id="realname" value="#{user.realname}" required="true"/>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<h:outputLabel for="email" value="Email" styleClass="control-label"/>
 					<div class="controls">
-						<h:inputText styleClass="span4" id="email" value="#{user.email}" required="true"/>
+						<h:inputText styleClass="span3" id="email" value="#{user.email}" required="true"/>
 					</div>
 				</div>
 				
@@ -56,7 +56,7 @@
 				
 				<div class="control-group">
 					<div class="controls">
-						<h:commandButton id="register" styleClass="btn btn-primary"  value="Register" action="#{registrationManager.register()}">
+						<h:commandButton id="register" styleClass="btn btn-primary" style="margin-right: 10px;" value="Register" action="#{registrationManager.register()}">
 		   					<s:defaultAction/>
 		   				</h:commandButton>
 		   				<h:commandButton styleClass="btn"  value="Cancel" action="home" immediate="true" />

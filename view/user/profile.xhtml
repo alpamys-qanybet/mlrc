@@ -43,6 +43,23 @@
 						</div>
 						
 						<div class="control-group">
+							<h:outputLabel for="bio" value="Biography" styleClass="control-label"/>
+							<div class="controls">
+								<h:inputTextarea id="bio" styleClass="span3" rows="5" value="#{user.bio}" />
+							</div>
+						</div>
+						
+						
+						<div class="control-group">
+							<h:outputLabel for="role" value="Current role" styleClass="control-label"/>
+							<div class="controls">
+								<h:selectOneMenu id="role" value="#{roleManagementBean.roleId}" class="input" required="true"  style="max-width: 460px;">
+									<s:selectItems var="role" value="#{roles}" label="#{role.name}" itemValue="#{role.id}" noSelectionLabel="Select"/>
+								</h:selectOneMenu>
+							</div>
+						</div>
+						
+						<div class="control-group">
 							<div class="controls">
 								<h:commandButton styleClass="btn btn-primary" value="Save changes" action="#{profileManager.save()}"/>
 							</div>
