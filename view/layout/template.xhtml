@@ -15,8 +15,9 @@
 
       <a:loadScript src="/js/jquery/jquery-1.8.2.min.js"/>
    	  <a:loadScript src="/js/bootstrap/bootstrap.min.js"/>
- 			
-	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap.css" />
+   	  <a:loadScript src="/js/tiny_mce/tiny_mce.js"/>
+   	  
+ 	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap.css" />
 	  <a:loadStyle src="/stylesheet/bootstrap/bootstrap-responsive.css" />
 	  <script type="text/javascript">
 		//<![CDATA[
@@ -45,8 +46,8 @@
 			 		}
 				});
 			});
-		//]]>
-		</script>
+	  //]]>
+	  </script>
       
       <style type="text/css">
       body {
@@ -160,6 +161,15 @@
 			border-radius: 5px;
 		}
 		
+		.size55
+		{
+			width: 55px;
+			height: 55px;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+		}
+		
 		.size32
 		{
 			width: 32px;
@@ -167,6 +177,27 @@
 			-webkit-border-radius: 4px;
 			-moz-border-radius: 4px;
 			border-radius: 4px;
+		}
+		
+		.news830
+		{
+			height: 350px;
+			width: 600px;
+		}
+		
+		.news200
+		{
+			height: 117px;
+			width: 200px;
+		}
+		
+		.carousel-control
+		{
+			height: 50px;
+			border: none;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			border-radius: 0px;
 		}
 		
 		.content-header
@@ -178,6 +209,13 @@
 		.content
 		{
 			margin-top: 15px;
+		}
+		
+		.content-block
+		{
+			border-bottom: 1px solid #EEE;
+			margin-bottom: 35px;
+			padding-bottom: 44px;
 		}
 		</style>
       <ui:insert name="head"/>

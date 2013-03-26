@@ -28,6 +28,7 @@ public class Project implements Serializable
 	private User manager;
 	private List<User> developers;
 	private ProjectStatus status;
+	private String icon;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -98,5 +99,13 @@ public class Project implements Serializable
 	public void setStatus(ProjectStatus status)
 	{
 		this.status = status;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 }

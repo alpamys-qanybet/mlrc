@@ -13,6 +13,8 @@ import org.jboss.seam.annotations.Scope;
 
 import javax.persistence.EntityManager;
 
+import kz.sdu.microelectronicslab.action.ConfigurationBean;
+import kz.sdu.microelectronicslab.action.FileService;
 import kz.sdu.microelectronicslab.model.project.Project;
 import kz.sdu.microelectronicslab.model.project.ProjectStatus;
 import kz.sdu.microelectronicslab.model.user.Role;
@@ -50,6 +52,13 @@ public class ProjectManager implements Serializable
 	
 	@Out(scope=ScopeType.PAGE,required=false)
 	private List<User> developers;
+	
+	@In(create=true)
+	protected ConfigurationBean configurationBean;
+	
+	@In(create=true)
+	private FileService fileService;
+	
 	
 	public void preparePage(String content)
 	{
@@ -138,12 +147,15 @@ public class ProjectManager implements Serializable
 	{
 		project.setStatus( (ProjectStatus)em.createQuery("FROM ProjectStatus WHERE name = :name").setParameter("name", "seed").getSingleResult() );
 		project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
+		
+		String url = configurationBean.getFileServerHost() + "/project/icon/default.png";
+		project.setIcon(url);
+		
 		em.persist(project);
 	}
 	
 	public void edit()
 	{
-	
 		String name = project.getName();
 		String description = project.getDescription();
 		
@@ -155,6 +167,9 @@ public class ProjectManager implements Serializable
 		
 		if (identity.hasRole("admin"))
 			project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
+
+		String url = configurationBean.getFileServerHost() + "/project/icon/" + fileService.saveProjectIcon();
+		project.setIcon(url);
 		
 //		em.persist(project);
 		em.merge(project);

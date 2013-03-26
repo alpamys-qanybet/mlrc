@@ -14,9 +14,9 @@
 	<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
 	<stringAttribute key="org.eclipse.ant.ui.ATTR_ANT_MANUAL_TARGETS" value="clean,unexplode,restart,buildtest,"/>
 	<stringAttribute key="org.eclipse.ant.ui.ATTR_ANT_AUTO_TARGETS" value="explode,buildtest,"/>
-	<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="microelectronicslab"/>
+	<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mlrc"/>
 	<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-		<listEntry value="/microelectronicslab/build.xml"/>
+		<listEntry value="/mlrc/build.xml"/>
 	</listAttribute>
-	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/microelectronicslab/build.xml}"/>
+	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/mlrc/build.xml}"/>
 </launchConfiguration>

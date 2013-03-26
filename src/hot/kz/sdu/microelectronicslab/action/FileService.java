@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
+import kz.sdu.microelectronicslab.action.article.ArticleManager;
 import kz.sdu.microelectronicslab.action.user.ProfileManager;
 
 import org.apache.commons.io.FilenameUtils;
@@ -66,5 +67,49 @@ public class FileService implements Serializable
 			file = new File(configurationBean.getFileStorePath() + "/user/avatar/" + oldAvatarName);
 			file.delete();
 		}
+	}
+	
+	public String saveArticleIcon()
+	{
+		String name = null;
+		try
+		{
+	//      Prepare filename prefix and suffix for an unique filename in upload folder.
+	        String prefix = FilenameUtils.getBaseName(filename);
+	        String suffix = FilenameUtils.getExtension(filename);
+	        
+	        File file = File.createTempFile(prefix + "_", "." + suffix, new File( configurationBean.getFileStorePath() + "/article" ));
+			FileOutputStream out = new FileOutputStream( file );
+			out.write( data, 0, data.length );
+			out.close();
+			
+			name = file.getName();
+		}
+		catch (IOException e)
+		{ e.printStackTrace(); }
+		
+		return name;
+	}
+	
+	public String saveProjectIcon()
+	{
+		String name = null;
+		try
+		{
+	//      Prepare filename prefix and suffix for an unique filename in upload folder.
+	        String prefix = FilenameUtils.getBaseName(filename);
+	        String suffix = FilenameUtils.getExtension(filename);
+	        
+	        File file = File.createTempFile(prefix + "_", "." + suffix, new File( configurationBean.getFileStorePath() + "/project/icon" ));
+			FileOutputStream out = new FileOutputStream( file );
+			out.write( data, 0, data.length );
+			out.close();
+			
+			name = file.getName();
+		}
+		catch (IOException e)
+		{ e.printStackTrace(); }
+		
+		return name;
 	}
 }

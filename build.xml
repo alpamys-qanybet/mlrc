@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="microelectronicslab" default="deploy" basedir=".">
+<project name="mlrc" default="deploy" basedir=".">
 
     <!-- Give user a chance to override without editing this file or typing -D -->
     <property file="${basedir}/build.properties" />
@@ -8,7 +8,7 @@
     <property file="build-${profile}.properties" />
 
     <!-- set global properties for this build -->
-    <property name="project.name" value="microelectronicslab"/>
+    <property name="project.name" value="mlrc"/>
     <property name="project.war" value="true"/>
     <property name="richfaces.present" value="true"/>
     <property name="dist.dir" value="dist" />

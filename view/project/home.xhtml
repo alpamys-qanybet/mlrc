@@ -69,40 +69,33 @@
 						<div class="tab-content">
 							<ui:repeat var="status" value="#{projectStatuses}">
 		       			  		<div class="tab-pane" id="statusTab#{status.id}">
-		       			  			<table class="table table-striped table-bordered table-condensed table-hover">
-		       			  				<tr>
-		       			  					<th>Name</th>
-		       			  					<th>Manager</th>
-		       			  					<th>Developer(s)</th>
-		       			  				</tr>
-			       			  			<ui:repeat var="project" value="#{status.projects}">
-											<tr id="project#{project.id}" class="project">
-												<td>
-													<h:outputText  value="#{project.name}"/>
-													<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}">
-									    				<span class="edit" id="edit#{project.id}">
-									    					<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
-									    				</span>
-													</s:fragment>
-												</td>
-												
-												<td>
-													<h:outputText value="#{project.manager.realname}" />
-												</td>
-												
-												<td>
+		       			  			
+		       			  			<ui:repeat var="project" value="#{status.projects}">
+											<div id="project#{project.id}" class="project" style="margin-top: -40px; margin-bottom: 5px;">
+													<img class="size55" src="#{project.icon}" style="position: relative; top: 46px; left: 0px"/>
+								           			<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
+								           				<li>
+								           					<strong><h:outputText  value="#{project.name}"/></strong>
+								           					<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}">
+											    				<span class="edit" id="edit#{project.id}">
+											    					<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
+											    				</span>
+															</s:fragment>
+								           				</li>
+								           				
+								           				<li><small class="muted"><h:outputText value="#{project.manager.realname}" /></small></li>
+								           			</ul>
+								           			
 													<ui:repeat var="developer" value="#{project.developers}">
 														<h:outputText value="#{developer.realname}, " />
 													</ui:repeat>
-												</td>
-											</tr>
+											</div>
 										</ui:repeat>
-									</table>
 		       					</div>
 							</ui:repeat>
 						</div>
 						
-						<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin')}"
+						<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin')}" style="margin-top: 5px;"
 									   action="#{projectManager.preparePage('createProject')}" reRender="createProjectPanel" 
 									   oncomplete="javascript:jQuery('#createProjectModal').modal('show')"/>
 					</a:outputPanel>
@@ -162,7 +155,7 @@
 	</div>
 	</a:form>
 	
-	<a:form id="editProjectForm">
+	<h:form id="editProjectForm" enctype="multipart/form-data">
 	<div class="modal hide" id="editProjectModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -177,6 +170,19 @@
 							<h:inputText styleClass="span3" id="varEditName" value="#{project.name}" required="true"/>
 						</div>
 					</div>
+					
+					<div class="control-group">
+							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
+							<div class="controls">
+								<img id="icon" class="size75" src="#{project.icon}"/>
+								<span class="fileinputs">
+									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
+												  accept="image/*" styleClass="file"/>
+						        	<button class="btn fakefile" >Change icon</button>
+								</span>
+							</div>
+					</div>
+				
 					
 					<div class="control-group">
 						<h:outputLabel for="varEditDescription" value="Description" styleClass="control-label"/><br/>
@@ -247,12 +253,11 @@
 						       action="#{projectManager.delete()}" reRender="projectListPanel"
 						       oncomplete="javascript:loadScripts(); jQuery('#editProjectModal').modal('hide');"/>
 				
-				<a:commandButton styleClass="btn btn-primary" value="Save"
-						       action="#{projectManager.edit()}" reRender="projectListPanel"
-						       oncomplete="javascript:loadScripts(); jQuery('#editProjectModal').modal('hide');"/>
+				<h:commandButton styleClass="btn btn-primary" value="Save"
+						       action="#{projectManager.edit()}"/>
 			</div>
 		</a:outputPanel>
 	</div>
-	</a:form>
+	</h:form>
 	</ui:define>
 </ui:composition>

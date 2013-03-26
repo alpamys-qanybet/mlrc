@@ -6,6 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
     template="/layout/template.xhtml">
 
     <ui:define name="body">
@@ -13,30 +14,50 @@
 			jQuery(document).ready(function() {
 				jQuery('#navHome').addClass('active');
 				jQuery('#navHome').siblings().removeClass('active');
-			});
-		</script>
-		<h1>Welcome to Seam!</h1>
-        <rich:panel>
-            <h:panelGrid columns="2">
-                <h:graphicImage value="/img/seamlogo.png" alt="Seam logo"/>
-                <s:div styleClass="info">
-                    <p><strong>Your seam-gen project is deployed!</strong> Here are some of the features this project provides:</p>
-                    <ul class="bullets">
-                        <li>Ant build script</li>
-                        <li>Deployment to JBoss AS (EAR or WAR)</li>
-                        <li>Development and production profiles</li>
-                        <li>Integration testing using TestNG and Embedded JBoss</li>
-                        <li>JavaBean or EJB 3.0 Seam components</li>
-                        <li>JPA entity classes</li>
-                        <li>A configurable DataSource and JPA EntityManager</li>
-                        <li>Templated Facelets views</li>
-                        <li>RichFaces panels and tables</li>
-                        <li>Default CSS stylesheet</li>
-                        <li>Internationalization support</li>
-                    </ul>
-                </s:div>
-            </h:panelGrid>
-        </rich:panel>
 
+				loadScripts();
+			});
+
+			function loadScripts() {
+				jQuery('#news div:first').addClass('active');
+
+				jQuery('.carousel').carousel({
+					  interval: 3700
+				})
+			}
+		</script>
+		
+		<div class="page-canvas-wide">
+			<div class="signup-wrapper-wide">
+				<div class="content-header">
+					<h4>What's new?!</h4>
+				</div>
+				<a:form id="articleListForm">
+					<a:outputPanel id="articleListPanel">
+						#{articleManager.preparePage('articleList')}
+						
+						<div id="myCarousel" class="carousel slide news830">
+						  <!-- Carousel items -->
+						  <div class="carousel-inner" id="news">
+						    <ui:repeat var="art" value="#{articles}">
+								<div class="item">
+							    	 <s:link view="/article/view.seam">
+				                		<f:param name="articleId" value="#{art.id}"/>
+				                		<img class="news830" src="#{art.icon}"/>
+					                 </s:link>
+				                	<div class="carousel-caption">
+					                   <h4><h:outputText value="#{art.title}" /></h4>
+					                 </div>
+								</div>
+							</ui:repeat>
+						  </div>
+						  <!-- Carousel nav -->
+						  <a class="carousel-control left" href="#myCarousel" data-slide="prev"><img src="#{articleService.galleryLeft}"/></a>
+						  <a class="carousel-control right" href="#myCarousel" data-slide="next"><img src="#{articleService.galleryRight}"/></a>
+						</div>
+					</a:outputPanel>
+				</a:form>
+			</div>
+		</div>
     </ui:define>
 </ui:composition>

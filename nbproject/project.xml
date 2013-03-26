@@ -4,7 +4,7 @@
     <configuration>
         <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
             <!-- Do not use Project Properties customizer when editing this file manually. -->
-            <name>microelectronicslab</name>
+            <name>mlrc</name>
             <properties/>
             <folders>
                 <source-folder>
@@ -115,7 +115,7 @@
             <web-module>
                 <doc-root>view</doc-root>
                 <classpath/>
-                <context-path>/microelectronicslab</context-path>
+                <context-path>/mlrc</context-path>
                 <j2ee-spec-level>1.5</j2ee-spec-level>
             </web-module>
         </web-data>

@@ -73,8 +73,8 @@
    </security-constraint>
 
    <persistence-unit-ref>
-      <persistence-unit-ref-name>microelectronicslab/pu</persistence-unit-ref-name>
-      <persistence-unit-name>microelectronicslab</persistence-unit-name>
+      <persistence-unit-ref-name>mlrc/pu</persistence-unit-ref-name>
+      <persistence-unit-name>mlrc</persistence-unit-name>
    </persistence-unit-ref>
 
 </web-app>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir=".." name="microelectronicslab-IDE">
+<project basedir=".." name="mlrc-IDE">
     
   <property file="nbproject/debug-jboss.properties"/>
 
   <target name="debug-nb">
-    <nbjpdaconnect name="microelectronicslab" host="${jpda.host}" address="${jpda.address}" transport="${jpda.transport}">
+    <nbjpdaconnect name="mlrc" host="${jpda.host}" address="${jpda.address}" transport="${jpda.transport}">
       <!--classpath>
-        <path path="exploded-archives/microelectronicslab.jar"/>
+        <path path="exploded-archives/mlrc.jar"/>
       </classpath>
       <sourcepath>
         <path path="src"/>

@@ -24,24 +24,13 @@
               	<s:link view="/home.seam" value="Home"/>
               </li>
               
-              <li class="navs">
-                <a href="./getting-started.html">Get started</a>
+              <li class="navs" id="navArticles">
+                <s:link view="/article/home.seam" value="Articles" propagation="none"/>
               </li>
               
-              <li class="navs">
-                <a href="./scaffolding.html">Scaffolding</a>
-              </li>
-              
-              <li class="navs">
-                <a href="./base-css.html">Base CSS</a>
-              </li>
               
               <li class="navs" id="navProjects">
                 <s:link view="/project/home.xhtml" value="Projects"/>
-              </li>
-              
-              <li class="navs">
-                <a href="./javascript.html">JavaScript</a>
               </li>
               
               <s:fragment rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}">
@@ -92,7 +81,7 @@
                        </li>
                        <li class="divider"></li>
                        
-                       <li><a tabindex="-1" href="#">Another action</a></li>
+                       <li><s:link view="/user/settings.seam" value="Settings"/></li>
                        <li><a tabindex="-1" href="#">Something else here</a></li>
                        <li class="divider"></li>
                        
