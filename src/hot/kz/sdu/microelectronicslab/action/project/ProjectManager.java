@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import kz.sdu.microelectronicslab.action.ConfigurationBean;
 import kz.sdu.microelectronicslab.action.FileService;
+import kz.sdu.microelectronicslab.action.OperationService;
 import kz.sdu.microelectronicslab.model.article.Article;
 import kz.sdu.microelectronicslab.model.project.Project;
 import kz.sdu.microelectronicslab.model.project.ProjectStatus;
@@ -60,6 +61,9 @@ public class ProjectManager implements Serializable
 	protected ConfigurationBean configurationBean;
 	
 	@In(create=true)
+	protected OperationService operationService;
+	
+	@In(create=true)
 	private FileService fileService;
 	
 	private List<Project> projects;
@@ -90,6 +94,8 @@ public class ProjectManager implements Serializable
 			project = em.find(Project.class, projectManagementBean.getProjectId());
 			projectManagementBean.setManagerId( project.getManager().getId() );
 			projectManagementBean.setStatusId( project.getStatus().getId() );
+			
+			projectStatuses = em.createQuery("FROM ProjectStatus").getResultList();
 		
 			if (identity.hasRole("admin"))
 				prepareManagers();
@@ -193,11 +199,16 @@ public class ProjectManager implements Serializable
 		if (identity.hasRole("admin"))
 			project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
 
-		String url = configurationBean.getFileServerHost() + "/project/icon/" + fileService.saveProjectIcon();
-		project.setIcon(url);
+		if (fileService.getData() != null)
+		{
+			String url = configurationBean.getFileServerHost() + "/project/icon/" + fileService.saveProjectIcon();
+			project.setIcon(url);
+		}
 		
 //		em.persist(project);
 		em.merge(project);
+		
+		operationService.redirectToSystemPage("/project/home.seam");
 	}
 	
 	public void delete()

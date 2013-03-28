@@ -14,33 +14,174 @@
 	<script type="text/javascript">
    		jQuery(document).ready(function() {
    	   		// navs: make current active 
-			jQuery('#navArticles').addClass('active');
-			jQuery('#navArticles').siblings().removeClass('active');
-
-			loadScripts();
+   			jQuery('#navProjects').addClass('active');
+			jQuery('#navProjects').siblings().removeClass('active');
 		});
 
-   		function loadScripts() {
-			// edit icon
-			jQuery('.edit').hide();
-
-			jQuery('.article').mouseover(function() {
-				jQuery('.edit').show();
-			});
-
-			jQuery('.article').mouseout(function() {
-	   	    	jQuery('.edit').hide();
-			});
-		}
 	</script>
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			#{projectManager.preparePage('viewProject')}
 			<div class="content">
-				<h:outputText value="#{project.name}" /><br/>
-				<h:outputText value="#{project.manager.realname}" />
+				<div>
+					<img class="size75" src="#{project.icon}" style="position: relative; top: 3px; left: 3px"/>
+					<ul style="list-style-type: none;padding-left: 66px; padding-right: 0px; margin-top: -77px;">
+	       				<li>
+	       					<h2><h:outputText  value="#{project.name}"/></h2>
+	       				</li>
+	       				
+	       				<li><h:outputText value="#{project.status.name}" /></li>
+	       			</ul>
+       			</div>
+       			
+       			<div align='center'>
+       				<h:outputText value="#{project.description}"/>
+       			</div>
+       			
+				<div>
+					<img class="size32" src="#{project.manager.avatar}" style="position: relative; top: 3px; left: 3px"/>
+        			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
+        				<li>
+        					<strong><h:outputText  value="#{project.manager.realname}"/></strong>
+        				</li>
+        				
+        				<li>manager</li>
+        			</ul>
+       			</div>
+       			
+				<ui:repeat var="developer" value="#{project.developers}">
+					<div>
+						<img class="size32" src="#{developer.avatar}" style="position: relative; top: 3px; left: 3px"/>
+	          			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
+	          				<li>
+	          					<strong><h:outputText  value="#{developer.realname}"/></strong>
+	          				</li>
+	          				
+	          				<li>developer</li>
+	          			</ul>
+          			</div>
+				</ui:repeat>
+	
+				<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}">
+    				<a href="javascript:ajaxPrepareEditProject('#{project.id}')" class="btn btn-control-right btn-icon">
+    					<i class="icon-pencil"/>
+					</a>
+    			</s:fragment>
 			</div>
 		</div>
 	</div>
+	
+	<a:form>
+		<a:jsFunction name="ajaxPrepareEditProject" action="#{projectManager.preparePage('editProject')}" reRender="editProjectPanel" 
+					  oncomplete="javascript:jQuery('#editProjectModal').modal('show')">
+			<a:actionparam name="projectId" assignTo="#{projectManagementBean.projectId}" />
+		</a:jsFunction>
+	</a:form>
+	
+	<h:form id="editProjectForm" enctype="multipart/form-data">
+	<div class="modal hide" id="editProjectModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Edit/Manage Project</h3>
+		</div>	
+		<a:outputPanel id="editProjectPanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel for="varEditName" value="Name" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputText styleClass="span3" id="varEditName" value="#{project.name}" required="true"/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
+							<div class="controls">
+								<img id="icon" class="size75" src="#{project.icon}"/>
+								<span class="fileinputs">
+									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
+												  accept="image/*" styleClass="file"/>
+						        	<button class="btn fakefile" >Change icon</button>
+								</span>
+							</div>
+					</div>
+				
+					
+					<div class="control-group">
+						<h:outputLabel for="varEditDescription" value="Description" styleClass="control-label"/><br/>
+						<div class="controls">
+							<h:inputTextarea styleClass="span3" rows="7" id="varEditDescription" value="#{project.description}"/>
+						</div>
+					</div>
+					
+					<s:fragment rendered="#{identity.hasRole('admin')}">
+				        <div class="control-group">
+							<h:outputLabel for="varEditManager" value="Manager" styleClass="control-label"/>
+							<div class="controls">
+								<h:selectOneMenu id="varEditManager" value="#{projectManagementBean.managerId}" class="input" required="true"  style="max-width: 460px;">
+									<s:selectItems var="manager" value="#{managers}" label="#{manager.realname}" itemValue="#{manager.id}" noSelectionLabel="Select"/>
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</s:fragment>
+				
+					<s:fragment rendered="#{identity.hasRole('manager')}">
+						<div class="control-group">
+							<table class="table table-striped table-bordered table-condensed table-hover">
+       			  				<tr>
+       			  					<th>Developer</th>
+       			  					<th></th>
+       			  				</tr>
+				       			
+				       			<ui:repeat var="developer" value="#{developers}">
+									<tr>
+										<td>
+											<h:outputText value="#{developer.realname}"/>
+										</td>
+										
+										<td>
+											<a:commandLink value=""
+														   rendered="#{not projectManager.doesDeveloperBelongsToProject(developer.id)}"
+											               action="#{projectManager.addDeveloper(developer.id)}" reRender="editProjectPanel">
+												<i class="icon-plus"></i>
+											</a:commandLink>
+											
+											<a:commandLink value=""
+													   rendered="#{projectManager.doesDeveloperBelongsToProject(developer.id)}"
+										               action="#{projectManager.removeDeveloper(developer.id)}" reRender="editProjectPanel">
+										        <i class="icon-minus"></i>
+											</a:commandLink>
+										</td>
+									</tr>
+								</ui:repeat>
+							</table>
+						</div>
+					</s:fragment>
+									    
+					<div class="control-group">
+						<h:outputLabel for="varEditStatus" value="Status" styleClass="control-label"/>
+						<div class="controls">
+							<h:selectOneMenu id="varEditStatus" value="#{projectManagementBean.statusId}" class="input" required="true"  style="max-width: 460px;">
+								<s:selectItems var="status" value="#{projectStatuses}" label="#{status.name}" itemValue="#{status.id}" noSelectionLabel="Select"/>
+							</h:selectOneMenu>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+
+				<a:commandLink styleClass="btn btn-primary btn-danger" value="Delete" rendered="#{identity.hasRole('admin')}"
+						       action="#{projectManager.delete()}" reRender="projectListPanel"
+						       oncomplete="javascript:loadScripts(); jQuery('#editProjectModal').modal('hide');"/>
+				
+				<h:commandButton styleClass="btn btn-primary" value="Save"
+						       action="#{projectManager.edit()}"/>
+			</div>
+		</a:outputPanel>
+	</div>
+	</h:form>
 </ui:define>
 </ui:composition>
