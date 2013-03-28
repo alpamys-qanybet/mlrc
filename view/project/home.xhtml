@@ -11,6 +11,160 @@
     template="/layout/template.xhtml">
     
    <ui:define name="body">
+   <style>
+    	.tabContent {
+    		padding-top: 5px;
+    		padding-left: 5px;
+    	}
+    	
+    	.rich-panel-body {
+    		padding: 0;
+    	}
+    	
+    	.rich-table-cell {
+    		padding: 1px; /* 0 */
+    	}
+    	
+    	div.locations div.rich-panel {
+    		margin-bottom: 2px;
+    	}
+    	
+    	div.locations div.rich-panel-body {
+    		background-color: white;
+    		cursor: pointer;
+    	}
+    	
+    	div.locations div.rich-panel-body:hover {
+    		background-color: #DFDFDF;
+    	}
+    	
+    	.pbody {
+    		width: 186px; /* 143 */
+    		height: 58px; /* 26 */
+    	}
+    	
+    	.pbody table {
+    		margin-left: 5px;
+    		/*margin-top: -15px;
+    		margin-left: -12px; */
+    	}
+    	
+    	.rich-table {
+    		border: none;
+    	}
+    	
+    	.rich-table-cell {
+			border: none;
+    	}
+    	
+    	.rich-table-footer {
+			background-color: white;
+		}
+		
+		.rich-table-footercell {
+			border: none;
+		}
+    	
+    	.dataScrollerCell {
+			padding: 3px 0px 2px 0px;
+			line-height: 20px;
+			text-decoration: none;
+			border-left-width: 0;
+		}
+		
+		.dataScrollerCell:hover {
+    		background-color: whiteSmoke;
+		}
+    	
+    	.inactiveDataScrollerCell {
+    		background-color: white;
+			border: 1px solid #DDD;
+			color: #08C;
+			cursor: pointer;
+    	}
+    	
+    	.activeDataScrollerCell {
+    		background-color: whiteSmoke;
+			border: 1px solid #DDD;
+			color: #999;
+			cursor: default;
+    	}
+    	
+    	td.rich-datascr-button  {
+    		padding-top: 3px;
+    	}
+    	
+    	.arrowDataScrollerCell {
+    		padding: 4px 8px;	
+    		line-height: 20px;
+			text-decoration: none;
+			border-left-width: 0;
+    	}
+    	
+    	.arrowDataScrollerCell:hover {
+    		background-color: whiteSmoke;
+    	}
+    	
+    	.lastDataScrollerCell {
+    		-webkit-border-top-right-radius: 4px;
+			border-top-right-radius: 4px;
+			-webkit-border-bottom-right-radius: 4px;
+			border-bottom-right-radius: 4px;
+			-moz-border-radius-topright: 4px;
+			-moz-border-radius-bottomright: 4px;
+    	}
+    	
+    	.firstDataScrollerCell {
+    		border-left-width: 1px;
+			-webkit-border-bottom-left-radius: 4px;
+			border-bottom-left-radius: 4px;
+			-webkit-border-top-left-radius: 4px;
+			border-top-left-radius: 4px;
+			-moz-border-radius-bottomleft: 4px;
+			-moz-border-radius-topleft: 4px;
+    	}
+    	
+   		.rich-datascr-button, .rich-datascr-ctrls-separator {
+    		border: none;
+    	}
+    	
+    	
+    	.rich-dtascroller-table {
+    		border: none;
+    	}
+    	
+    	.btn-control-left {
+    		margin-left: 5px;
+    	}
+    	
+    	.btn-control-right {
+    		margin-right: 5px;
+    	}
+    	
+    	.btn-control {
+    	/*	margin-left: 5px; */
+    		margin-right: 5px;
+    	}
+    	
+    	.btn-icon {
+    		padding-top: 6px;
+			padding-bottom: 7px;
+    	}
+    	
+    	.mirror {
+    		-moz-transform: scaleX(-1);
+	        -o-transform: scaleX(-1);
+	        -webkit-transform: scaleX(-1);
+	        transform: scaleX(-1);
+	        filter: FlipH;
+	        -ms-filter: "FlipH";
+    	}
+    	
+    	#projectListDiv div.rich-panel{
+ 			border-radius: 5px;
+    	}
+    	
+   	</style>
    <script type="text/javascript">
    		jQuery(document).ready(function() {
    	   		// navs: make current active 
@@ -56,44 +210,64 @@
 				<a:form id="projectListForm">
 					<a:outputPanel id="projectListPanel">
 						#{projectManager.preparePage('projectList')}
-						<ul class="nav nav-tabs" id="projectsTab">
-							<ui:repeat var="status" value="#{projectStatuses}">
-		       					<li>
-		       						<a href="#statusTab#{status.id}">
-		        						<h:outputText value="#{status.name}" />
-		       						</a>
-		       					</li>
-						    </ui:repeat>
-						</ul>
-						 
-						<div class="tab-content">
-							<ui:repeat var="status" value="#{projectStatuses}">
-		       			  		<div class="tab-pane" id="statusTab#{status.id}">
-		       			  			
-		       			  			<ui:repeat var="project" value="#{status.projects}">
-											<div id="project#{project.id}" class="project" style="margin-top: -40px; margin-bottom: 5px;">
-													<img class="size55" src="#{project.icon}" style="position: relative; top: 46px; left: 0px"/>
-								           			<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
-								           				<li>
-								           					<strong><h:outputText  value="#{project.name}"/></strong>
-								           					<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}">
-											    				<span class="edit" id="edit#{project.id}">
-											    					<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
-											    				</span>
-															</s:fragment>
-								           				</li>
-								           				
-								           				<li><small class="muted"><h:outputText value="#{project.manager.realname}" /></small></li>
-								           			</ul>
-								           			
-													<ui:repeat var="developer" value="#{project.developers}">
-														<h:outputText value="#{developer.realname}, " />
-													</ui:repeat>
-											</div>
-										</ui:repeat>
-		       					</div>
-							</ui:repeat>
-						</div>
+						<div id="projectListDiv" align="center">
+							<rich:dataGrid var="project" columns="5" elements="10" width="450px" value="#{projectManager.getProjects()}">
+								<s:link view="/project/view.seam" style="text-decoration: none;">
+					                <div id="project#{project.id}" class="locations" onclick="ajaxSetLocation('#{location.id}');">
+										<rich:panel bodyClass="pbody">
+											<img class="size32" src="#{project.icon}" style="position: relative; top: 3px; left: 3px"/>
+						           			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
+						           				<li>
+						           					<strong><h:outputText  value="#{project.name}"/></strong>
+						           				</li>
+						           				
+						           				<li><h:outputText value="#{project.manager.realname}" /></li>
+						           			</ul>
+											
+							            </rich:panel>
+							        </div>
+						        	<f:param name="projectId" value="#{project.id}"/>
+				                </s:link>
+<!--
+<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}">
+	<span class="edit" id="edit#{project.id}">
+		<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
+	</span>
+</s:fragment>
+-->						        
+						        
+						        <f:facet name="footer">
+									<rich:datascroller renderIfSinglePage="false" fastControls="hide" 
+													   selectedStyleClass="dataScrollerCell activeDataScrollerCell" inactiveStyleClass="dataScrollerCell inactiveDataScrollerCell"
+													   status="globalStatus">
+										<f:facet name="first">
+					                        <h:outputText value="&lt;&lt;" escape="false" styleClass="arrowDataScrollerCell firstDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="first_disabled">
+					                        <h:outputText value="&lt;&lt;" escape="false" styleClass="arrowDataScrollerCell firstDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="last">
+					                        <h:outputText value="&gt;&gt;" escape="false" styleClass="arrowDataScrollerCell lastDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="last_disabled">
+					                        <h:outputText value="&gt;&gt;" escape="false" styleClass="arrowDataScrollerCell lastDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="previous">
+					                        <h:outputText value=" &lt; " escape="false" styleClass="arrowDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="previous_disabled">
+					                        <h:outputText value=" &lt; " escape="false" styleClass="arrowDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="next">
+					                        <h:outputText value=" &gt; " escape="false" styleClass="arrowDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="next_disabled">
+					                        <h:outputText value=" &gt; " escape="false" styleClass="arrowDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                </rich:datascroller>
+					            </f:facet>
+					        </rich:dataGrid>
+				        </div>
 						
 						<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin')}" style="margin-top: 5px;"
 									   action="#{projectManager.preparePage('createProject')}" reRender="createProjectPanel" 
@@ -103,13 +277,6 @@
 			</div>
 		</div>
 	</div>
-	
-	<a:form>
-		<a:jsFunction name="ajaxPrepareEditProject" action="#{projectManager.preparePage('editProject')}" reRender="editProjectPanel" 
-					  oncomplete="javascript:jQuery('#editProjectModal').modal('show')">
-			<a:actionparam name="projectId" assignTo="#{projectManagementBean.projectId}" />
-		</a:jsFunction>
-	</a:form>
 	
 	<a:form id="createProjectForm">
 	<div class="modal hide" id="createProjectModal">
@@ -154,110 +321,5 @@
 		</a:outputPanel>
 	</div>
 	</a:form>
-	
-	<h:form id="editProjectForm" enctype="multipart/form-data">
-	<div class="modal hide" id="editProjectModal">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Edit/Manage Project</h3>
-		</div>	
-		<a:outputPanel id="editProjectPanel">		
-			<div class="modal-body">
-				<div class="form-horizontal">
-					<div class="control-group">
-						<h:outputLabel for="varEditName" value="Name" styleClass="control-label"/>
-						<div class="controls">
-							<h:inputText styleClass="span3" id="varEditName" value="#{project.name}" required="true"/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
-							<div class="controls">
-								<img id="icon" class="size75" src="#{project.icon}"/>
-								<span class="fileinputs">
-									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
-												  accept="image/*" styleClass="file"/>
-						        	<button class="btn fakefile" >Change icon</button>
-								</span>
-							</div>
-					</div>
-				
-					
-					<div class="control-group">
-						<h:outputLabel for="varEditDescription" value="Description" styleClass="control-label"/><br/>
-						<div class="controls">
-							<h:inputTextarea styleClass="span3" rows="7" id="varEditDescription" value="#{project.description}"/>
-						</div>
-					</div>
-					
-					<s:fragment rendered="#{identity.hasRole('admin')}">
-				        <div class="control-group">
-							<h:outputLabel for="varEditManager" value="Manager" styleClass="control-label"/>
-							<div class="controls">
-								<h:selectOneMenu id="varEditManager" value="#{projectManagementBean.managerId}" class="input" required="true"  style="max-width: 460px;">
-									<s:selectItems var="manager" value="#{managers}" label="#{manager.realname}" itemValue="#{manager.id}" noSelectionLabel="Select"/>
-								</h:selectOneMenu>
-							</div>
-						</div>
-					</s:fragment>
-				
-					<s:fragment rendered="#{identity.hasRole('manager')}">
-						<div class="control-group">
-							<table class="table table-striped table-bordered table-condensed table-hover">
-       			  				<tr>
-       			  					<th>Developer</th>
-       			  					<th></th>
-       			  				</tr>
-				       			
-				       			<ui:repeat var="developer" value="#{developers}">
-									<tr>
-										<td>
-											<h:outputText value="#{developer.realname}"/>
-										</td>
-										
-										<td>
-											<a:commandLink value=""
-														   rendered="#{not projectManager.doesDeveloperBelongsToProject(developer.id)}"
-											               action="#{projectManager.addDeveloper(developer.id)}" reRender="editProjectPanel">
-												<i class="icon-plus"></i>
-											</a:commandLink>
-											
-											<a:commandLink value=""
-													   rendered="#{projectManager.doesDeveloperBelongsToProject(developer.id)}"
-										               action="#{projectManager.removeDeveloper(developer.id)}" reRender="editProjectPanel">
-										        <i class="icon-minus"></i>
-											</a:commandLink>
-										</td>
-									</tr>
-								</ui:repeat>
-							</table>
-						</div>
-					</s:fragment>
-									    
-				  	<div class="control-group">
-						<h:outputLabel for="varEditStatus" value="Status" styleClass="control-label"/>
-						<div class="controls">
-							<h:selectOneMenu id="varEditStatus" value="#{projectManagementBean.statusId}" class="input" required="true"  style="max-width: 460px;">
-								<s:selectItems var="status" value="#{projectStatuses}" label="#{status.name}" itemValue="#{status.id}"/>
-							</h:selectOneMenu>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-
-				<a:commandLink styleClass="btn btn-primary btn-danger" value="Delete" rendered="#{identity.hasRole('admin')}"
-						       action="#{projectManager.delete()}" reRender="projectListPanel"
-						       oncomplete="javascript:loadScripts(); jQuery('#editProjectModal').modal('hide');"/>
-				
-				<h:commandButton styleClass="btn btn-primary" value="Save"
-						       action="#{projectManager.edit()}"/>
-			</div>
-		</a:outputPanel>
-	</div>
-	</h:form>
 	</ui:define>
 </ui:composition>

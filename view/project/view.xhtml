@@ -1,0 +1,46 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+    template="/layout/template.xhtml">
+    
+<ui:define name="body">
+	<script type="text/javascript">
+   		jQuery(document).ready(function() {
+   	   		// navs: make current active 
+			jQuery('#navArticles').addClass('active');
+			jQuery('#navArticles').siblings().removeClass('active');
+
+			loadScripts();
+		});
+
+   		function loadScripts() {
+			// edit icon
+			jQuery('.edit').hide();
+
+			jQuery('.article').mouseover(function() {
+				jQuery('.edit').show();
+			});
+
+			jQuery('.article').mouseout(function() {
+	   	    	jQuery('.edit').hide();
+			});
+		}
+	</script>
+	<div class="page-canvas-wide">
+		<div class="signup-wrapper-wide">
+			#{projectManager.preparePage('viewProject')}
+			<div class="content">
+				<h:outputText value="#{project.name}" /><br/>
+				<h:outputText value="#{project.manager.realname}" />
+			</div>
+		</div>
+	</div>
+</ui:define>
+</ui:composition>

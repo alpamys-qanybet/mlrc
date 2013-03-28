@@ -11,10 +11,13 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 
 import kz.sdu.microelectronicslab.action.ConfigurationBean;
 import kz.sdu.microelectronicslab.action.FileService;
+import kz.sdu.microelectronicslab.model.article.Article;
 import kz.sdu.microelectronicslab.model.project.Project;
 import kz.sdu.microelectronicslab.model.project.ProjectStatus;
 import kz.sdu.microelectronicslab.model.user.Role;
@@ -59,11 +62,19 @@ public class ProjectManager implements Serializable
 	@In(create=true)
 	private FileService fileService;
 	
+	private List<Project> projects;
+	
 	
 	public void preparePage(String content)
 	{
 		if (content.equals("projectList"))
-			projectStatuses = em.createQuery("FROM ProjectStatus").getResultList();
+		{
+			projects = (List<Project>) em.createQuery("select p " +
+					  "from Project p ")
+					  .getResultList();
+			
+			log.info("preparePage projectList");
+		}
 		
 		else if (content.equals("createProject"))
 		{
@@ -71,6 +82,8 @@ public class ProjectManager implements Serializable
 			
 			if (identity.hasRole("admin"))
 				prepareManagers();
+			
+			log.info("preparePage createProject");
 		}
 		else if (content.equals("editProject"))
 		{
@@ -83,6 +96,13 @@ public class ProjectManager implements Serializable
 			
 			if (identity.hasRole("manager"))
 				prepareDevelopers();
+		}
+		else if (content.equals("viewProject"))
+		{
+			HttpServletRequest req = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+				
+			long projectId = Long.parseLong( req.getParameter("projectId") );
+			project = em.find(Project.class, projectId);
 		}
 	}
 	
@@ -108,6 +128,9 @@ public class ProjectManager implements Serializable
 		for (User user: users)
 			if ( hasRole(user, "manager") )
 				managers.add(user);
+		
+		log.info("prepareManagers");
+		log.info("size {0}", managers.size() );
 	}
 	
 	private void prepareDevelopers()
@@ -145,12 +168,14 @@ public class ProjectManager implements Serializable
 	
 	public void create()
 	{
+		log.info("create");
 		project.setStatus( (ProjectStatus)em.createQuery("FROM ProjectStatus WHERE name = :name").setParameter("name", "seed").getSingleResult() );
 		project.setManager( em.find(User.class, projectManagementBean.getManagerId()) );
 		
 		String url = configurationBean.getFileServerHost() + "/project/icon/default.png";
 		project.setIcon(url);
 		
+		log.info("status {0}, manager {1}, icon {2}", project.getStatus(), project.getManager().getRealname(), project.getIcon());
 		em.persist(project);
 	}
 	
@@ -179,5 +204,20 @@ public class ProjectManager implements Serializable
 	{
 		project = em.find(Project.class, project.getId());
 		em.remove(project);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Project> getProjects() {
+		if (projects != null)
+			return projects;
+		else
+		{
+			projects = (List<Project>) em.createQuery("select p " +
+													  "from Project p ")
+													  .getResultList();
+						
+			return projects;
+		}
 	}
 }
