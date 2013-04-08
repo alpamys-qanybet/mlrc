@@ -209,33 +209,21 @@
 			<div class="content">
 				<a:form id="projectListForm">
 					<a:outputPanel id="projectListPanel">
-						#{projectManager.preparePage('projectList')}
 						<div id="projectListDiv" align="center">
 							<rich:dataGrid var="project" columns="5" elements="10" width="450px" value="#{projectManager.getProjects()}">
-								<s:link view="/project/view.seam" style="text-decoration: none;">
-					                <div id="project#{project.id}" class="locations" onclick="ajaxSetLocation('#{location.id}');">
-										<rich:panel bodyClass="pbody">
-											<img class="size32" src="#{project.icon}" style="position: relative; top: 3px; left: 3px"/>
-						           			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
-						           				<li>
-						           					<strong><h:outputText  value="#{project.name}"/></strong>
-						           				</li>
-						           				
-						           				<li><h:outputText value="#{project.manager.realname}" /></li>
-						           			</ul>
-											
-							            </rich:panel>
-							        </div>
-						        	<f:param name="projectId" value="#{project.id}"/>
-				                </s:link>
-<!--
-<s:fragment rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}">
-	<span class="edit" id="edit#{project.id}">
-		<a href="javascript:ajaxPrepareEditProject('#{project.id}')"><i class="icon-edit"/></a>
-	</span>
-</s:fragment>
--->						        
-						        
+				                <div id="project#{project.id}" class="locations" onclick="window.location='/mlrc/project/view.seam?projectId=#{project.id}';">
+									<rich:panel bodyClass="pbody">
+										<img class="size32" src="#{project.icon}" style="position: relative; top: 3px; left: 3px"/>
+					           			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
+					           				<li>
+					           					<strong><h:outputText  value="#{project.name}"/></strong>
+					           				</li>
+					           				
+					           				<li><h:outputText value="#{project.manager.realname}" /></li>
+					           			</ul>
+										
+						            </rich:panel>
+						        </div>
 						        <f:facet name="footer">
 									<rich:datascroller renderIfSinglePage="false" fastControls="hide" 
 													   selectedStyleClass="dataScrollerCell activeDataScrollerCell" inactiveStyleClass="dataScrollerCell inactiveDataScrollerCell"

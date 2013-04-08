@@ -10,6 +10,7 @@ public class ProjectManagementBean
 {
 	private long projectId;
 	private long managerId;
+	private long developerId;
 	private long statusId;
 
 	public long getProjectId() {
@@ -34,5 +35,13 @@ public class ProjectManagementBean
 
 	public void setStatusId(long statusId) {
 		this.statusId = statusId;
+	}
+
+	public long getDeveloperId() {
+		return developerId;
+	}
+
+	public void setDeveloperId(long developerId) {
+		this.developerId = developerId;
 	}
 }

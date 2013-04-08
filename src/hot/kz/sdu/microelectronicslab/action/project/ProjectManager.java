@@ -54,9 +54,6 @@ public class ProjectManager implements Serializable
 	@Out(scope=ScopeType.PAGE,required=false)
 	private List<User> managers;
 	
-	@Out(scope=ScopeType.PAGE,required=false)
-	private List<User> developers;
-	
 	@In(create=true)
 	protected ConfigurationBean configurationBean;
 	
@@ -71,16 +68,7 @@ public class ProjectManager implements Serializable
 	
 	public void preparePage(String content)
 	{
-		if (content.equals("projectList"))
-		{
-			projects = (List<Project>) em.createQuery("select p " +
-					  "from Project p ")
-					  .getResultList();
-			
-			log.info("preparePage projectList");
-		}
-		
-		else if (content.equals("createProject"))
+		if (content.equals("createProject"))
 		{
 			project = new Project();
 			
@@ -89,26 +77,22 @@ public class ProjectManager implements Serializable
 			
 			log.info("preparePage createProject");
 		}
-		else if (content.equals("editProject"))
-		{
-			project = em.find(Project.class, projectManagementBean.getProjectId());
-			projectManagementBean.setManagerId( project.getManager().getId() );
-			projectManagementBean.setStatusId( project.getStatus().getId() );
-			
-			projectStatuses = em.createQuery("FROM ProjectStatus").getResultList();
-		
-			if (identity.hasRole("admin"))
-				prepareManagers();
-			
-			if (identity.hasRole("manager"))
-				prepareDevelopers();
-		}
 		else if (content.equals("viewProject"))
 		{
 			HttpServletRequest req = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
 				
 			long projectId = Long.parseLong( req.getParameter("projectId") );
 			project = em.find(Project.class, projectId);
+		}
+		else if (content.equals("editProject"))
+		{
+			projectManagementBean.setManagerId( project.getManager().getId() );
+			projectManagementBean.setStatusId( project.getStatus().getId() );
+			
+			projectStatuses = em.createQuery("FROM ProjectStatus").getResultList();
+			
+			if (identity.hasRole("admin"))
+				prepareManagers();
 		}
 	}
 	
@@ -139,16 +123,6 @@ public class ProjectManager implements Serializable
 		log.info("size {0}", managers.size() );
 	}
 	
-	private void prepareDevelopers()
-	{
-		List<User> users = em.createQuery("FROM User").getResultList();
-		developers = new ArrayList<User>();
-		
-		for (User user: users)
-			if ( hasRole(user, "developer") )
-				developers.add(user);
-	}
-	
 	private boolean hasRole(User user, String rolename)
 	{
 		for (Role userRole: user.getRoles())
@@ -158,15 +132,30 @@ public class ProjectManager implements Serializable
 		return false;
 	}
 	
-	public void addDeveloper(long userId)
+	
+	public List<User> retrieveDevelopers(boolean belongs) {
+		List<User> users = em.createQuery("FROM User").getResultList();
+		List<User> list = new ArrayList<User>();
+		
+		for (User user: users)
+			if ( hasRole(user, "developer") )
+				if ( !( belongs ^ doesDeveloperBelongsToProject(user.getId()) ) )
+					list.add(user);
+		
+		return list;
+	}
+	
+	
+	public void addDeveloper()
 	{
-		project.getDevelopers().add( em.find(User.class, userId) );
+		project.getDevelopers().add( em.find(User.class, projectManagementBean.getDeveloperId()) );
 		em.merge(project);
 	}
 	
 	public void removeDeveloper(long userId)
 	{
 		log.info(" remove dev {0} ", userId);
+		
 		project = em.find(Project.class, project.getId());
 		project.getDevelopers().remove( em.find(User.class, userId) );
 		em.persist(project);
@@ -208,13 +197,15 @@ public class ProjectManager implements Serializable
 //		em.persist(project);
 		em.merge(project);
 		
-		operationService.redirectToSystemPage("/project/home.seam");
+		operationService.redirectToSystemPage("/project/view.seam?projectId=" + project.getId());
 	}
 	
 	public void delete()
 	{
 		project = em.find(Project.class, project.getId());
 		em.remove(project);
+		
+		operationService.redirectToSystemPage("/project/home.seam");
 	}
 	
 	
