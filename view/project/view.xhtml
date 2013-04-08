@@ -39,20 +39,6 @@
         -ms-filter: "FlipH";
    	}
 	</style>
-	<script type="text/javascript">
-   		jQuery(document).ready(function() {
-   	   		// navs: make current active 
-   			jQuery('#navProjects').addClass('active');
-			jQuery('#navProjects').siblings().removeClass('active');
-
-			loadScripts();
-		});
-
-   		function loadScripts() {
-			jQuery('div.content').hide();
-			jQuery('#container').show();
-   	   	}
-	</script>
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			#{projectManager.preparePage('viewProject')}
@@ -122,7 +108,7 @@
 							<s:fragment rendered="#{identity.hasRole('manager')}">
 								<div class="control-group">
 									<ui:repeat var="developer" value="#{projectManager.retrieveDevelopers(true)}">
-										<div>
+										<div id="developer#{developer.id}" class="developer">
 											<img class="size32" src="#{developer.avatar}" style="position: relative; top: 3px; left: 3px"/>
 						          			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
 						          				<li>
@@ -131,10 +117,13 @@
 						          				
 						          				<li>developer</li>
 						          			</ul>
-						          			
-						          			<a:commandButton styleClass="btn" value="Delete" action="#{projectManager.removeDeveloper(developer.id)}" reRender="manageDevelopersPanel">
-										    </a:commandButton>
-					          			</div>
+						          			<span id="remove#{developer.id}" class="remove" style="position: relative; top: -45px; left: 242px;">
+						    					<a:commandLink styleClass="btn" action="#{projectManager.removeDeveloper(developer.id)}" 
+																 reRender="manageDevelopersPanel">
+																 <i class="icon-remove"/>
+											    </a:commandLink>
+										    </span>
+						          		</div>
 									</ui:repeat>
 								</div>
 							</s:fragment>
@@ -149,6 +138,21 @@
 							           oncomplete="javascript:loadScripts();">
 							  <i class="icon-share-alt mirror"/>
 						</a:commandLink>
+						
+						<script type="text/javascript">
+							// remove icon
+							jQuery('.remove').hide();
+	
+							jQuery('.developer').mouseover(function() {
+								var userId = jQuery(this).attr('id').replace('developer','');
+					   	    	jQuery('#remove'+userId).show();
+							});
+	
+							jQuery('.developer').mouseout(function() {
+					   	    	var userId = jQuery(this).attr('id').replace('developer','');
+					   	    	jQuery('#remove'+userId).hide();
+							});
+						</script>
 					</a:outputPanel>
 				</a:form>
 			</div>
@@ -257,5 +261,20 @@
 		</a:outputPanel>
 	</div>
 	</a:form>
+	
+	<script type="text/javascript">
+   		jQuery(document).ready(function() {
+   	   		// navs: make current active 
+   			jQuery('#navProjects').addClass('active');
+			jQuery('#navProjects').siblings().removeClass('active');
+
+			loadScripts();
+		});
+
+   		function loadScripts() {
+			jQuery('div.content').hide();
+			jQuery('#container').show();
+		}	
+	</script>
 </ui:define>
 </ui:composition>
