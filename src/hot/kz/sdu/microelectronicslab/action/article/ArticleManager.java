@@ -11,10 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import kz.sdu.microelectronicslab.action.ConfigurationBean;
 import kz.sdu.microelectronicslab.action.FileService;
 import kz.sdu.microelectronicslab.action.OperationService;
-import kz.sdu.microelectronicslab.action.project.ProjectManagementBean;
 import kz.sdu.microelectronicslab.model.article.Article;
-import kz.sdu.microelectronicslab.model.project.Project;
-import kz.sdu.microelectronicslab.model.project.ProjectStatus;
 import kz.sdu.microelectronicslab.model.user.User;
 
 import org.jboss.seam.ScopeType;
@@ -52,7 +49,6 @@ public class ArticleManager implements Serializable
 	@Out(scope=ScopeType.PAGE,required=false)
 	protected Article article;
 	
-	@Out(scope=ScopeType.PAGE,required=false)
 	private List<Article> articles;
 	
 	@In(create=true)
@@ -63,12 +59,7 @@ public class ArticleManager implements Serializable
 		articleService.setGalleryLeft(configurationBean.getFileServerHost() + "/static/img/gallery/left-arrow.png");
 		articleService.setGalleryRight(configurationBean.getFileServerHost() + "/static/img/gallery/right-arrow.png");
 		
-		if (content.equals("articleList"))
-		{
-			articles = em.createQuery("FROM Article").getResultList();
-		}
-		
-		else if (content.equals("createArticle"))
+		if (content.equals("createArticle"))
 		{
 			article = new Article();
 		}
@@ -90,6 +81,29 @@ public class ArticleManager implements Serializable
 				article = em.find(Article.class, articleId);
 			}
 		}
+		else if (content.equals("searchArticle"))
+		{
+			log.info("searchArticle " + articleBean.getSearchText());
+			String searchText = articleBean.getSearchText();
+			User user = (User) em.createQuery("FROM User "+
+											  "WHERE realname like '%" +searchText+ "%' ")
+							   .getSingleResult();
+			
+			articles = em.createQuery("FROM Article " +
+									  "WHERE content like '%"+searchText+"%' " + 
+									  "OR title like '%"+searchText+"%' " +
+									  "OR author = :author")
+					  .setParameter("author", user )
+					  .getResultList();
+		}
+	}
+	
+	public List<Article> getArticles() {
+		if (articles != null)
+			return articles;
+		articles = em.createQuery("FROM Article").getResultList();
+		
+		return articles;
 	}
 	
 	public boolean isAuthor(long articleId)

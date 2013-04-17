@@ -8,7 +8,12 @@
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a="http://richfaces.org/a4j">
 
-
+	<style>
+	.btn-icon {
+   		padding-top: 6px;
+		padding-bottom: 7px;
+   	}
+	</style>
 	<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -41,7 +46,15 @@
             </ul>
              
 	        <ul class="nav pull-right">
-	          <s:fragment rendered="#{not identity.loggedIn}">
+	           <li id="navSearch">
+	           		<div class="form-search">
+		          		<div class="input-append" style="margin-top:5px;">
+						   <input type="text" id="searchArticle" class="span3 search-query"/>
+		          		   <a href="javascript:searchArticle();" class="btn btn-icon" ><i class="icon-search"/></a>
+						</div>
+					</div>
+			  </li>
+			  <s:fragment rendered="#{not identity.loggedIn}">
 			      <li>
 		          	<s:link view="/user/register.seam" value="Sign Up" propagation="none"/>
 				  </li>
@@ -96,4 +109,8 @@
         </div>
       </div>
     </div>
+    
+    <script type="text/javascript">
+    	jQuery('#navSearch').hide();
+    </script>
 </ui:composition>

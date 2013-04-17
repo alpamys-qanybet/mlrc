@@ -10,6 +10,7 @@ public class ArticleBean
 {
 	private long articleId;
 	private boolean isRequestFromModal;
+	private String searchText;
 
 	public long getArticleId() {
 		return articleId;
@@ -25,5 +26,13 @@ public class ArticleBean
 
 	public void setRequestFromModal(boolean isRequestFromModal) {
 		this.isRequestFromModal = isRequestFromModal;
+	}
+
+	public String getSearchText() {
+		return searchText;
+	}
+
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
 	}
 }

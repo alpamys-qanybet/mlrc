@@ -35,11 +35,10 @@
 				<a:form id="articleListForm">
 					<a:outputPanel id="articleListPanel">
 						#{articleManager.preparePage('articleList')}
-						
 						<div id="myCarousel" class="carousel slide news830">
 						  <!-- Carousel items -->
 						  <div class="carousel-inner" id="news">
-						    <ui:repeat var="art" value="#{articles}">
+						    <ui:repeat var="art" value="#{articleManager.getArticles()}">
 								<div class="item">
 							    	 <s:link view="/article/view.seam">
 				                		<f:param name="articleId" value="#{art.id}"/>

@@ -17,6 +17,8 @@
 			jQuery('#navArticles').addClass('active');
 			jQuery('#navArticles').siblings().removeClass('active');
 
+			jQuery('#navSearch').show();
+
 			loadScripts();
 		});
 
@@ -117,6 +119,12 @@
 				}
 			});
 		}
+
+		function searchArticle() {
+			var searchText = jQuery('#searchArticle').val();
+
+			ajaxSearchArticle(searchText);
+		}
 	</script>
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
@@ -127,9 +135,7 @@
 			<div class="content">
 				<a:form id="articleListForm">
 					<a:outputPanel id="articleListPanel">
-						#{articleManager.preparePage('articleList')}
-						
-						<ui:repeat var="art" value="#{articles}">
+						<ui:repeat var="art" value="#{articleManager.getArticles()}">
 							<div id="article#{art.id}" class="article content-block" >
 								<!--<img class="size55" src="#{art.author.avatar}" style="position: relative; top: 46px; left: 0px"/>
 		            			<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
@@ -190,6 +196,11 @@
 		<a:jsFunction name="ajaxPrepareEditArticle" action="#{articleManager.preparePage('editArticle')}" reRender="editArticlePanel" 
 					  oncomplete="javascript: prepareEditModal();">
 			<a:actionparam name="articleId" assignTo="#{articleBean.articleId}" />
+		</a:jsFunction>
+		
+		<a:jsFunction name="ajaxSearchArticle" action="#{articleManager.preparePage('searchArticle')}" reRender="articleListPanel" 
+					  oncomplete="loadScripts();">
+			<a:actionparam name="searchText" assignTo="#{articleBean.searchText}" />
 		</a:jsFunction>
 	</a:form>
 
