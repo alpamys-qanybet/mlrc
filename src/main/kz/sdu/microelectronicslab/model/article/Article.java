@@ -1,12 +1,18 @@
 package kz.sdu.microelectronicslab.model.article;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import kz.sdu.microelectronicslab.model.user.User;
 
@@ -16,7 +22,7 @@ public class Article implements Serializable
 	private long id;
 	private String title;
 	private String content;
-	private User author;
+	private List<User> authors = new ArrayList<User>();
 	private String icon;
 
 	@Id
@@ -53,14 +59,17 @@ public class Article implements Serializable
 		this.content = content;
 	}
 	
-	public User getAuthor()
-	{
-		return author;
-	}
 	
-	public void setAuthor(User author)
-	{
-		this.author = author;
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="ARTICLE_AUTHOR",
+			joinColumns=@JoinColumn(name="user_id"),
+			inverseJoinColumns=@JoinColumn(name="article_id"))
+	public List<User> getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(List<User> authors) {
+		this.authors = authors;
 	}
 
 	public String getIcon() {

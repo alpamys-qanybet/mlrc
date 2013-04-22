@@ -137,31 +137,6 @@
 					<a:outputPanel id="articleListPanel">
 						<ui:repeat var="art" value="#{articleManager.getArticles()}">
 							<div id="article#{art.id}" class="article content-block" >
-								<!--<img class="size55" src="#{art.author.avatar}" style="position: relative; top: 46px; left: 0px"/>
-		            			<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
-		            				<li><strong><h:outputText value="#{art.author.realname}" /></strong></li>
-		            				<li><small class="muted">Author</small></li>
-		            			</ul>
-		            			
-								<img class="news830" src="#{art.icon}"/>
-				                <h4>
-				                	<s:link view="/article/view.seam" value="#{art.title}">
-				                		<f:param name="articleId" value="#{art.id}"/>
-				                	</s:link>
-				                	
-				                	<! - 
-				                	<s:fragment rendered="#{articleManager.isAuthor(art.id)}">
-					    				<span class="edit" id="edit#{art.id}">
-					    					<a href="javascript:ajaxPrepareEditArticle('#{art.id}')"><i class="icon-edit"/></a>
-					    				</span>
-									</s:fragment>
-									 - >
-				                </h4>
-				                <div>
-									<h:outputText escape="false" value="#{art.content}"/>
-								</div>
-								  -->
-								
 								<div align="center">
 								<h4>
 									<s:link view="/article/view.seam" value="#{art.title}">
@@ -169,13 +144,16 @@
 				                	</s:link>
 								</h4>
 								</div>
-								<img class="size55" src="#{art.author.avatar}" style="position: relative; top: 46px; left: 0px"/>
 								
-								<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
-			           				<li><strong><h:outputText value="#{art.author.realname}" /></strong></li>
-			           				<li><small class="muted">Author</small></li>
-			           			</ul>
-			           			
+							 	<ui:repeat var="author" value="#{art.authors}">
+									<img class="size55" src="#{author.avatar}" style="position: relative; top: 46px; left: 0px"/>
+								
+									<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
+				           				<li><strong><h:outputText value="#{author.realname}" /></strong></li>
+				           				<li><small class="muted">Author</small></li>
+				           			</ul>
+			           			</ui:repeat>
+						 	
 			           			<div>
 									<h:outputText escape="false" value="#{art.content}"/>
 								</div>
@@ -184,7 +162,7 @@
 						</ui:repeat>
 					</a:outputPanel>
 					
-					<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}"
+				 	<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}"
 								   action="#{articleManager.preparePage('createArticle')}" reRender="createArticlePanel" 
 								   oncomplete="javascript: prepareModal();"/>
 				</a:form>
@@ -193,11 +171,6 @@
 	</div>
 	
 	<a:form>
-		<a:jsFunction name="ajaxPrepareEditArticle" action="#{articleManager.preparePage('editArticle')}" reRender="editArticlePanel" 
-					  oncomplete="javascript: prepareEditModal();">
-			<a:actionparam name="articleId" assignTo="#{articleBean.articleId}" />
-		</a:jsFunction>
-		
 		<a:jsFunction name="ajaxSearchArticle" action="#{articleManager.preparePage('searchArticle')}" reRender="articleListPanel" 
 					  oncomplete="loadScripts();">
 			<a:actionparam name="searchText" assignTo="#{articleBean.searchText}" />
@@ -242,49 +215,6 @@
 			    <h:commandButton styleClass="btn btn-primary" value="Save" 
 						        action="#{articleManager.create()}" 
 						        oncomplete="javascript: jQuery('#createArticleModal').modal('hide');" />
-			</div>
-		</a:outputPanel>
-	</div>
-	</h:form>
-	
-	<h:form id="editArticleForm" enctype="multipart/form-data">
-	<div class="modal hide" id="editArticleModal">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Edit Article</h3>
-		</div>	
-		<a:outputPanel id="editArticlePanel">		
-			<div class="modal-body">
-				<div class="form-horizontal">
-					<div class="control-group">
-						<h:outputLabel for="varTitle" value="Title" styleClass="control-label"/>
-						<div class="controls">
-							<h:inputText styleClass="span4" id="varTitle" value="#{article.title}" required="true" />
-						</div>
-					</div>
-					
-					<div class="control-group">
-							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
-							<div class="controls">
-								<span class="fileinputs">
-									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
-												  accept="image/*" styleClass="file"/>
-						        	<button class="btn fakefile" >Add icon</button>
-								</span>
-							</div>
-					</div>
-					
-					<div class="control-group">
-						<h:inputTextarea id="varContent" name="varContent" rows="15" cols="80" style="width: 70%" value="#{article.content}"/>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-			    
-			    <h:commandButton styleClass="btn btn-primary" value="Save" 
-						        action="#{articleManager.edit()}" 
-						        oncomplete="javascript: jQuery('#editArticleModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
 	</div>

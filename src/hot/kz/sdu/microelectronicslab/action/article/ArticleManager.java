@@ -1,6 +1,7 @@
 package kz.sdu.microelectronicslab.action.article;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -45,6 +46,10 @@ public class ArticleManager implements Serializable
 	
 	@In(create=true)
 	private ArticleService articleService;
+	
+	@In(create=true)
+	private ArticleManagementBean articleManagementBean;
+
 	
 	@Out(scope=ScopeType.PAGE,required=false)
 	protected Article article;
@@ -108,7 +113,16 @@ public class ArticleManager implements Serializable
 	
 	public boolean isAuthor(long articleId)
 	{
-		return em.find(Article.class, articleId).getAuthor().getUsername().equals( identity.getUsername() );
+		if (identity.getUsername() == null)
+			return false;
+		
+		Article a = em.find(Article.class, articleId);
+		
+		User user = (User)em.createQuery("from User where username = :username")
+							.setParameter("username", identity.getUsername())
+							.getSingleResult();
+		
+		return isAuthorOfArticle(user.getId(), a.getAuthors());
 	}
 	
 	public void create()
@@ -119,7 +133,8 @@ public class ArticleManager implements Serializable
 							.setParameter("username", identity.getUsername())
 							.getSingleResult();
 		
-		article.setAuthor(user);
+		if ( !isAuthorOfArticle(user.getId(), article.getAuthors()) )
+			article.getAuthors().add(user);
 		
 		String url = configurationBean.getFileServerHost() + "/article/" + fileService.saveArticleIcon();
 		article.setIcon(url);
@@ -127,18 +142,56 @@ public class ArticleManager implements Serializable
 		em.persist(article);
 	}
 	
+	public boolean isAuthorOfArticle(long userId, List<User> list) {
+		for (User author: list)
+			if (author.getId() == userId)
+				return true;
+		
+		return false;
+	}
+	
+	public List<User> retrieveAuthors(boolean belongs) {
+		List<User> users = em.createQuery("FROM User").getResultList();
+		List<User> list = new ArrayList<User>();
+		
+		for (User user: users)
+			if ( !( belongs ^ isAuthorOfArticle(user.getId(), article.getAuthors()) ) )
+				list.add(user);
+		
+		return list;
+	}
+	
+	public void addAuthor()
+	{
+		article.getAuthors().add( em.find(User.class, articleManagementBean.getAuthorId()) );
+		em.merge(article);
+	}
+	
+	public void removeAuthor(long userId)
+	{
+		log.info(" remove author {0} ", userId);
+		
+		article = em.find(Article.class, article.getId());
+		
+		if (article.getAuthors().size() == 1) return;
+		
+		article.getAuthors().remove( em.find(User.class, userId) );
+		em.persist(article);
+	}
+	
+	
 	public void edit()
 	{
 		String title = article.getTitle();
 		String content = article.getContent();
-		User author = article.getAuthor();
+//		User author = article.getAuthor();
 		String icon = article.getIcon();
 		
 		article = em.find(Article.class, article.getId());
 		
 		article.setTitle(title);
 		article.setContent(content);
-		article.setAuthor(author);
+//		article.setAuthor(author);
 		article.setIcon(icon);
 		
 		em.merge(article);
