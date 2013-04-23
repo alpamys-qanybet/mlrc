@@ -109,15 +109,15 @@
 								<div class="control-group">
 									<ui:repeat var="developer" value="#{projectManager.retrieveDevelopers(true)}">
 										<div id="developer#{developer.id}" class="developer">
-											<img class="size32" src="#{developer.avatar}" style="position: relative; top: 3px; left: 3px"/>
-						          			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
+											<img class="size32" src="#{developer.avatar}" style="display: inline-block; vertical-align: top;"/>
+						          			<ul style="list-style-type: none;display: inline-block; margin-left: 2px; margin-top: -4px;">
 						          				<li>
 						          					<strong><h:outputText  value="#{developer.realname}"/></strong>
 						          				</li>
 						          				
 						          				<li>developer</li>
 						          			</ul>
-						          			<span id="remove#{developer.id}" class="remove" style="position: relative; top: -45px; left: 242px;">
+						          			<span id="remove#{developer.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
 						    					<a:commandLink styleClass="btn" action="#{projectManager.removeDeveloper(developer.id)}" 
 																 reRender="manageDevelopersPanel">
 																 <i class="icon-remove"/>
