@@ -146,13 +146,8 @@
 								</div>
 								
 							 	<ui:repeat var="author" value="#{art.authors}">
-									<img class="size55" src="#{author.avatar}" style="position: relative; top: 46px; left: 0px"/>
-								
-									<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
-				           				<li><strong><h:outputText value="#{author.realname}" /></strong></li>
-				           				<li><small class="muted">Author</small></li>
-				           			</ul>
-			           			</ui:repeat>
+									<img class="size32" src="#{author.avatar}" style="display: inline-block; vertical-align: top; margin-right: 5px;" title="#{author.realname}"/>
+								</ui:repeat>
 						 	
 			           			<div>
 									<h:outputText escape="false" value="#{art.content}"/>

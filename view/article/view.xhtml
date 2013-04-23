@@ -46,20 +46,16 @@
 				<a:form id="artcileViewForm">
 					<a:outputPanel id="articleViewPanel">
 						<div class="article">
-							<div class="content-header">
+							<div class="content-header" style="margin-bottom: 10px;">
 								<h4>
 									<h:outputText value="#{article.title}" />
 								</h4>
 							</div>
 							
 							<ui:repeat var="author" value="#{article.authors}">
-								<img class="size55" src="#{author.avatar}" style="position: relative; top: 46px; left: 0px"/>
-							
-								<ul style="list-style-type: none; padding-left: 52px; padding-right: 2px;">
-			           				<li><strong><h:outputText value="#{author.realname}" /></strong></li>
-			           				<li><small class="muted">Author</small></li>
-			           			</ul>
-		           			</ui:repeat>
+								<img class="size32" src="#{author.avatar}" style="display: inline-block; vertical-align: top; margin-right: 5px;" title="#{author.realname}"/>
+							</ui:repeat>
+		           			
 		           			<div>
 								<h:outputText escape="false" value="#{article.content}"/>
 							</div>
@@ -88,15 +84,15 @@
 							<div class="control-group">
 								<ui:repeat var="author" value="#{articleManager.retrieveAuthors(true)}">
 									<div id="author#{author.id}" class="author">
-										<img class="size32" src="#{author.avatar}" style="position: relative; top: 3px; left: 3px"/>
-					          			<ul style="list-style-type: none;padding-left: 24px;padding-right: 0px;margin-top: -33px;">
+										<img class="size32" src="#{author.avatar}" style="display: inline-block; vertical-align: top;"/>
+					          			<ul style="list-style-type: none;display: inline-block; vertical-align: top; margin-left: 2px; margin-top: -4px;">
 					          				<li>
 					          					<strong><h:outputText  value="#{author.realname}"/></strong>
 					          				</li>
 					          				<li>author</li>
 					          			</ul>
 					          			
-					          			<span id="remove#{author.id}" class="remove" style="position: relative; top: -45px; left: 242px;">
+					          			<span id="remove#{author.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
 					    					<a:commandLink styleClass="btn" rendered="#{articleManager.isAuthor(article.id)}" 
 					    								    action="#{articleManager.removeAuthor(author.id)}" reRender="manageAuthorsPanel">
 															 <i class="icon-remove"/>
