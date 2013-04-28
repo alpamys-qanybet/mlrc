@@ -25,6 +25,7 @@ public class WebSite implements Serializable{
 	private String description;
 	private List<Article> articles;
 	private Group group;
+	private Theme theme;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -81,5 +82,17 @@ public class WebSite implements Serializable{
 	public void setGroup(Group group)
 	{
 		this.group = group;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "theme_id", referencedColumnName = "id")
+	public Theme getTheme()
+	{
+		return theme;
+	}
+
+	public void setTheme(Theme theme)
+	{
+		this.theme = theme;
 	}
 }

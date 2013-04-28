@@ -14,6 +14,7 @@ import kz.sdu.microelectronicslab.model.group.Group;
 import kz.sdu.microelectronicslab.model.project.Project;
 import kz.sdu.microelectronicslab.model.project.ProjectStatus;
 import kz.sdu.microelectronicslab.model.user.User;
+import kz.sdu.microelectronicslab.model.website.Theme;
 import kz.sdu.microelectronicslab.model.website.WebSite;
 
 import org.jboss.seam.ScopeType;
@@ -50,6 +51,9 @@ public class GroupManager implements Serializable
 	@Out(required=false)
 	protected WebSite website;
 	
+	@Out(required=false)
+	protected List<Theme> themes;
+	
 	public void preparePage(String content)
 	{
 		if (content.equals("createGroup"))
@@ -69,6 +73,14 @@ public class GroupManager implements Serializable
 		else if (content.equals("addWebSite"))
 		{
 			website = new WebSite();
+		}
+		
+		else if (content.equals("editWebSite"))
+		{
+			themes = (List<Theme>) em.createQuery("from Theme").getResultList();
+			
+			log.info("editWebSite #0", groupManagementBean.getWebSiteId());
+			website = em.find(WebSite.class, groupManagementBean.getWebSiteId());
 		}
 	}
 	
@@ -150,6 +162,14 @@ public class GroupManager implements Serializable
 		
 		group.getWebSites().add(website);
 		em.merge(group);
+	}
+	
+	public void editWebSite()
+	{
+		website.setGroup(group);
+		em.merge(website);
+		
+		group = em.find(Group.class, group.getId());
 	}
 	
 	public void removeWebSite(long webSiteId)

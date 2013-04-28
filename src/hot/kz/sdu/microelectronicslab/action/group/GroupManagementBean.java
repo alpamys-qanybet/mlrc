@@ -9,7 +9,8 @@ import org.jboss.seam.annotations.Scope;
 public class GroupManagementBean
 {
 	private long participantId;
-	private String webSiteUrl;
+	private long webSiteId;
+	private long themeId;
 
 	public long getParticipantId()
 	{
@@ -21,13 +22,23 @@ public class GroupManagementBean
 		this.participantId = participantId;
 	}
 
-	public String getWebSiteUrl()
+	public long getWebSiteId()
 	{
-		return webSiteUrl;
+		return webSiteId;
 	}
 
-	public void setWebSiteUrl(String webSiteUrl)
+	public void setWebSiteId(long webSiteId)
 	{
-		this.webSiteUrl = webSiteUrl;
+		this.webSiteId = webSiteId;
+	}
+
+	public long getThemeId()
+	{
+		return themeId;
+	}
+
+	public void setThemeId(long themeId)
+	{
+		this.themeId = themeId;
 	}
 }

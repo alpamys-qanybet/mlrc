@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import kz.sdu.microelectronicslab.action.ConfigurationBean;
 import kz.sdu.microelectronicslab.action.FileService;
 import kz.sdu.microelectronicslab.action.OperationService;
+import kz.sdu.microelectronicslab.action.group.GroupManagementBean;
 import kz.sdu.microelectronicslab.model.article.Article;
+import kz.sdu.microelectronicslab.model.group.Group;
 import kz.sdu.microelectronicslab.model.user.User;
+import kz.sdu.microelectronicslab.model.website.WebSite;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -58,6 +61,9 @@ public class ArticleManager implements Serializable
 	
 	@In(create=true)
 	protected ArticleBean articleBean;
+	
+	@In(create=true)
+	private GroupManagementBean groupManagementBean;
 	
 	public void preparePage(String content)
 	{
@@ -109,6 +115,36 @@ public class ArticleManager implements Serializable
 		articles = em.createQuery("FROM Article").getResultList();
 		
 		return articles;
+	}
+	
+	public List<WebSite> retrieveWebSites()
+	{
+		User user = (User) em.createQuery("from User where username = :username")
+				.setParameter("username", identity.getUsername())
+				.getSingleResult();
+
+		List<Group> groups = new ArrayList<Group>();
+		List<Group> allGroups = (List<Group>) em.createQuery("from Group").getResultList();
+		
+		for (Group g: allGroups)
+			if (g.getParticipants().contains(user))
+				groups.add(g);
+		
+		List<WebSite> websites = new ArrayList<WebSite>();
+		
+		for (Group g:groups)
+			websites.addAll(g.getWebSites());
+		
+		return websites;
+	}
+	
+	public void linkWebSite()
+	{
+		article.setWebSite( em.find(WebSite.class, groupManagementBean.getWebSiteId()) );
+		em.merge(article);
+		
+		articleBean.setRequestFromModal(true);
+		articleBean.setArticleId(article.getId());
 	}
 	
 	public boolean isAuthor(long articleId)

@@ -1,0 +1,82 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+    template="/layout/template.xhtml">
+    
+<ui:define name="body">
+	<style>
+	.btn-control-left {
+   		margin-left: 5px;
+   	}
+   	
+   	.btn-control-right {
+   		margin-right: 5px;
+   	}
+   	
+   	.btn-control {
+   	/*	margin-left: 5px; */
+   		margin-right: 5px;
+   	}
+   	
+   	.btn-icon {
+   		padding-top: 6px;
+		padding-bottom: 7px;
+   	}
+   	
+   	.mirror {
+   		-moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+   	}
+	</style>
+	<div class="page-canvas-wide">
+		<div class="signup-wrapper-wide">
+			#{websiteManager.preparePage('viewWebsite')}
+			<div class="content" id="container">
+				<a:form id="articleListForm">
+					<a:outputPanel id="articleListPanel">
+						<ui:repeat var="art" value="#{website.articles}">
+							<div id="article#{art.id}" class="article content-block" >
+								<div align="center">
+								<h4>
+									<s:link view="/article/view.seam" value="#{art.title}">
+				                		<f:param name="articleId" value="#{art.id}"/>
+				                	</s:link>
+								</h4>
+								</div>
+								
+							 	<ui:repeat var="author" value="#{art.authors}">
+									<img class="size32" src="#{author.avatar}" style="display: inline-block; vertical-align: top; margin-right: 5px;" title="#{author.realname}"/>
+								</ui:repeat>
+						 	
+			           			<div>
+									<h:outputText escape="false" value="#{art.content}"/>
+								</div>
+								<img class="news200" src="#{art.icon}"/>
+				            </div>
+						</ui:repeat>
+					</a:outputPanel>
+				</a:form>
+    		</div>
+    	</div>
+	</div>
+		
+	<script type="text/javascript">
+   		jQuery(document).ready(function() {
+   	   		// navs: make current active 
+   			jQuery('#navGroups').addClass('active');
+			jQuery('#navGroups').siblings().removeClass('active');
+		});	
+	</script>
+</ui:define>
+</ui:composition>

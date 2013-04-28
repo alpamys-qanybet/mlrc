@@ -153,14 +153,22 @@
 									<div id="website#{website.id}" class="website">
 										<ul style="list-style-type: none;display: inline-block; margin-left: 2px; margin-top: -4px;">
 					          				<li>
-					          					<a href="#{website.url}">#{website.url}</a>
+					          					<a href="/mlrc/website/view.seam?websiteId=#{website.id}">#{website.url}</a>
 					          				</li>
 					          				<li>
 					          					<strong><h:outputText  value="#{website.description}"/></strong>
 					          				</li>
 					          			</ul>
 					          			
-					          			<span id="remove#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
+					          			<span id="edit#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 30px;">
+					    				    <a:commandLink styleClass="btn" action="#{groupManager.preparePage('editWebSite')}" reRender="editWebSitePanel"
+												           oncomplete="javascript:jQuery('#editWebSiteModal').modal('show');">
+												  <i class="icon-pencil"/>
+												  <a:actionparam name="webSiteId" assignTo="#{groupManagementBean.webSiteId}" value="#{website.id}" />
+											</a:commandLink>
+									    </span>
+					          			
+					          			<span id="remove#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 2px;">
 					    					<a:commandLink styleClass="btn" action="#{groupManager.removeWebSite(website.id)}" 
 														   reRender="manageWebSitePanel">
 												<i class="icon-remove"/>
@@ -184,15 +192,19 @@
 						<script type="text/javascript">
 							// remove icon
 							jQuery('.remove').hide();
+							jQuery('.edit').hide();
+							
 	
 							jQuery('.website').mouseover(function() {
 								var userId = jQuery(this).attr('id').replace('website','');
-					   	    	jQuery('#remove'+userId).show();
-							});
+								jQuery('#edit'+userId).show();
+								jQuery('#remove'+userId).show();
+					   	    });
 	
 							jQuery('.website').mouseout(function() {
 					   	    	var userId = jQuery(this).attr('id').replace('website','');
-					   	    	jQuery('#remove'+userId).hide();
+					   	    	jQuery('#edit'+userId).hide();
+					   	 		jQuery('#remove'+userId).hide();
 							});
 						</script>
 					</a:outputPanel>
@@ -292,6 +304,50 @@
 
 				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageWebSitePanel"
 						         action="#{groupManager.addWebSite()}" oncomplete="javascript:jQuery('#addWebSiteModal').modal('hide');" />
+			</div>
+		</a:outputPanel>
+	</div>
+	</a:form>
+	
+	<a:form id="editWebSiteForm">
+	<div class="modal hide" id="editWebSiteModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Edit WebSite</h3>
+		</div>	
+		<a:outputPanel id="editWebSitePanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel for="varEditUrl" value="url" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputText id="varEditUrl" value="#{website.url}" class="input" required="true" style="max-width: 460px;"/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<h:outputLabel for="varEditDescription" value="description" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputTextarea id="varEditDescription" value="#{website.description}" class="input" required="true" style="max-width: 460px;"/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<h:outputLabel for="varEditTheme" value="description" styleClass="control-label"/>
+						<div class="controls">
+							<h:selectOneMenu id="varEditTheme" value="#{groupManagementBean.themeId}" class="input" required="true"  style="max-width: 460px;">
+								<s:selectItems var="theme" value="#{themes}" label="#{theme.name}" itemValue="#{theme.id}" noSelectionLabel="Select"/>
+							</h:selectOneMenu>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+
+				<a:commandButton styleClass="btn btn-primary" value="Edit" reRender="manageWebSitePanel"
+						         action="#{groupManager.editWebSite()}" oncomplete="javascript:jQuery('#editWebSiteModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
 	</div>

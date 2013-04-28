@@ -72,6 +72,12 @@
 										   styleClass="btn btn-icon">
 								<i class="icon-user"/>
 						    </a:commandLink>
+						    
+						    <a:commandLink rendered="#{articleManager.isAuthor(article.id)}" 
+										   reRender="linkWebSitePanel" oncomplete="jQuery('#linkWebSiteModal').modal('show');"
+										   styleClass="btn btn-icon"  title="websites">
+								<i class="icon-globe"/>
+						    </a:commandLink>
 					    </div>
 					</a:outputPanel>
 				</a:form>
@@ -200,6 +206,35 @@
 
 				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageAuthorsPanel"
 						         action="#{articleManager.addAuthor()}" oncomplete="javascript:jQuery('#addAuthorModal').modal('hide');" />
+			</div>
+		</a:outputPanel>
+	</div>
+	</a:form>
+	
+	<a:form id="linkWebSiteForm">
+	<div class="modal hide" id="linkWebSiteModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Link to WebSite</h3>
+		</div>	
+		<a:outputPanel id="linkWebSitePanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel for="varLinkWebSite" value="link to website" styleClass="control-label"/>
+						<div class="controls">
+							<h:selectOneMenu id="varLinkWebSite" value="#{groupManagementBean.webSiteId}" class="input" required="true"  style="max-width: 460px;">
+								<s:selectItems var="website" value="#{articleManager.retrieveWebSites()}" label="#{website.url}" itemValue="#{website.id}" noSelectionLabel="Select"/>
+							</h:selectOneMenu>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<a:commandButton styleClass="btn btn-primary" value="Link" reRender="articleViewPanel"
+						         action="#{articleManager.linkWebSite()}" oncomplete="jQuery('#linkWebSiteModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
 	</div>
