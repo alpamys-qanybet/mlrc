@@ -1,0 +1,314 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+    template="/layout/template.xhtml">
+    
+<ui:define name="body">
+	<style>
+	.btn-control-left {
+   		margin-left: 5px;
+   	}
+   	
+   	.btn-control-right {
+   		margin-right: 5px;
+   	}
+   	
+   	.btn-control {
+   	/*	margin-left: 5px; */
+   		margin-right: 5px;
+   	}
+   	
+   	.btn-icon {
+   		padding-top: 6px;
+		padding-bottom: 7px;
+   	}
+   	
+   	.mirror {
+   		-moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+   	}
+	</style>
+	<div class="page-canvas-wide">
+		<div class="signup-wrapper-wide">
+			#{groupManager.preparePage('viewGroup')}
+			<div class="content" id="container">
+				<a:form id="groupViewForm">
+					<a:outputPanel id="groupViewPanel">
+						<h2><h:outputText  value="#{group.name}"/></h2>
+			    		
+			    		<h3>Participants:</h3>
+						<ui:repeat var="participant" value="#{group.participants}">
+							<img class="size32" src="#{participant.avatar}" style="display: inline-block; vertical-align: top;" title="#{participant.realname}"/>
+			          	</ui:repeat>
+			
+						<h3>Web sites:</h3>
+						<ui:repeat var="website" value="#{group.webSites}">
+							<div>
+								<ul style="list-style-type: none;display: inline-block; margin-left: 2px; margin-top: -4px;">
+			          				<li>
+			          					<a href="#{website.url}">#{website.url}</a>
+			          				</li>
+			          				<li>
+			          					<strong><h:outputText  value="#{website.description}"/></strong>
+			          				</li>
+			          			</ul>
+		          			</div>
+						</ui:repeat>
+			
+						<div style="margin-top: 5px;">
+							<a:commandLink rendered="#{groupManager.doesUserBelongToGroup(group.id)}" 
+										   action="#{groupManager.preparePage('editGroup')}" reRender="editGroupPanel" 
+						  				   oncomplete="javascript:jQuery('#editGroupModal').modal('show')" 
+						  				   styleClass="btn btn-icon btn-control-right" title="edit">
+						  		<i class="icon-pencil"/>
+						  	</a:commandLink>
+						  	
+						  	<a:commandLink rendered="#{groupManager.doesUserBelongToGroup(group.id)}" 
+										   reRender="manageParticipantsPanel" oncomplete="jQuery('div.content').hide(); jQuery('#manageParticipantsDiv').show();"
+										   styleClass="btn btn-icon btn-control-right" title="manage participants">
+								<i class="icon-user"/>
+						    </a:commandLink>
+						    
+						    <a:commandLink rendered="#{groupManager.doesUserBelongToGroup(group.id)}" action="#{groupManager.preparePage('addWebSite')}"
+										   reRender="manageParticipantsPanel" oncomplete="jQuery('div.content').hide(); jQuery('#manageWebSiteDiv').show();"
+										   styleClass="btn btn-icon"  title="websites">
+								<i class="icon-globe"/>
+						    </a:commandLink>
+					    </div>
+					</a:outputPanel>
+				</a:form>
+    		</div>
+    		
+    		<div class="content" id='manageParticipantsDiv'>
+				<a:form id="manageParticipantsForm">
+					<a:outputPanel id="manageParticipantsPanel">
+						<div class="form-horizontal">
+							<div class="control-group">
+								<ui:repeat var="participant" value="#{groupManager.retrieveParticipants(true)}">
+									<div id="participant#{participant.id}" class="participant">
+										<img class="size32" src="#{participant.avatar}" style="display: inline-block; vertical-align: top;"/>
+					          			<ul style="list-style-type: none;display: inline-block; margin-left: 2px; margin-top: -4px;">
+					          				<li>
+					          					<strong><h:outputText  value="#{participant.realname}"/></strong>
+					          				</li>
+					          				
+					          				<li>participant</li>
+					          			</ul>
+					          			<span id="remove#{participant.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
+					    					<a:commandLink styleClass="btn" action="#{groupManager.removeParticipant(participant.id)}" 
+															 reRender="manageParticipantsPanel">
+															 <i class="icon-remove"/>
+										    </a:commandLink>
+									    </span>
+					          		</div>
+								</ui:repeat>
+							</div>
+						</div>
+						
+						<a:commandLink styleClass="btn btn-icon" reRender="addParticipantPanel"
+							           oncomplete="javascript:jQuery('#addParticipantModal').modal('show');">
+							  <i class="icon-plus"/>
+						</a:commandLink>
+						
+						<a:commandLink styleClass="btn btn-icon" reRender="groupViewPanel"
+							           oncomplete="javascript:loadScripts();">
+							  <i class="icon-share-alt mirror"/>
+						</a:commandLink>
+						
+						<script type="text/javascript">
+							// remove icon
+							jQuery('.remove').hide();
+	
+							jQuery('.participant').mouseover(function() {
+								var userId = jQuery(this).attr('id').replace('participant','');
+					   	    	jQuery('#remove'+userId).show();
+							});
+	
+							jQuery('.participant').mouseout(function() {
+					   	    	var userId = jQuery(this).attr('id').replace('participant','');
+					   	    	jQuery('#remove'+userId).hide();
+							});
+						</script>
+					</a:outputPanel>
+				</a:form>
+			</div>
+			
+			<div class="content" id='manageWebSiteDiv'>
+				<a:form id="manageWebSiteForm">
+					<a:outputPanel id="manageWebSitePanel">
+						<div class="form-horizontal">
+							<div class="control-group">
+								<ui:repeat var="website" value="#{group.webSites}">
+									<div id="website#{website.id}" class="website">
+										<ul style="list-style-type: none;display: inline-block; margin-left: 2px; margin-top: -4px;">
+					          				<li>
+					          					<a href="#{website.url}">#{website.url}</a>
+					          				</li>
+					          				<li>
+					          					<strong><h:outputText  value="#{website.description}"/></strong>
+					          				</li>
+					          			</ul>
+					          			
+					          			<span id="remove#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
+					    					<a:commandLink styleClass="btn" action="#{groupManager.removeWebSite(website.id)}" 
+														   reRender="manageWebSitePanel">
+												<i class="icon-remove"/>
+										    </a:commandLink>
+									    </span>
+				          			</div>
+								</ui:repeat>
+							</div>
+						</div>
+						
+						<a:commandLink styleClass="btn btn-icon" reRender="addWebSitePanel"
+							           oncomplete="javascript:jQuery('#addWebSiteModal').modal('show');">
+							  <i class="icon-plus"/>
+						</a:commandLink>
+						
+						<a:commandLink styleClass="btn btn-icon" reRender="groupViewPanel"
+							           oncomplete="javascript:loadScripts();">
+							  <i class="icon-share-alt mirror"/>
+						</a:commandLink>
+						
+						<script type="text/javascript">
+							// remove icon
+							jQuery('.remove').hide();
+	
+							jQuery('.website').mouseover(function() {
+								var userId = jQuery(this).attr('id').replace('website','');
+					   	    	jQuery('#remove'+userId).show();
+							});
+	
+							jQuery('.website').mouseout(function() {
+					   	    	var userId = jQuery(this).attr('id').replace('website','');
+					   	    	jQuery('#remove'+userId).hide();
+							});
+						</script>
+					</a:outputPanel>
+				</a:form>
+			</div>
+		</div>
+	</div>
+		
+	<h:form id="editGroupForm">
+	<div class="modal hide" id="editGroupModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Edit/Manage Group</h3>
+		</div>	
+		<a:outputPanel id="editGroupPanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel for="varEditName" value="Name" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputText styleClass="span3" id="varEditName" value="#{group.name}" required="true"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<h:commandButton styleClass="btn btn-danger" value="Delete"
+						         action="#{groupManager.delete()}" />
+				
+				<h:commandButton styleClass="btn btn-primary" value="Save"
+						         action="#{groupManager.edit()}" />
+			</div>
+		</a:outputPanel>
+	</div>
+	</h:form>
+	
+	<a:form id="addParticipantForm">
+	<div class="modal hide" id="addParticipantModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Add Developer</h3>
+		</div>	
+		<a:outputPanel id="addParticipantPanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel for="varAddParticipant" value="Participant" styleClass="control-label"/>
+						<div class="controls">
+							<h:selectOneMenu id="varAddParticipant" value="#{groupManagementBean.participantId}" class="input" required="true"  style="max-width: 460px;">
+								<s:selectItems var="participant" value="#{groupManager.retrieveParticipants(false)}" 
+											   label="#{participant.realname}" itemValue="#{participant.id}" noSelectionLabel="Select"/>
+							</h:selectOneMenu>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+
+				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageParticipantsPanel"
+						         action="#{groupManager.addParticipant()}" oncomplete="javascript:jQuery('#addParticipantModal').modal('hide');" />
+			</div>
+		</a:outputPanel>
+	</div>
+	</a:form>
+	
+	<a:form id="addWebSiteForm">
+	<div class="modal hide" id="addWebSiteModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Add WebSite</h3>
+		</div>	
+		<a:outputPanel id="addWebSitePanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel for="varAddUrl" value="url" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputText id="varAddUrl" value="#{website.url}" class="input" required="true" style="max-width: 460px;"/>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<h:outputLabel for="varAddDescription" value="description" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputText id="varAddDescription" value="#{website.description}" class="input" required="true" style="max-width: 460px;"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+
+				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageWebSitePanel"
+						         action="#{groupManager.addWebSite()}" oncomplete="javascript:jQuery('#addWebSiteModal').modal('hide');" />
+			</div>
+		</a:outputPanel>
+	</div>
+	</a:form>
+	<script type="text/javascript">
+   		jQuery(document).ready(function() {
+   	   		// navs: make current active 
+   			jQuery('#navGroups').addClass('active');
+			jQuery('#navGroups').siblings().removeClass('active');
+
+			loadScripts();
+		});
+
+   		function loadScripts() {
+			jQuery('div.content').hide();
+			jQuery('#container').show();
+		}	
+	</script>
+</ui:define>
+</ui:composition>

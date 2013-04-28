@@ -33,9 +33,12 @@
                 <s:link view="/article/home.seam" value="Articles" propagation="none"/>
               </li>
               
-              
               <li class="navs" id="navProjects">
                 <s:link view="/project/home.xhtml" value="Projects"/>
+              </li>
+              
+              <li class="navs" id="navGroups">
+                <s:link view="/group/home.xhtml" value="Groups"/>
               </li>
               
               <s:fragment rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}">

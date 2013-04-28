@@ -13,8 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 import kz.sdu.microelectronicslab.model.user.User;
+import kz.sdu.microelectronicslab.model.website.WebSite;
 
 @Entity
 public class Article implements Serializable
@@ -24,6 +26,7 @@ public class Article implements Serializable
 	private String content;
 	private List<User> authors = new ArrayList<User>();
 	private String icon;
+	private WebSite webSite;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -64,19 +67,35 @@ public class Article implements Serializable
 	@JoinTable(name="ARTICLE_AUTHOR",
 			joinColumns=@JoinColumn(name="user_id"),
 			inverseJoinColumns=@JoinColumn(name="article_id"))
-	public List<User> getAuthors() {
+	public List<User> getAuthors()
+	{
 		return authors;
 	}
 
-	public void setAuthors(List<User> authors) {
+	public void setAuthors(List<User> authors)
+	{
 		this.authors = authors;
 	}
 
-	public String getIcon() {
+	public String getIcon()
+	{
 		return icon;
 	}
 
-	public void setIcon(String icon) {
+	public void setIcon(String icon)
+	{
 		this.icon = icon;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "web_site_id", referencedColumnName = "id", nullable = true)
+	public WebSite getWebSite()
+	{
+		return webSite;
+	}
+
+	public void setWebSite(WebSite webSite)
+	{
+		this.webSite = webSite;
 	}
 }

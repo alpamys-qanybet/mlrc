@@ -19,7 +19,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import kz.sdu.microelectronicslab.model.group.Group;
 import kz.sdu.microelectronicslab.model.project.Project;
+import kz.sdu.microelectronicslab.model.website.WebSite;
 
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
@@ -41,7 +43,6 @@ public class User implements Serializable
 	private String email;
 	private String avatar;
 	private String bio;
-	
 	private List<Project> projectsManage;
 	
 	@Id
@@ -132,20 +133,24 @@ public class User implements Serializable
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "manager", cascade = CascadeType.ALL)
-	public List<Project> getProjectsManage() {
+	public List<Project> getProjectsManage()
+	{
 		return projectsManage;
 	}
 
-	public void setProjectsManage(List<Project> projectsManage) {
+	public void setProjectsManage(List<Project> projectsManage)
+	{
 		this.projectsManage = projectsManage;
 	}
 
 	@Column(columnDefinition="TEXT")
-	public String getBio() {
+	public String getBio()
+	{
 		return bio;
 	}
 
-	public void setBio(String bio) {
+	public void setBio(String bio)
+	{
 		this.bio = bio;
 	}
 }

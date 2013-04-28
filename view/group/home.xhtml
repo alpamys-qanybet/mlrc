@@ -1,0 +1,253 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a="http://richfaces.org/a4j"
+    template="/layout/template.xhtml">
+    
+   <ui:define name="body">
+   <style>
+    	.tabContent {
+    		padding-top: 5px;
+    		padding-left: 5px;
+    	}
+    	
+    	.rich-panel-body {
+    		padding: 0;
+    	}
+    	
+    	.rich-table-cell {
+    		padding: 1px; /* 0 */
+    	}
+    	
+    	div.locations div.rich-panel {
+    		margin-bottom: 2px;
+    	}
+    	
+    	div.locations div.rich-panel-body {
+    		background-color: white;
+    		cursor: pointer;
+    	}
+    	
+    	div.locations div.rich-panel-body:hover {
+    		background-color: #DFDFDF;
+    	}
+    	
+    	.rich-table {
+    		border: none;
+    	}
+    	
+    	.rich-table-cell {
+			border: none;
+    	}
+    	
+    	.rich-table-footer {
+			background-color: white;
+		}
+		
+		.rich-table-footercell {
+			border: none;
+		}
+    	
+    	.dataScrollerCell {
+			padding: 3px 0px 2px 0px;
+			line-height: 20px;
+			text-decoration: none;
+			border-left-width: 0;
+		}
+		
+		.dataScrollerCell:hover {
+    		background-color: whiteSmoke;
+		}
+    	
+    	.inactiveDataScrollerCell {
+    		background-color: white;
+			border: 1px solid #DDD;
+			color: #08C;
+			cursor: pointer;
+    	}
+    	
+    	.activeDataScrollerCell {
+    		background-color: whiteSmoke;
+			border: 1px solid #DDD;
+			color: #999;
+			cursor: default;
+    	}
+    	
+    	td.rich-datascr-button  {
+    		padding-top: 3px;
+    	}
+    	
+    	.arrowDataScrollerCell {
+    		padding: 6px 9px;	
+    		line-height: 20px;
+			text-decoration: none;
+			border-left-width: 0;
+    	}
+    	
+    	.arrowDataScrollerCell:hover {
+    		background-color: whiteSmoke;
+    	}
+    	
+    	.lastDataScrollerCell {
+    		-webkit-border-top-right-radius: 4px;
+			border-top-right-radius: 4px;
+			-webkit-border-bottom-right-radius: 4px;
+			border-bottom-right-radius: 4px;
+			-moz-border-radius-topright: 4px;
+			-moz-border-radius-bottomright: 4px;
+    	}
+    	
+    	.firstDataScrollerCell {
+    		border-left-width: 1px;
+			-webkit-border-bottom-left-radius: 4px;
+			border-bottom-left-radius: 4px;
+			-webkit-border-top-left-radius: 4px;
+			border-top-left-radius: 4px;
+			-moz-border-radius-bottomleft: 4px;
+			-moz-border-radius-topleft: 4px;
+    	}
+    	
+   		.rich-datascr-button, .rich-datascr-ctrls-separator {
+    		border: none;
+    	}
+    	
+    	
+    	.rich-dtascroller-table {
+    		border: none;
+    	}
+    	
+    	.btn-control-left {
+    		margin-left: 5px;
+    	}
+    	
+    	.btn-control-right {
+    		margin-right: 5px;
+    	}
+    	
+    	.btn-control {
+    	/*	margin-left: 5px; */
+    		margin-right: 5px;
+    	}
+    	
+    	.btn-icon {
+    		padding-top: 6px;
+			padding-bottom: 7px;
+    	}
+    	
+    	.mirror {
+    		-moz-transform: scaleX(-1);
+	        -o-transform: scaleX(-1);
+	        -webkit-transform: scaleX(-1);
+	        transform: scaleX(-1);
+	        filter: FlipH;
+	        -ms-filter: "FlipH";
+    	}
+    	
+    	#projectListDiv div.rich-panel{
+ 			border-radius: 5px;
+    	}
+    	
+   	</style>
+   <script type="text/javascript">
+   		jQuery(document).ready(function() {
+   	   		// navs: make current active 
+			jQuery('#navGroups').addClass('active');
+			jQuery('#navGroups').siblings().removeClass('active');
+		});
+	</script>
+		
+   	<div class="page-canvas-wide">
+		<div class="signup-wrapper-wide">
+			<div class="content-header">
+				<h4>Groups</h4>
+			</div>
+			
+			<div class="content">
+				<a:form id="groupListForm">
+					<a:outputPanel id="groupListPanel">
+						<div id="groupListDiv">
+							<rich:dataGrid var="group" columns="1" elements="10" width="100%" value="#{groupManager.getGroups()}">
+				                <div id="group#{group.id}" class="locations" onclick="window.location='/mlrc/group/view.seam?groupId=#{group.id}';">
+									<rich:panel bodyClass="pbody">
+										<strong><h:outputText  value="#{group.name}"/></strong>
+									</rich:panel>
+						        </div>
+						        <f:facet name="footer">
+									<rich:datascroller renderIfSinglePage="false" fastControls="hide" 
+													   selectedStyleClass="dataScrollerCell activeDataScrollerCell" inactiveStyleClass="dataScrollerCell inactiveDataScrollerCell"
+													   status="globalStatus">
+										<f:facet name="first">
+					                        <h:outputText value="&lt;&lt;" escape="false" styleClass="arrowDataScrollerCell firstDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="first_disabled">
+					                        <h:outputText value="&lt;&lt;" escape="false" styleClass="arrowDataScrollerCell firstDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="last">
+					                        <h:outputText value="&gt;&gt;" escape="false" styleClass="arrowDataScrollerCell lastDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="last_disabled">
+					                        <h:outputText value="&gt;&gt;" escape="false" styleClass="arrowDataScrollerCell lastDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="previous">
+					                        <h:outputText value=" &lt; " escape="false" styleClass="arrowDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="previous_disabled">
+					                        <h:outputText value=" &lt; " escape="false" styleClass="arrowDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="next">
+					                        <h:outputText value=" &gt; " escape="false" styleClass="arrowDataScrollerCell inactiveDataScrollerCell" />
+					                    </f:facet>
+					                    <f:facet name="next_disabled">
+					                        <h:outputText value=" &gt; " escape="false" styleClass="arrowDataScrollerCell activeDataScrollerCell" />
+					                    </f:facet>
+					                </rich:datascroller>
+					            </f:facet>
+					        </rich:dataGrid>
+				        </div>
+						
+						<a:commandLink styleClass="btn" style="margin-top: 5px;"
+									   action="#{groupManager.preparePage('createGroup')}" reRender="createGroupPanel" 
+									   oncomplete="javascript:jQuery('#createGroupModal').modal('show')">
+							<i class="icon-plus"/>
+						</a:commandLink>
+					</a:outputPanel>
+				</a:form>
+			</div>
+		</div>
+	</div>
+	
+	<a:form id="createGroupForm">
+	<div class="modal hide" id="createGroupModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Create Group</h3>
+		</div>	
+		<a:outputPanel id="createGroupPanel">		
+			<div class="modal-body">
+				<div class="form-horizontal">
+				    <div class="control-group">
+						<h:outputLabel for="varName" value="Name" styleClass="control-label"/>
+						<div class="controls">
+							<h:inputText styleClass="span3" id="varName" value="#{group.name}" required="true"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+			    
+			    <a:commandLink styleClass="btn btn-primary" value="Save"
+						       action="#{groupManager.create()}" reRender="groupListPanel"
+						       oncomplete="jQuery('#createGroupModal').modal('hide');"/>
+			</div>
+		</a:outputPanel>
+	</div>
+	</a:form>
+	</ui:define>
+</ui:composition>
