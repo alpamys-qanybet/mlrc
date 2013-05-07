@@ -15,12 +15,12 @@
 			
 			#{registrationManager.preparePage()}
 			<div class="content-header">
-				<h4>Registration</h4>
+				<h4>#{messages['Page.registration']}</h4>
 			</div>
 
 			<h:form styleClass="form-horizontal content">
 				<div class="control-group">
-					<h:outputLabel for="realname" value="Fullname" styleClass="control-label"/>
+					<h:outputLabel for="realname" value="#{messages['Page.fullname']}" styleClass="control-label"/>
 					<div class="controls">
 						<h:inputText styleClass="span3" id="realname" value="#{user.realname}" required="true"/>
 					</div>
@@ -34,21 +34,21 @@
 				</div>
 				
 				<div class="control-group">
-					<h:outputLabel for="username" value="Username" styleClass="control-label"/>
+					<h:outputLabel for="username" value="#{messages['Page.username']}" styleClass="control-label"/>
 					<div class="controls">
 						<h:inputText styleClass="span3" id="username" value="#{user.username}" required="true"/>
 					</div>
 				</div>
 				
 				<div class="control-group">
-					<h:outputLabel for="password" value="Password" styleClass="control-label"/>
+					<h:outputLabel for="password" value="#{messages['Page.password']}" styleClass="control-label"/>
 					<div class="controls">
 						<h:inputSecret styleClass="span3" id="password" value="#{passwordBean.password}" required="true"/>
 					</div>
 				</div>
 				
 				<div class="control-group">
-					<h:outputLabel for="confirm" value="Confirm" styleClass="control-label"/>
+					<h:outputLabel for="confirm" value="#{messages['Page.confirmPassword']}" styleClass="control-label"/>
 					<div class="controls">
 						<h:inputSecret styleClass="span3" id="confirm" value="#{passwordBean.confirm}" required="true"/>
 					</div>
@@ -56,10 +56,10 @@
 				
 				<div class="control-group">
 					<div class="controls">
-						<h:commandButton id="register" styleClass="btn btn-primary" style="margin-right: 10px;" value="Register" action="#{registrationManager.register()}">
+						<h:commandButton id="register" styleClass="btn btn-primary" style="margin-right: 10px;" value="#{messages['Page.register']}" action="#{registrationManager.register()}">
 		   					<s:defaultAction/>
 		   				</h:commandButton>
-		   				<h:commandButton styleClass="btn"  value="Cancel" action="home" immediate="true" />
+		   				<h:commandButton styleClass="btn"  value="#{messages['Page.cancel']}" action="home" immediate="true" />
 			   		</div>
 	   			</div>
 	         </h:form>
