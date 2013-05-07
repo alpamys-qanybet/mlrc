@@ -65,5 +65,7 @@
       <bpm:pageflow-definitions></bpm:pageflow-definitions>
    </bpm:jbpm>
    -->
+   
+   <web:context-filter url-pattern="/oper/cmsaasservlet.seam" />
 
 </components>

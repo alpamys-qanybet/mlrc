@@ -26,4 +26,6 @@ mvel2.jar
 richfaces-api.jar
 richfaces-impl.jar
 richfaces-ui.jar
+gson-2.2.3-sources.jar
+gson-2.2.3.jar
 #glassX.jar
