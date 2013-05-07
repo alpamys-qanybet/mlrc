@@ -88,7 +88,7 @@
 						<a:commandLink rendered="#{identity.hasRole('admin') or (identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id))}"
 									   action="#{projectManager.preparePage('editProject')}" reRender="editProjectPanel" 
 					  				   oncomplete="javascript:jQuery('#editProjectModal').modal('show')" 
-					  				   styleClass="btn btn-icon btn-control-right">
+					  				   styleClass="btn btn-icon btn-control-right" title="#{messages['Page.edit']}">
 					  		<i class="icon-pencil"/>
 					    </a:commandLink>
 						
@@ -130,7 +130,7 @@
 						</div>
 						
 						<a:commandLink styleClass="btn btn-icon" reRender="addDeveloperPanel"
-							           oncomplete="javascript:jQuery('#addDeveloperModal').modal('show');">
+							           oncomplete="javascript:jQuery('#addDeveloperModal').modal('show');" title="#{messages['Page.add']}">
 							  <i class="icon-plus"/>
 						</a:commandLink>
 						
@@ -220,12 +220,12 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 
-				<h:commandButton styleClass="btn btn-primary btn-danger" value="Delete" rendered="#{identity.hasRole('admin')}"
+				<h:commandButton styleClass="btn btn-primary btn-danger" value="#{messages['Page.delete']}" rendered="#{identity.hasRole('admin')}"
 						         action="#{projectManager.delete()}" />
 				
-				<h:commandButton styleClass="btn btn-primary" value="Save"
+				<h:commandButton styleClass="btn btn-primary" value="#{messages['Page.save']}"
 						       action="#{projectManager.edit()}" />
 			</div>
 		</a:outputPanel>
@@ -253,9 +253,9 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 
-				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageDevelopersPanel"
+				<a:commandButton styleClass="btn btn-primary" value="#{messages['Page.add']}" reRender="manageDevelopersPanel"
 						         action="#{projectManager.addDeveloper()}" oncomplete="javascript:jQuery('#addDeveloperModal').modal('hide');" />
 			</div>
 		</a:outputPanel>

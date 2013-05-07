@@ -13,6 +13,12 @@
    		padding-top: 6px;
 		padding-bottom: 7px;
    	}
+   	
+   	#localeForm {
+		position: absolute;
+		right: 260px;
+		top: 7px;
+	}
 	</style>
 	<div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -26,28 +32,40 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="navs" id="navHome">
-              	<s:link view="/home.seam" value="Home"/>
+              	<s:link view="/home.seam" value="#{messages['Page.home']}"/>
               </li>
               
               <li class="navs" id="navArticles">
-                <s:link view="/article/home.seam" value="Articles" propagation="none"/>
+                <s:link view="/article/home.seam" value="#{messages['Page.articles']}" propagation="none"/>
               </li>
               
               <li class="navs" id="navProjects">
-                <s:link view="/project/home.xhtml" value="Projects"/>
+                <s:link view="/project/home.xhtml" value="#{messages['Page.projects']}"/>
               </li>
               
               <li class="navs" id="navGroups">
-                <s:link view="/group/home.xhtml" value="Groups"/>
+                <s:link view="/group/home.xhtml" value="#{messages['Page.groups']}"/>
               </li>
               
               <s:fragment rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}">
 	          	<li class="navs" id="navUsers">
-		          <s:link view="/user/manage.xhtml" value="Users"/>
+		          <s:link view="/user/manage.xhtml" value="#{messages['Page.users']}"/>
 		        </li>
 	          </s:fragment>
             </ul>
-             
+            
+            
+            <ul class="nav pull-right">
+	           <li>
+	           	<h:form id="localeForm">
+		        	<h:selectOneMenu value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" style="width: 95px;">
+						<f:selectItem itemValue="en" itemLabel="#{messages['Page.english']}"/>
+						<f:selectItem itemValue="kz" itemLabel="#{messages['Page.kazakh']}"/>
+						<f:selectItem itemValue="ru" itemLabel="#{messages['Page.russian']}"/>
+					</h:selectOneMenu>
+				</h:form>
+			   </li>
+			</ul>	 
 	        <ul class="nav pull-right">
 	           <li id="navSearch">
 	           		<div class="form-search">
@@ -59,22 +77,22 @@
 			  </li>
 			  <s:fragment rendered="#{not identity.loggedIn}">
 			      <li>
-		          	<s:link view="/user/register.seam" value="Sign Up" propagation="none"/>
+		          	<s:link view="/user/register.seam" value="#{messages['Page.signup']}" propagation="none"/>
 				  </li>
 		          
 	              <li class="divider-vertical"></li>
 		          <li class="dropdown">
-		            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+		            <a class="dropdown-toggle" href="#" data-toggle="dropdown">#{messages['Page.signin']} <strong class="caret"></strong></a>
 		            
 		            <div class="dropdown-menu dropdown-login">
 		               <h:form styleClass="form-signin">
-						<h:outputLabel for="name" value="Username" />
+						<h:outputLabel for="name" value="#{messages['Page.username']}" />
 						<h:inputText styleClass="span3" id="name" value="#{credentials.username}"/>
 				        
-						<h:outputLabel for="password" value="Password" />
+						<h:outputLabel for="password" value="#{messages['Page.password']}" />
 				        <h:inputSecret styleClass="span3" id="password" value="#{credentials.password}"/>
 				        
-				        <h:commandButton styleClass="btn btn-primary" value="Login" action="#{identity.login}"/>
+				        <h:commandButton styleClass="btn btn-primary" value="#{messages['Page.login']}" action="#{identity.login}"/>
 				      </h:form>
 		            </div>
 		          </li>
@@ -83,7 +101,7 @@
 	          <s:fragment rendered="#{identity.loggedIn}">
 	          	  #{profileManager.preparePage()}
 	          	  <li class="dropdown">
-		            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Account <strong class="caret"></strong></a>
+		            <a class="dropdown-toggle" href="#" data-toggle="dropdown">#{messages['Page.account']} <strong class="caret"></strong></a>
 		         
 		            <ul class="dropdown-menu">
                        <li>
@@ -91,18 +109,18 @@
 		            			<img class="size32" src="#{user.avatar}" style="position: absolute; top: 12px; left: 21px"/>
 		            			<ul style="list-style-type: none; padding-left: 12px; padding-right: 2px;">
 		            				<li><strong><h:outputText value="#{user.realname}" /></strong></li>
-		            				<li><small class="muted">Profile</small></li>
+		            				<li><small class="muted">#{messages['Page.profile']}</small></li>
 		            			</ul>
 		            		</s:link>
                        </li>
                        <li class="divider"></li>
                        
-                       <li><s:link view="/user/settings.seam" value="Settings"/></li>
+                       <li><s:link view="/user/settings.seam" value="#{messages['Page.settings']}"/></li>
                        <li><a tabindex="-1" href="#">Something else here</a></li>
                        <li class="divider"></li>
                        
                        <li>
-                       		<s:link view="/home.xhtml" action="#{identity.logout}" value="Logout"/>
+                       		<s:link view="/home.xhtml" action="#{identity.logout}" value="#{messages['Page.logout']}"/>
 				       </li>
                     </ul>
 		          </li>

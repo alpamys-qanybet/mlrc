@@ -257,7 +257,7 @@
 					        </rich:dataGrid>
 				        </div>
 						
-						<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin')}" style="margin-top: 5px;"
+						<a:commandLink styleClass="btn btn-small" value="#{messages['Page.create']}" rendered="#{identity.hasRole('admin')}" style="margin-top: 5px;"
 									   action="#{projectManager.preparePage('createProject')}" reRender="createProjectPanel" 
 									   oncomplete="javascript:jQuery('#createProjectModal').modal('show')"/>
 					</a:outputPanel>
@@ -300,9 +300,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 			    
-			    <a:commandLink styleClass="btn btn-primary" value="Save"
+			    <a:commandLink styleClass="btn btn-primary" value="#{messages['Page.save']}"
 						        action="#{projectManager.create()}" reRender="projectListPanel"
 						        oncomplete="javascript:loadScripts(); jQuery('#createProjectModal').modal('hide');"/>
 			</div>
