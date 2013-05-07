@@ -167,6 +167,8 @@ public class GroupManager implements Serializable
 	public void editWebSite()
 	{
 		website.setGroup(group);
+		website.setTheme(em.find(Theme.class, groupManagementBean.getThemeId()));
+		
 		em.merge(website);
 		
 		group = em.find(Group.class, group.getId());

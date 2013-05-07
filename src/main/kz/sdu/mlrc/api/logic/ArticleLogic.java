@@ -52,18 +52,27 @@ public class ArticleLogic
 		return articleBeanList;
 	}
 	
-/*	public ArticleBean loadArticleById( Long id )
+	public ArticleBean loadArticleById( Long id ) throws Exception
 	{
-		ArticleDAO articleDAO = new ArticleDAO();
-		ArticleEntity articleEntity = articleDAO.getArticleById( id );
+		UserTransaction txn = Transaction.instance();
+		txn.begin();
+		
+		em = (EntityManager) Component.getInstance("entityManager");
+		em.joinTransaction();
+		
+		Article article = em.find(Article.class,id);
 		
 		ArticleBean articleBean = new ArticleBean();
-		articleBean.setId( articleEntity.getId() );
-		articleBean.setFull_text( articleEntity.getFull_text() );
-		articleBean.setIcon_host( Configuration.imgHost + "/" + articleEntity.getWeb_site().getUrl() + "/" + articleEntity.getIcon_name() );
+		articleBean.setId( article.getId() );
+		articleBean.setFull_text( article.getContent() );
+		articleBean.setIcon_host( article.getIcon() );
+		
+		em.flush();
+		
+		txn.commit();
 		
 		return articleBean;
-	}*/
+	}
 	
 	public WebSiteBean getWebSiteById( Long id ) throws Exception
 	{
@@ -78,7 +87,7 @@ public class ArticleLogic
 		WebSiteBean webSiteBean = new WebSiteBean();
 		webSiteBean.setId( webSite.getId() );
 		webSiteBean.setDescription( webSite.getDescription() );
-		webSiteBean.setCssUrl("asfdasf"); //webSite.getTheme().getCssUrl() );
+		webSiteBean.setCssUrl( webSite.getTheme().getCssUrl() );
 		
 		
 		System.out.println("webSiteId " + webSite.getId());
