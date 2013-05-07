@@ -15,23 +15,23 @@
 			<div class="signup-wrapper-wide">
 				#{settingsManager.preparePage()}
 				<div class="content-header">
-					<h4>Settings</h4>
+					<h4>#{messages['Page.settings']}</h4>
 				</div>
 				
 				<div class="form-horizontal content">
 					<h:form>
 						<div class="control-group">
-							<h:outputLabel for="role" value="Current role" styleClass="control-label"/>
+							<h:outputLabel for="role" value="#{messages['Page.currentRole']}" styleClass="control-label"/>
 							<div class="controls">
 								<h:selectOneMenu id="role" value="#{roleManagementBean.roleId}" class="input" required="true"  style="max-width: 460px;">
-									<s:selectItems var="role" value="#{roles}" label="#{role.name}" itemValue="#{role.id}" noSelectionLabel="Select"/>
+									<s:selectItems var="role" value="#{roles}" label="#{role.name}" itemValue="#{role.id}" noSelectionLabel="#{messages['Page.select']}"/>
 								</h:selectOneMenu>
 							</div>
 						</div>
 						
 						<div class="control-group">
 							<div class="controls">
-								<h:commandButton styleClass="btn btn-primary" value="Save changes" action="#{settingsManager.save()}"/>
+								<h:commandButton styleClass="btn btn-primary" value="#{messages['Page.save']}" action="#{settingsManager.save()}"/>
 							</div>
 						</div>
 					</h:form>
