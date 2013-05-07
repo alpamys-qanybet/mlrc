@@ -22,6 +22,7 @@ import kz.sdu.microelectronicslab.model.user.User;
 public class WebSite implements Serializable{
 	private long id;
 	private String url;
+	private String host;
 	private String description;
 	private List<Article> articles;
 	private Group group;
@@ -39,6 +40,15 @@ public class WebSite implements Serializable{
 		this.id = id;
 	}
 	
+	@Column
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
 	@Column
 	public String getUrl()
 	{
