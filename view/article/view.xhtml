@@ -64,18 +64,18 @@
 			            
 			            <div style="margin-top:10px;">
 				            <s:fragment rendered="#{articleManager.isAuthor(article.id)}">
-						    	<a href="javascript: prepareEditModal();" class="btn btn-icon btn-control-right"><i class="icon-pencil"/></a>
+						    	<a href="javascript: prepareEditModal();" class="btn btn-icon btn-control-right" title="#{messages['Page.edit']}"><i class="icon-pencil"/></a>
 			    			</s:fragment>
 				            
 				            <a:commandLink rendered="#{articleManager.isAuthor(article.id)}" 
 										   reRender="manageAuthorsPanel" oncomplete="jQuery('div.content').hide(); jQuery('#manageAuthorsDiv').show();"
-										   styleClass="btn btn-icon">
+										   styleClass="btn btn-icon" title="#{messages['Page.manage']}">
 								<i class="icon-user"/>
 						    </a:commandLink>
 						    
 						    <a:commandLink rendered="#{articleManager.isAuthor(article.id)}" 
 										   reRender="linkWebSitePanel" oncomplete="jQuery('#linkWebSiteModal').modal('show');"
-										   styleClass="btn btn-icon"  title="websites">
+										   styleClass="btn btn-icon"  title="#{messages['Page.websites']}">
 								<i class="icon-globe"/>
 						    </a:commandLink>
 					    </div>
@@ -95,12 +95,13 @@
 					          				<li>
 					          					<strong><h:outputText  value="#{author.realname}"/></strong>
 					          				</li>
-					          				<li>author</li>
+					          				<li>#{messages['Page.author']}</li>
 					          			</ul>
 					          			
 					          			<span id="remove#{author.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
 					    					<a:commandLink styleClass="btn" rendered="#{articleManager.isAuthor(article.id)}" 
-					    								    action="#{articleManager.removeAuthor(author.id)}" reRender="manageAuthorsPanel">
+					    								    action="#{articleManager.removeAuthor(author.id)}" reRender="manageAuthorsPanel"
+					    								    title="#{messages['Page.delete']}">
 															 <i class="icon-remove"/>
 										    </a:commandLink>
 									    </span>
@@ -110,7 +111,7 @@
 						</div>
 						
 						<a:commandLink styleClass="btn btn-icon" reRender="addAuthorPanel" rendered="#{articleManager.isAuthor(article.id)}"
-							           oncomplete="javascript:jQuery('#addAuthorModal').modal('show');">
+							           oncomplete="javascript:jQuery('#addAuthorModal').modal('show');" title="#{messages['Page.add']}">
 							  <i class="icon-plus"/>
 						</a:commandLink>
 						
@@ -142,25 +143,25 @@
 	<div class="modal hide" id="editArticleModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Edit Article</h3>
+			<h3>#{messages['Page.article.edit']}</h3>
 		</div>	
 		<a:outputPanel id="editArticlePanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varTitle" value="Title" styleClass="control-label"/>
+						<h:outputLabel for="varTitle" value="#{messages['Page.title']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputText styleClass="span4" id="varTitle" value="#{article.title}" required="true" />
 						</div>
 					</div>
 					
 					<div class="control-group">
-							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
+							<h:outputLabel for="icon" value="#{messages['Page.photo']}" styleClass="control-label"/>
 							<div class="controls">
 								<span class="fileinputs">
 									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
 												  accept="image/*" styleClass="file"/>
-						        	<button class="btn fakefile" >Add icon</button>
+						        	<button class="btn fakefile" >#{messages['Page.icon.add']}</button>
 								</span>
 							</div>
 					</div>
@@ -171,9 +172,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 			    
-			    <h:commandButton styleClass="btn btn-primary" value="Save" 
+			    <h:commandButton styleClass="btn btn-primary" value="#{messages['Page.save']}" 
 						        action="#{articleManager.edit()}" 
 						        oncomplete="javascript: jQuery('#editArticleModal').modal('hide');" />
 			</div>
@@ -185,16 +186,17 @@
 	<div class="modal hide" id="addAuthorModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Add Author</h3>
+			<h3>#{messages['Page.author.add']}</h3>
 		</div>	
 		<a:outputPanel id="addAuthorPanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varAddDeveloper" value="Developer" styleClass="control-label"/>
+						<h:outputLabel for="varAddAuthor" value="#{messages['Page.author']}" styleClass="control-label"/>
 						<div class="controls">
-							<h:selectOneMenu id="varAddDeveloper" value="#{articleManagementBean.authorId}" class="input" required="true"  style="max-width: 460px;">
-								<s:selectItems var="developer" value="#{articleManager.retrieveAuthors(false)}" label="#{developer.realname}" itemValue="#{developer.id}" noSelectionLabel="Select"/>
+							<h:selectOneMenu id="varAddAuthor" value="#{articleManagementBean.authorId}" class="input" required="true"  style="max-width: 460px;">
+								<s:selectItems var="authorToAdd" value="#{articleManager.retrieveAuthors(false)}" label="#{authorToAdd.realname}" itemValue="#{authorToAdd.id}" 
+											  noSelectionLabel="#{messages['Page.select']}"/>
 							</h:selectOneMenu>
 						</div>
 					</div>
@@ -202,9 +204,9 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 
-				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageAuthorsPanel"
+				<a:commandButton styleClass="btn btn-primary" value="#{messages['Page.add']}" reRender="manageAuthorsPanel"
 						         action="#{articleManager.addAuthor()}" oncomplete="javascript:jQuery('#addAuthorModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
@@ -215,16 +217,17 @@
 	<div class="modal hide" id="linkWebSiteModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Link to WebSite</h3>
+			<h3>#{messages['Page.website.link']}</h3>
 		</div>	
 		<a:outputPanel id="linkWebSitePanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varLinkWebSite" value="link to website" styleClass="control-label"/>
+						<h:outputLabel for="varLinkWebSite" value="#{messages['Page.website.link']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:selectOneMenu id="varLinkWebSite" value="#{groupManagementBean.webSiteId}" class="input" required="true"  style="max-width: 460px;">
-								<s:selectItems var="website" value="#{articleManager.retrieveWebSites()}" label="#{website.url}" itemValue="#{website.id}" noSelectionLabel="Select"/>
+								<s:selectItems var="website" value="#{articleManager.retrieveWebSites()}" label="#{website.url}" 
+											   itemValue="#{website.id}" noSelectionLabel="#{messages['Page.select']}"/>
 							</h:selectOneMenu>
 						</div>
 					</div>
@@ -232,8 +235,8 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-				<a:commandButton styleClass="btn btn-primary" value="Link" reRender="articleViewPanel"
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
+				<a:commandButton styleClass="btn btn-primary" value="#{messages['Page.link']}" reRender="articleViewPanel"
 						         action="#{articleManager.linkWebSite()}" oncomplete="jQuery('#linkWebSiteModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
