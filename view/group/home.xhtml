@@ -165,7 +165,7 @@
    	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			<div class="content-header">
-				<h4>Groups</h4>
+				<h4>#{messages['Page.groups']}</h4>
 			</div>
 			
 			<div class="content">
@@ -213,7 +213,7 @@
 						
 						<a:commandLink styleClass="btn" style="margin-top: 5px;"
 									   action="#{groupManager.preparePage('createGroup')}" reRender="createGroupPanel" 
-									   oncomplete="javascript:jQuery('#createGroupModal').modal('show')">
+									   oncomplete="javascript:jQuery('#createGroupModal').modal('show')" title="#{messages['Page.create']}">
 							<i class="icon-plus"/>
 						</a:commandLink>
 					</a:outputPanel>
@@ -226,13 +226,13 @@
 	<div class="modal hide" id="createGroupModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Create Group</h3>
+			<h3>#{messages['Page.group.create']}</h3>
 		</div>	
 		<a:outputPanel id="createGroupPanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 				    <div class="control-group">
-						<h:outputLabel for="varName" value="Name" styleClass="control-label"/>
+						<h:outputLabel for="varName" value="#{messages['Page.name']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputText styleClass="span3" id="varName" value="#{group.name}" required="true"/>
 						</div>
@@ -240,9 +240,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 			    
-			    <a:commandLink styleClass="btn btn-primary" value="Save"
+			    <a:commandLink styleClass="btn btn-primary" value="#{messages['Page.save']}"
 						       action="#{groupManager.create()}" reRender="groupListPanel"
 						       oncomplete="jQuery('#createGroupModal').modal('hide');"/>
 			</div>
