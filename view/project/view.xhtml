@@ -68,7 +68,7 @@
 		        					<strong><h:outputText  value="#{project.manager.realname}"/></strong>
 		        				</li>
 		        				
-		        				<li>manager</li>
+		        				<li>#{messages['Page.manager']}</li>
 		        			</ul>
 		       			</div>
 		
@@ -80,7 +80,7 @@
 			          					<strong><h:outputText  value="#{developer.realname}"/></strong>
 			          				</li>
 			          				
-			          				<li>developer</li>
+			          				<li>#{messages['Page.developer']}</li>
 			          			</ul>
 		          			</div>
 						</ui:repeat>
@@ -94,7 +94,7 @@
 						
 						<a:commandLink rendered="#{identity.hasRole('manager') and projectManager.doesManagerBelongsToProject(project.id)}" 
 									   reRender="manageDevelopersPanel" oncomplete="jQuery('div.content').hide(); jQuery('#manageDevelopersDiv').show();"
-									   styleClass="btn btn-icon">
+									   styleClass="btn btn-icon" title="#{messages['Page.manage']}">
 							<i class="icon-user"/>
 					    </a:commandLink>
 					</a:outputPanel>
@@ -115,11 +115,11 @@
 						          					<strong><h:outputText  value="#{developer.realname}"/></strong>
 						          				</li>
 						          				
-						          				<li>developer</li>
+						          				<li>#{messages['Page.developer']}</li>
 						          			</ul>
 						          			<span id="remove#{developer.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
 						    					<a:commandLink styleClass="btn" action="#{projectManager.removeDeveloper(developer.id)}" 
-																 reRender="manageDevelopersPanel">
+																 reRender="manageDevelopersPanel" title="#{messages['Page.delete']}">
 																 <i class="icon-remove"/>
 											    </a:commandLink>
 										    </span>
@@ -164,33 +164,33 @@
 	<div class="modal hide" id="editProjectModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Edit/Manage Project</h3>
+			<h3>#{messages['Page.EditManageProject']}</h3>
 		</div>	
 		<a:outputPanel id="editProjectPanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varEditName" value="Name" styleClass="control-label"/>
+						<h:outputLabel for="varEditName" value="#{messages['Page.name']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputText styleClass="span3" id="varEditName" value="#{project.name}" required="true"/>
 						</div>
 					</div>
 					
 					<div class="control-group">
-							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
+							<h:outputLabel for="icon" value="#{messages['Page.photo']}" styleClass="control-label"/>
 							<div class="controls">
 								<img id="icon" class="size75" src="#{project.icon}"/>
 								<span class="fileinputs">
 									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
 												  accept="image/*" styleClass="file"/>
-						        	<button class="btn fakefile" >Change icon</button>
+						        	<button class="btn fakefile" >#{messages['Page.changePhoto']}</button>
 								</span>
 							</div>
 					</div>
 				
 					
 					<div class="control-group">
-						<h:outputLabel for="varEditDescription" value="Description" styleClass="control-label"/><br/>
+						<h:outputLabel for="varEditDescription" value="#{messages['Page.description']}" styleClass="control-label"/><br/>
 						<div class="controls">
 							<h:inputTextarea styleClass="span3" rows="7" id="varEditDescription" value="#{project.description}"/>
 						</div>
@@ -198,20 +198,20 @@
 					
 						<s:fragment rendered="#{identity.hasRole('admin')}">
 				        <div class="control-group">
-							<h:outputLabel for="varEditManager" value="Manager" styleClass="control-label"/>
+							<h:outputLabel for="varEditManager" value="#{messages['Page.manager']}" styleClass="control-label"/>
 							<div class="controls">
 								<h:selectOneMenu id="varEditManager" value="#{projectManagementBean.managerId}" class="input" required="true"  style="max-width: 460px;">
-									<s:selectItems var="manager" value="#{managers}" label="#{manager.realname}" itemValue="#{manager.id}" noSelectionLabel="Select"/>
+									<s:selectItems var="manager" value="#{managers}" label="#{manager.realname}" itemValue="#{manager.id}" noSelectionLabel="#{messages['Page.select']}"/>
 								</h:selectOneMenu>
 							</div>
 						</div>
 					</s:fragment>
 					
 					<div class="control-group">
-						<h:outputLabel for="varEditStatus" value="Status" styleClass="control-label"/>
+						<h:outputLabel for="varEditStatus" value="#{messages['Page.status']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:selectOneMenu id="varEditStatus" value="#{projectManagementBean.statusId}" class="input" required="true"  style="max-width: 460px;">
-								<s:selectItems var="status" value="#{projectStatuses}" label="#{status.name}" itemValue="#{status.id}" noSelectionLabel="Select"/>
+								<s:selectItems var="status" value="#{projectStatuses}" label="#{status.name}" itemValue="#{status.id}" noSelectionLabel="#{messages['Page.select']}"/>
 							</h:selectOneMenu>
 						</div>
 					</div>
@@ -236,16 +236,17 @@
 	<div class="modal hide" id="addDeveloperModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Add Developer</h3>
+			<h3>#{messages['Page.AddDeveloper']}</h3>
 		</div>	
 		<a:outputPanel id="addDeveloperPanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varAddDeveloper" value="Developer" styleClass="control-label"/>
+						<h:outputLabel for="varAddDeveloper" value="#{messages['Page.developer']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:selectOneMenu id="varAddDeveloper" value="#{projectManagementBean.developerId}" class="input" required="true"  style="max-width: 460px;">
-								<s:selectItems var="developer" value="#{projectManager.retrieveDevelopers(false)}" label="#{developer.realname}" itemValue="#{developer.id}" noSelectionLabel="Select"/>
+								<s:selectItems var="developer" value="#{projectManager.retrieveDevelopers(false)}" label="#{developer.realname}" 
+											   itemValue="#{developer.id}" noSelectionLabel="#{messages['Page.select']}"/>
 							</h:selectOneMenu>
 						</div>
 					</div>
