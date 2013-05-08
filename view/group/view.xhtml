@@ -47,12 +47,12 @@
 					<a:outputPanel id="groupViewPanel">
 						<h2><h:outputText  value="#{group.name}"/></h2>
 			    		
-			    		<h3>Participants:</h3>
+			    		<h3>#{messages['Page.participants']}:</h3>
 						<ui:repeat var="participant" value="#{group.participants}">
 							<img class="size32" src="#{participant.avatar}" style="display: inline-block; vertical-align: top;" title="#{participant.realname}"/>
 			          	</ui:repeat>
 			
-						<h3>Web sites:</h3>
+						<h3>#{messages['Page.websites']}:</h3>
 						<ui:repeat var="website" value="#{group.webSites}">
 							<div>
 								<ul style="list-style-type: none;display: inline-block; margin-left: 2px; margin-top: -4px;">
@@ -70,19 +70,19 @@
 							<a:commandLink rendered="#{groupManager.doesUserBelongToGroup(group.id)}" 
 										   action="#{groupManager.preparePage('editGroup')}" reRender="editGroupPanel" 
 						  				   oncomplete="javascript:jQuery('#editGroupModal').modal('show')" 
-						  				   styleClass="btn btn-icon btn-control-right" title="edit">
+						  				   styleClass="btn btn-icon btn-control-right" title="#{messages['Page.edit']}">
 						  		<i class="icon-pencil"/>
 						  	</a:commandLink>
 						  	
 						  	<a:commandLink rendered="#{groupManager.doesUserBelongToGroup(group.id)}" 
 										   reRender="manageParticipantsPanel" oncomplete="jQuery('div.content').hide(); jQuery('#manageParticipantsDiv').show();"
-										   styleClass="btn btn-icon btn-control-right" title="manage participants">
+										   styleClass="btn btn-icon btn-control-right" title="#{messages['Page.manage']}">
 								<i class="icon-user"/>
 						    </a:commandLink>
 						    
 						    <a:commandLink rendered="#{groupManager.doesUserBelongToGroup(group.id)}" action="#{groupManager.preparePage('addWebSite')}"
 										   reRender="manageParticipantsPanel" oncomplete="jQuery('div.content').hide(); jQuery('#manageWebSiteDiv').show();"
-										   styleClass="btn btn-icon"  title="websites">
+										   styleClass="btn btn-icon"  title="#{messages['Page.websites']}">
 								<i class="icon-globe"/>
 						    </a:commandLink>
 					    </div>
@@ -103,11 +103,11 @@
 					          					<strong><h:outputText  value="#{participant.realname}"/></strong>
 					          				</li>
 					          				
-					          				<li>participant</li>
+					          				<li>#{messages['Page.participant']}</li>
 					          			</ul>
 					          			<span id="remove#{participant.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 10px;">
 					    					<a:commandLink styleClass="btn" action="#{groupManager.removeParticipant(participant.id)}" 
-															 reRender="manageParticipantsPanel">
+															 reRender="manageParticipantsPanel" title="#{messages['Page.delete']}">
 															 <i class="icon-remove"/>
 										    </a:commandLink>
 									    </span>
@@ -117,7 +117,7 @@
 						</div>
 						
 						<a:commandLink styleClass="btn btn-icon" reRender="addParticipantPanel"
-							           oncomplete="javascript:jQuery('#addParticipantModal').modal('show');">
+							           oncomplete="javascript:jQuery('#addParticipantModal').modal('show');" title="#{messages['Page.add']}">
 							  <i class="icon-plus"/>
 						</a:commandLink>
 						
@@ -162,14 +162,14 @@
 					          			
 					          			<span id="edit#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 30px;">
 					    				    <a:commandLink styleClass="btn" action="#{groupManager.preparePage('editWebSite')}" reRender="editWebSitePanel"
-												           oncomplete="javascript:jQuery('#editWebSiteModal').modal('show');">
+												           oncomplete="javascript:jQuery('#editWebSiteModal').modal('show');" title="#{messages['Page.edit']}">
 												  <i class="icon-pencil"/>
 												  <a:actionparam name="webSiteId" assignTo="#{groupManagementBean.webSiteId}" value="#{website.id}" />
 											</a:commandLink>
 									    </span>
 					          			
 					          			<span id="remove#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 2px;">
-					    					<a:commandLink styleClass="btn" action="#{groupManager.removeWebSite(website.id)}" 
+					    					<a:commandLink styleClass="btn" action="#{groupManager.removeWebSite(website.id)}" title="#{messages['Page.delete']}"
 														   reRender="manageWebSitePanel">
 												<i class="icon-remove"/>
 										    </a:commandLink>
@@ -180,7 +180,7 @@
 						</div>
 						
 						<a:commandLink styleClass="btn btn-icon" reRender="addWebSitePanel"
-							           oncomplete="javascript:jQuery('#addWebSiteModal').modal('show');">
+							           oncomplete="javascript:jQuery('#addWebSiteModal').modal('show');" title="#{messages['Page.add']}">
 							  <i class="icon-plus"/>
 						</a:commandLink>
 						
@@ -217,13 +217,13 @@
 	<div class="modal hide" id="editGroupModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Edit/Manage Group</h3>
+			<h3>#{messages['Page.Group.EditManage']}</h3>
 		</div>	
 		<a:outputPanel id="editGroupPanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varEditName" value="Name" styleClass="control-label"/>
+						<h:outputLabel for="varEditName" value="#{messages['Page.name']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputText styleClass="span3" id="varEditName" value="#{group.name}" required="true"/>
 						</div>
@@ -232,11 +232,11 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
-				<h:commandButton styleClass="btn btn-danger" value="Delete"
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
+				<h:commandButton styleClass="btn btn-danger" value="#{messages['Page.delete']}"
 						         action="#{groupManager.delete()}" />
 				
-				<h:commandButton styleClass="btn btn-primary" value="Save"
+				<h:commandButton styleClass="btn btn-primary" value="#{messages['Page.save']}"
 						         action="#{groupManager.edit()}" />
 			</div>
 		</a:outputPanel>
@@ -247,17 +247,17 @@
 	<div class="modal hide" id="addParticipantModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Add Developer</h3>
+			<h3>#{messages['Page.developer.add']}</h3>
 		</div>	
 		<a:outputPanel id="addParticipantPanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varAddParticipant" value="Participant" styleClass="control-label"/>
+						<h:outputLabel for="varAddParticipant" value="#{messages['Page.participant']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:selectOneMenu id="varAddParticipant" value="#{groupManagementBean.participantId}" class="input" required="true"  style="max-width: 460px;">
 								<s:selectItems var="participant" value="#{groupManager.retrieveParticipants(false)}" 
-											   label="#{participant.realname}" itemValue="#{participant.id}" noSelectionLabel="Select"/>
+											   label="#{participant.realname}" itemValue="#{participant.id}" noSelectionLabel="#{messages['Page.select']}"/>
 							</h:selectOneMenu>
 						</div>
 					</div>
@@ -265,9 +265,9 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 
-				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageParticipantsPanel"
+				<a:commandButton styleClass="btn btn-primary" value="#{messages['Page.add']}" reRender="manageParticipantsPanel"
 						         action="#{groupManager.addParticipant()}" oncomplete="javascript:jQuery('#addParticipantModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
@@ -278,7 +278,7 @@
 	<div class="modal hide" id="addWebSiteModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Add WebSite</h3>
+			<h3>#{messages['Page.website.add']}</h3>
 		</div>	
 		<a:outputPanel id="addWebSitePanel">		
 			<div class="modal-body">
@@ -291,7 +291,7 @@
 					</div>
 					
 					<div class="control-group">
-						<h:outputLabel for="varAddDescription" value="description" styleClass="control-label"/>
+						<h:outputLabel for="varAddDescription" value="#{messages['Page.description']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputText id="varAddDescription" value="#{website.description}" class="input" required="true" style="max-width: 460px;"/>
 						</div>
@@ -300,9 +300,9 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 
-				<a:commandButton styleClass="btn btn-primary" value="Add" reRender="manageWebSitePanel"
+				<a:commandButton styleClass="btn btn-primary" value="#{messages['Page.add']}" reRender="manageWebSitePanel"
 						         action="#{groupManager.addWebSite()}" oncomplete="javascript:jQuery('#addWebSiteModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
@@ -313,7 +313,7 @@
 	<div class="modal hide" id="editWebSiteModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Edit WebSite</h3>
+			<h3>#{messages['Page.website.edit']}</h3>
 		</div>	
 		<a:outputPanel id="editWebSitePanel">		
 			<div class="modal-body">
@@ -326,17 +326,17 @@
 					</div>
 					
 					<div class="control-group">
-						<h:outputLabel for="varEditDescription" value="description" styleClass="control-label"/>
+						<h:outputLabel for="varEditDescription" value="#{messages['Page.description']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputTextarea id="varEditDescription" value="#{website.description}" class="input" required="true" style="max-width: 460px;"/>
 						</div>
 					</div>
 					
 					<div class="control-group">
-						<h:outputLabel for="varEditTheme" value="theme" styleClass="control-label"/>
+						<h:outputLabel for="varEditTheme" value="#{messages['Page.theme']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:selectOneMenu id="varEditTheme" value="#{groupManagementBean.themeId}" class="input" required="true"  style="max-width: 460px;">
-								<s:selectItems var="theme" value="#{themes}" label="#{theme.name}" itemValue="#{theme.id}" noSelectionLabel="Select"/>
+								<s:selectItems var="theme" value="#{themes}" label="#{theme.name}" itemValue="#{theme.id}" noSelectionLabel="#{messages['Page.select']}"/>
 							</h:selectOneMenu>
 						</div>
 					</div>
@@ -344,9 +344,9 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 
-				<a:commandButton styleClass="btn btn-primary" value="Edit" reRender="manageWebSitePanel"
+				<a:commandButton styleClass="btn btn-primary" value="#{messages['Page.edit']}" reRender="manageWebSitePanel"
 						         action="#{groupManager.editWebSite()}" oncomplete="javascript:jQuery('#editWebSiteModal').modal('hide');" />
 			</div>
 		</a:outputPanel>
