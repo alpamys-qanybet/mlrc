@@ -129,7 +129,7 @@
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			<div class="content-header">
-				<h4>Articles</h4>
+				<h4>#{messages['Page.articles']}</h4>
 			</div>
 			
 			<div class="content">
@@ -157,7 +157,7 @@
 						</ui:repeat>
 					</a:outputPanel>
 					
-				 	<a:commandLink styleClass="btn btn-small" value="Create" rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}"
+				 	<a:commandLink styleClass="btn btn-small" value="#{messages['Page.create']}" rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}"
 								   action="#{articleManager.preparePage('createArticle')}" reRender="createArticlePanel" 
 								   oncomplete="javascript: prepareModal();"/>
 				</a:form>
@@ -176,25 +176,25 @@
 	<div class="modal hide" id="createArticleModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Create Article</h3>
+			<h3>#{messages['Page.article.create']}</h3>
 		</div>	
 		<a:outputPanel id="createArticlePanel">		
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="control-group">
-						<h:outputLabel for="varTitle" value="Title" styleClass="control-label"/>
+						<h:outputLabel for="varTitle" value="#{messages['Page.title']}" styleClass="control-label"/>
 						<div class="controls">
 							<h:inputText styleClass="span4" id="varTitle" value="#{article.title}" required="true" />
 						</div>
 					</div>
 					
 					<div class="control-group">
-							<h:outputLabel for="icon" value="Icon" styleClass="control-label"/>
+							<h:outputLabel for="icon" value="#{messages['Page.photo']}" styleClass="control-label"/>
 							<div class="controls">
 								<span class="fileinputs">
 									<s:fileUpload data="#{fileService.data}" fileName="#{fileService.filename}"
 												  accept="image/*" styleClass="file"/>
-						        	<button class="btn fakefile" >Add icon</button>
+						        	<button class="btn fakefile" >#{messages['Page.icon.add']}</button>
 								</span>
 							</div>
 					</div>
@@ -205,9 +205,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn" type="button" data-dismiss="modal">Cancel</button>
+				<button class="btn" type="button" data-dismiss="modal">#{messages['Page.cancel']}</button>
 			    
-			    <h:commandButton styleClass="btn btn-primary" value="Save" 
+			    <h:commandButton styleClass="btn btn-primary" value="#{messages['Page.save']}" 
 						        action="#{articleManager.create()}" 
 						        oncomplete="javascript: jQuery('#createArticleModal').modal('hide');" />
 			</div>
