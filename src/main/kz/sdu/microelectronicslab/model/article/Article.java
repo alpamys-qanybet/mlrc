@@ -65,8 +65,8 @@ public class Article implements Serializable
 	
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name="ARTICLE_AUTHOR",
-			joinColumns=@JoinColumn(name="user_id"),
-			inverseJoinColumns=@JoinColumn(name="article_id"))
+			joinColumns=@JoinColumn(name="article_id"),
+			inverseJoinColumns=@JoinColumn(name="user_id"))
 	public List<User> getAuthors()
 	{
 		return authors;

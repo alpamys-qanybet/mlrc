@@ -1,6 +1,7 @@
 package kz.sdu.microelectronicslab.action.article;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,16 +97,58 @@ public class ArticleManager implements Serializable
 		{
 			log.info("searchArticle " + articleBean.getSearchText());
 			String searchText = articleBean.getSearchText();
-			User user = (User) em.createQuery("FROM User "+
-											  "WHERE realname like '%" +searchText+ "%' ")
-							   .getSingleResult();
-			
+			boolean searchIsRelatedWithAuthor = false;
+			List<BigInteger> searchByAuthorList = new ArrayList<BigInteger>();
+			try {
+				User user = (User) em.createQuery("FROM User "+
+												  "WHERE realname like '%" +searchText+ "%' ")
+								   .getSingleResult();
+				
+				log.info("username #0 userId #1", user.getUsername(), user.getId());
+				
+				searchByAuthorList = em.createNativeQuery("SELECT article_id " +
+														  "FROM ARTICLE_AUTHOR " +
+						                                  "WHERE user_id = :userId")
+						                                  .setParameter("userId", user.getId())
+						                                  .getResultList();
+				
+				searchIsRelatedWithAuthor = true;
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				searchIsRelatedWithAuthor = false;
+			}	
 			articles = em.createQuery("FROM Article " +
 									  "WHERE content like '%"+searchText+"%' " + 
-									  "OR title like '%"+searchText+"%' " +
-									  "OR author = :author")
-					  .setParameter("author", user )
-					  .getResultList();
+									     "OR title like '%"+searchText+"%' ")
+						  .getResultList();
+			
+			if (searchIsRelatedWithAuthor)
+			{
+				if (articles.isEmpty())
+				{
+					for (BigInteger articleId : searchByAuthorList)
+						articles.add( em.find(Article.class, articleId.longValue()) );
+				}
+				else
+				{
+					for (Article art: articles)
+					{
+						boolean exists = false;
+						long artId = 0;
+						for (BigInteger articleId : searchByAuthorList)
+							if (art.getId() == articleId.longValue())
+							{
+								exists = true;
+								artId = articleId.longValue();
+								break;
+							}
+				
+						if (!exists)
+							articles.add( em.find(Article.class, artId) );
+					}
+				}
+			}
 		}
 	}
 	
