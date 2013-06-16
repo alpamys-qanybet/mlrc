@@ -3,7 +3,6 @@ package kz.sdu.microelectronicslab.action.project;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -18,16 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import kz.sdu.microelectronicslab.action.ConfigurationBean;
 import kz.sdu.microelectronicslab.action.FileService;
 import kz.sdu.microelectronicslab.action.OperationService;
-import kz.sdu.microelectronicslab.model.article.Article;
+import kz.sdu.microelectronicslab.action.mail.MailerUserBean;
+import kz.sdu.microelectronicslab.action.mail.RegistrationMailer;
 import kz.sdu.microelectronicslab.model.project.Project;
 import kz.sdu.microelectronicslab.model.project.ProjectStatus;
 import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 
@@ -64,6 +61,12 @@ public class ProjectManager implements Serializable
 	private FileService fileService;
 	
 	private List<Project> projects;
+	
+	@In(create=true)
+	private RegistrationMailer registrationMailer;
+	
+	@In(create=true)
+	private MailerUserBean mailerUserBean;
 	
 	
 	public void preparePage(String content)
@@ -148,6 +151,12 @@ public class ProjectManager implements Serializable
 	
 	public void addDeveloper()
 	{
+		mailerUserBean.setFrom( project.getManager() );
+		mailerUserBean.setTo( em.find(User.class, projectManagementBean.getDeveloperId()) );
+		mailerUserBean.setProject( project );	
+
+		registrationMailer.sendAddDeveloper();
+		
 		project.getDevelopers().add( em.find(User.class, projectManagementBean.getDeveloperId()) );
 		em.merge(project);
 	}

@@ -43,9 +43,11 @@
                 <s:link view="/project/home.xhtml" value="#{messages['Page.projects']}"/>
               </li>
               
-              <li class="navs" id="navGroups">
-                <s:link view="/group/home.xhtml" value="#{messages['Page.groups']}"/>
-              </li>
+              <s:fragment rendered="#{identity.loggedIn}">
+	              <li class="navs" id="navGroups">
+	                <s:link view="/group/home.xhtml" value="#{messages['Page.groups']}"/>
+	              </li>
+              </s:fragment>
               
               <s:fragment rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}">
 	          	<li class="navs" id="navUsers">

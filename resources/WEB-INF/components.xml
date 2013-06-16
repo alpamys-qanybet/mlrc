@@ -52,7 +52,13 @@
       <action execute="#{redirect.returnToCapturedView}"/>
    </event>
 
-   <mail:mail-session host="localhost" port="25"/>
+
+<!-- <mail:mail-session host="localhost" port="25"/>
+   <mail:mail-session host="smtp.example.com" />
+ -->
+ 	<mail:mail-session session-jndi-name="java:/Mail"/>
+ 	
+    
    <component name="passwordManager">
    	<property name="digestAlgorithm">SHA-1</property>
    	<property name="charset">UTF-8</property>
@@ -67,5 +73,4 @@
    -->
    
    <web:context-filter url-pattern="/oper/cmsaasservlet.seam" />
-
 </components>
