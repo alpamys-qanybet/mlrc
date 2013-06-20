@@ -43,6 +43,13 @@
 						</div>
 						
 						<div class="control-group">
+							<h:outputLabel for="email" value="Email" styleClass="control-label"/>
+							<div class="controls">
+								<h:inputText id="email" value="#{user.email}"/>
+							</div>
+						</div>
+						
+						<div class="control-group">
 							<h:outputLabel for="bio" value="#{messages['Page.biography']}" styleClass="control-label"/>
 							<div class="controls">
 								<h:inputTextarea id="bio" styleClass="span3" rows="5" value="#{user.bio}" />

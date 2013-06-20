@@ -30,6 +30,13 @@
 						</div>
 						
 						<div class="control-group">
+							<h:outputLabel for="emailNotification" value="#{messages['Page.email.notification']}" styleClass="control-label"/>
+							<div class="controls">
+								<h:selectBooleanCheckbox id="emailNotification" value="#{user.emailNotificationEnabled}"/>
+							</div>
+						</div>
+						
+						<div class="control-group">
 							<div class="controls">
 								<h:commandButton styleClass="btn btn-primary" value="#{messages['Page.save']}" action="#{settingsManager.save()}"/>
 							</div>

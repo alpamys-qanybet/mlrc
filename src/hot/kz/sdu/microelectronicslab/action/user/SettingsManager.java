@@ -69,6 +69,8 @@ public class SettingsManager implements Serializable
 	
 	public void save()
 	{
+		em.merge(user);
+		
 		if (user.getRoles() != null)
         {
         	for (Role role: user.getRoles())

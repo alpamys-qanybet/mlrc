@@ -44,6 +44,7 @@ public class User implements Serializable
 	private String avatar;
 	private String bio;
 	private List<Project> projectsManage;
+	private boolean emailNotificationEnabled = false;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -152,5 +153,14 @@ public class User implements Serializable
 	public void setBio(String bio)
 	{
 		this.bio = bio;
+	}
+
+	@Column(name="emailnotification")
+	public boolean isEmailNotificationEnabled() {
+		return emailNotificationEnabled;
+	}
+
+	public void setEmailNotificationEnabled(boolean emailNotificationEnabled) {
+		this.emailNotificationEnabled = emailNotificationEnabled;
 	}
 }

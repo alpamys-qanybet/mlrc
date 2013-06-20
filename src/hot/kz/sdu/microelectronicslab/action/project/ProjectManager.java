@@ -155,7 +155,8 @@ public class ProjectManager implements Serializable
 		mailerUserBean.setTo( em.find(User.class, projectManagementBean.getDeveloperId()) );
 		mailerUserBean.setProject( project );	
 
-		registrationMailer.sendAddDeveloper();
+		if (mailerUserBean.getTo().isEmailNotificationEnabled())
+			registrationMailer.sendAddDeveloper();
 		
 		project.getDevelopers().add( em.find(User.class, projectManagementBean.getDeveloperId()) );
 		em.merge(project);
