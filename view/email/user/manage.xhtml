@@ -1,0 +1,41 @@
+<m:message xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:m="http://jboss.com/products/seam/mail"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html">
+  
+    <m:from name="Research MLRC" address="mlrc.sdu@gmail.com"/>
+	<m:replyTo address="#{mailerUserBean.from.email}"/>
+    <m:to name="#{mailerUserBean.to.realname}">#{mailerUserBean.to.email}</m:to>
+    <m:subject>#{mailerUserBean.from.realname} on user management!</m:subject>
+    
+    <m:body>
+        <p><h:outputText value="Dear #{mailerUserBean.to.realname}" />,</p>
+        <p>Manager(Admin), #{mailerUserBean.from.realname}, of a system made changes to your privilegues(roles).</p>
+        
+        <h3>Here how it looks like:</h3>
+        
+        <table class="table table-striped table-bordered table-condensed table-hover">
+			<tr>
+				<th>#{messages['Page.role']}</th>
+				<th>#{messages['Page.change']}</th>
+			</tr>
+			
+			<ui:repeat var="role" value="#{mailerUserBean.userRoles}">
+				<tr>
+					<td>
+						<h:outputText value="#{role.name}"/>
+					</td>
+					
+					<td>
+						<h:outputText value="#{messages['Page.enabled']}" rendered="#{role.enabled}"/>
+						<h:outputText value="#{messages['Page.disabled']}" rendered="#{not role.enabled}"/>
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+         
+        <p>With best regards,</p>
+        <p>#{mailerUserBean.from.realname}</p>
+    </m:body>
+    
+</m:message>

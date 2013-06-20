@@ -2,16 +2,17 @@
     xmlns:m="http://jboss.com/products/seam/mail"
     xmlns:h="http://java.sun.com/jsf/html">
   
-    <m:from name="Research MLRC" address="mlrc.sdu@gmail.com"/>
+    <m:from name="#{mailerUserBean.from.realname} Research MLRC" address="members@mlcr.org"/>
 	<m:replyTo address="#{mailerUserBean.from.email}"/>
     <m:to name="#{mailerUserBean.to.realname}">#{mailerUserBean.to.email}</m:to>
-    <m:subject>#{mailerUserBean.from.realname} on #{mailerUserBean.project.name}!</m:subject>
+    <m:subject>Try out Seam!</m:subject>
     
     <m:body>
         <p><h:outputText value="Dear #{mailerUserBean.to.realname}" />,</p>
-        <p>Manager, #{mailerUserBean.from.realname}, of a project #{mailerUserBean.project.name} has added you as developer to the project. 
-        <p>With best regards,</p>
-        <p>#{mailerUserBean.from.realname}</p>
+        <p>You can try out Seam by visiting 
+        <a href="http://labs.jboss.com/jbossseam">http://labs.jboss.com/jbossseam</a>.</p>
+        <p>Regards,</p>
+        <p>Peter</p>
     </m:body>
     
 </m:message>

@@ -81,6 +81,8 @@ public class GroupManager implements Serializable
 			
 			log.info("editWebSite #0", groupManagementBean.getWebSiteId());
 			website = em.find(WebSite.class, groupManagementBean.getWebSiteId());
+			
+			groupManagementBean.setThemeId(website.getTheme().getId());
 		}
 	}
 	

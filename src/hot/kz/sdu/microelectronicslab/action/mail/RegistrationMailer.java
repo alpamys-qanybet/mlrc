@@ -42,4 +42,14 @@ public class RegistrationMailer {
 			log.info("exception on sending email");
 		}
 	}
+	
+	public void sendUserRoleManage() {
+		try {
+			renderer.render("/email/user/manage.xhtml");
+			log.info("email sent successfully!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("exception on sending email");
+		}
+	}
 }

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import kz.sdu.microelectronicslab.action.OperationService;
+import kz.sdu.microelectronicslab.action.mail.MailerUserBean;
+import kz.sdu.microelectronicslab.action.mail.RegistrationMailer;
 import kz.sdu.microelectronicslab.model.user.Role;
 import kz.sdu.microelectronicslab.model.user.User;
 
@@ -50,6 +52,12 @@ public class UserManager implements Serializable
 	
 	@Out(scope=ScopeType.PAGE,required=false)
 	private List<RoleBean> userRoles;
+	
+	@In(create=true)
+	private RegistrationMailer registrationMailer;
+	
+	@In(create=true)
+	private MailerUserBean mailerUserBean;
 	
 	public void preparePage(String content)
 	{
@@ -140,6 +148,34 @@ public class UserManager implements Serializable
 				}
 			}	
 		}
+		
+		User authenticatedUser = (User) em.createQuery("from User where username = :username")
+										.setParameter("username", identity.getUsername())
+										.getSingleResult();
+		
+		mailerUserBean.setFrom( authenticatedUser );
+		mailerUserBean.setTo( user );
+//		mailerUserBean.setProject( null );	
+		
+		List<RoleBean> userRolesTemp = new ArrayList<RoleBean>();
+		
+		for (Role role: user.getRoles())
+		{
+			String rolename = role.getName();
+			if ( !identity.hasRole("admin") && rolename.equals("admin") )
+				continue;
+			
+			RoleBean roleBean = new RoleBean();
+			roleBean.setId( role.getId() );
+			roleBean.setName( rolename );
+			roleBean.setEnabled( hasUserRole(user, rolename) );
+			userRolesTemp.add(roleBean);
+		}
+		
+		mailerUserBean.setUserRoles(userRolesTemp);
+
+		if (mailerUserBean.getTo().isEmailNotificationEnabled())
+			registrationMailer.sendUserRoleManage();
 	}
 	
 	public void delete()
