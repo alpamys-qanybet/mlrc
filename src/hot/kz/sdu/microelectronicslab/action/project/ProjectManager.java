@@ -226,7 +226,7 @@ public class ProjectManager implements Serializable
 		else
 		{
 			projects = (List<Project>) em.createQuery("select p " +
-													  "from Project p ")
+													  "from Project p order by name")
 													  .getResultList();
 						
 			return projects;

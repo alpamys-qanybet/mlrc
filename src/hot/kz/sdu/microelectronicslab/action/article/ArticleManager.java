@@ -3,6 +3,7 @@ package kz.sdu.microelectronicslab.action.article;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -120,8 +121,10 @@ public class ArticleManager implements Serializable
 			}	
 			articles = em.createQuery("FROM Article " +
 									  "WHERE content like '%"+searchText+"%' " + 
-									     "OR title like '%"+searchText+"%' ")
+									     "OR title like '%"+searchText+"%' ORDER BY date")
 						  .getResultList();
+			
+			log.info("articles size A " + articles.size());
 			
 			if (searchIsRelatedWithAuthor)
 			{
@@ -129,9 +132,13 @@ public class ArticleManager implements Serializable
 				{
 					for (BigInteger articleId : searchByAuthorList)
 						articles.add( em.find(Article.class, articleId.longValue()) );
+					
+					log.info("articles size B " + articles.size());
 				}
 				else
 				{
+					List<Article> listTemp = new ArrayList<Article>();
+					
 					for (Article art: articles)
 					{
 						boolean exists = false;
@@ -145,8 +152,12 @@ public class ArticleManager implements Serializable
 							}
 				
 						if (!exists)
-							articles.add( em.find(Article.class, artId) );
+							listTemp.add( em.find(Article.class, artId) );
 					}
+					
+					articles.addAll(listTemp);
+					
+					log.info("articles size C " + articles.size());
 				}
 			}
 		}
@@ -155,7 +166,7 @@ public class ArticleManager implements Serializable
 	public List<Article> getArticles() {
 		if (articles != null)
 			return articles;
-		articles = em.createQuery("FROM Article").getResultList();
+		articles = em.createQuery("FROM Article ORDER BY date").getResultList();
 		
 		return articles;
 	}
@@ -217,6 +228,7 @@ public class ArticleManager implements Serializable
 		
 		String url = configurationBean.getFileServerHost() + "/article/" + fileService.saveArticleIcon();
 		article.setIcon(url);
+		article.setDate(new Date());
 		
 		em.persist(article);
 	}
@@ -265,6 +277,7 @@ public class ArticleManager implements Serializable
 		String content = article.getContent();
 //		User author = article.getAuthor();
 		String icon = article.getIcon();
+		Date date = article.getDate();
 		
 		article = em.find(Article.class, article.getId());
 		
@@ -272,6 +285,7 @@ public class ArticleManager implements Serializable
 		article.setContent(content);
 //		article.setAuthor(author);
 		article.setIcon(icon);
+		article.setDate(date);
 		
 		em.merge(article);
 		

@@ -167,6 +167,14 @@
 					</div>
 					
 					<div class="control-group">
+			           <label class="control-label" for="searchDateInputDate">#{messages['Page.Create.date']}</label>
+			           <div class="controls">
+			               <rich:calendar id="searchDate" popup="true" datePattern="dd.MM.yyyy" styleClass="input-xlarge" value="#{article.date}"/>
+				       </div>
+			       </div>
+			       
+					
+					<div class="control-group">
 						<h:inputTextarea id="varContent" name="varContent" rows="15" cols="80" style="width: 70%" value="#{article.content}"/>
 					</div>
 				</div>

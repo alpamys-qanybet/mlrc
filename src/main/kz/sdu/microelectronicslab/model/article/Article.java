@@ -2,6 +2,7 @@ package kz.sdu.microelectronicslab.model.article;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -27,6 +28,7 @@ public class Article implements Serializable
 	private List<User> authors = new ArrayList<User>();
 	private String icon;
 	private WebSite webSite;
+	private Date date;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -97,5 +99,14 @@ public class Article implements Serializable
 	public void setWebSite(WebSite webSite)
 	{
 		this.webSite = webSite;
+	}
+
+	@Column(name="DATE_", nullable=true)
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }
