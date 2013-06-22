@@ -39,6 +39,15 @@
         -ms-filter: "FlipH";
    	}
 	</style>
+	
+	<script>
+
+	function showPreview() {
+		jQuery('#previewWebSiteModal').css('width', '90%').css('left', '25%').css('top', '40%').css('height', '90%');
+		jQuery('#previewWebSiteModal .modal-body').css('max-height', '500px').css('height', '500px');
+		jQuery('#previewWebSiteModal').modal('show');
+	}
+	</script>
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			#{groupManager.preparePage('viewGroup')}
@@ -159,8 +168,13 @@
 					          					<strong><h:outputText  value="#{website.description}"/></strong>
 					          				</li>
 					          			</ul>
+
+															          			
+					          			<span id="preview#{website.id}" class="preview" style="display: inline-block; vertical-align: top; margin-left: 30px;">
+					    					<a href="javascript:ajaxPreviewWeb('#{website.host}')" class="btn" title="Preview"><i class="icon-eye-open"></i></a>
+					          			</span>
 					          			
-					          			<span id="edit#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 30px;">
+					          			<span id="edit#{website.id}" class="remove" style="display: inline-block; vertical-align: top; margin-left: 2px;">
 					    				    <a:commandLink styleClass="btn" action="#{groupManager.preparePage('editWebSite')}" reRender="editWebSitePanel"
 												           oncomplete="javascript:jQuery('#editWebSiteModal').modal('show');" title="#{messages['Page.edit']}">
 												  <i class="icon-pencil"/>
@@ -193,17 +207,20 @@
 							// remove icon
 							jQuery('.remove').hide();
 							jQuery('.edit').hide();
+							jQuery('.preview').hide();
 							
 	
 							jQuery('.website').mouseover(function() {
 								var userId = jQuery(this).attr('id').replace('website','');
+								jQuery('#preview'+userId).show();
 								jQuery('#edit'+userId).show();
 								jQuery('#remove'+userId).show();
 					   	    });
 	
 							jQuery('.website').mouseout(function() {
 					   	    	var userId = jQuery(this).attr('id').replace('website','');
-					   	    	jQuery('#edit'+userId).hide();
+								jQuery('#preview'+userId).hide();
+					   	 		jQuery('#edit'+userId).hide();
 					   	 		jQuery('#remove'+userId).hide();
 							});
 						</script>
@@ -212,6 +229,12 @@
 			</div>
 		</div>
 	</div>
+	
+	<a:form>
+		<a:jsFunction name="ajaxPreviewWeb" reRender="previewWebSitePanel" oncomplete="showPreview();">
+			<a:actionparam name="webSiteUrl" assignTo="#{groupManagementBean.webSiteUrl}" value="#{website.url}" />
+		</a:jsFunction>
+	</a:form>
 		
 	<h:form id="editGroupForm">
 	<div class="modal hide" id="editGroupModal">
@@ -352,6 +375,20 @@
 		</a:outputPanel>
 	</div>
 	</a:form>
+	
+	<div class="modal hide" id="previewWebSiteModal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>#{messages['Page.website.edit']}</h3>
+		</div>	
+		<a:outputPanel id="previewWebSitePanel">		
+			<div class="modal-body">
+				<iframe id="previewIFrame" src="#{groupManagementBean.webSiteUrl}" allowtransparency="true" frameborder="0" width="100%" height="300%" contenteditable="false">
+				</iframe>
+			</div>
+		</a:outputPanel>
+	</div>
+		
 	<script type="text/javascript">
    		jQuery(document).ready(function() {
    	   		// navs: make current active 

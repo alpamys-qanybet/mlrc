@@ -11,6 +11,7 @@ public class GroupManagementBean
 	private long participantId;
 	private long webSiteId;
 	private long themeId;
+	private String webSiteUrl;
 
 	public long getParticipantId()
 	{
@@ -40,5 +41,13 @@ public class GroupManagementBean
 	public void setThemeId(long themeId)
 	{
 		this.themeId = themeId;
+	}
+
+	public String getWebSiteUrl() {
+		return webSiteUrl;
+	}
+
+	public void setWebSiteUrl(String webSiteUrl) {
+		this.webSiteUrl = webSiteUrl;
 	}
 }
