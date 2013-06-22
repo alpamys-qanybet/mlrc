@@ -11,8 +11,12 @@
     template="/layout/template.xhtml">
     
 <ui:define name="body">
+	<a:loadScript src="/js/jquery/tagsinput/jquery.tagsinput.js" />
+	<a:loadStyle src="/stylesheet/tagsinput/jquery.tagsinput.css" />
+	
 	<script type="text/javascript">
-   		jQuery(document).ready(function() {
+	//<![CDATA[
+		jQuery(document).ready(function() {
    	   		// navs: make current active 
 			jQuery('#navArticles').addClass('active');
 			jQuery('#navArticles').siblings().removeClass('active');
@@ -38,6 +42,28 @@
 	   	    	jQuery('#edit'+articleId).hide();
 			});
 		}
+
+		function transformTagsInput(){
+			jQuery('#tags').tagsInput({
+				'defaultText':'',
+				'removeWithBackspace' : true,
+				'onAddTag': transformTags,
+   				'onRemoveTag': transformTags
+   			});
+			jQuery('#tags').importTags(jQuery('[id$=keywordsField]').val());
+			transformTags();
+		}
+		function transformTags(){
+			jQuery('.tag a').attr({
+				  href: '#',
+				  title: '#{messages["Page.tagsinput.removingtag"]}'
+				}).text('x');
+			submitTags();
+		}
+		function submitTags(){
+			jQuery('[id$=keywordsField]').val(jQuery('#tags').val());
+		}
+	
 
 		function prepareModal() {
 			jQuery('#createArticleModal').css('width', '90%').css('left', '25%').css('top', '40%').css('height', '90%');
@@ -77,6 +103,8 @@
 					staffid : "991234"
 				}
 			});
+
+			transformTagsInput();
 		}
 
 
@@ -125,6 +153,40 @@
 
 			ajaxSearchArticle(searchText);
 		}
+
+		function showAdvSearch(){
+        	if(jQuery("#advForm").attr("shown")=="no"){
+            	jQuery("#advForm").slideDown("slow");
+            	jQuery("#advForm").attr("shown","yes")
+            	jQuery("#hideShow").removeClass("icon-chevron-down");
+            	jQuery("#hideShow").addClass("icon-chevron-up");
+        	}else{
+        		jQuery("#advForm").slideUp("slow");
+        		jQuery("#advForm").attr("shown","no")
+            	jQuery("#hideShow").removeClass("icon-chevron-up");
+            	jQuery("#hideShow").addClass("icon-chevron-down");
+            }
+		}
+
+		function searchAdvanced(){
+			var title = jQuery("#searchTitle").val();
+			var author = jQuery("#searchAuthor").val();
+			var dateFrom = jQuery('#searchDateInputDate').val();
+			var dateTo = jQuery('#searchDateToInputDate').val();
+			var keywords = jQuery("#searchKeywords").val();
+			console.log("'"+title+"'");
+
+			var dateRange = '';
+			if (dateFrom != '' && dateTo == '')
+				dateRange = dateFrom;
+			else if (dateFrom == '' && dateTo != '')
+				dateRange = dateTo;
+			else if (dateFrom != '' && dateTo != '')
+				dateRange = dateFrom + ' - ' + dateTo;
+					
+			searchAdv(title, author, dateFrom, dateTo, keywords, "ADVANCED", title+" "+author+" "+ dateRange +" " +keywords);
+		}
+	// ]]>
 	</script>
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
@@ -133,6 +195,50 @@
 			</div>
 			
 			<div class="content">
+			<div class="pull-right"><a href="javascript:showAdvSearch()">#{messages['Page.Advanced.search']} <i id="hideShow" class="icon-chevron-down"></i></a></div>
+			<div class="clearfix"></div>
+			<form style="margin: 10px;display:none" shown="no" id="advForm">
+			   <fieldset>
+			       <div class="control-group">
+			           <label class="control-label" for="searchTitle">#{messages['Page.title']}</label>
+			           <div class="controls">
+			               <input type="text" class="input-xlarge" id="searchTitle" />
+			           </div>
+			       </div>
+			       <div class="control-group">
+			           <label class="control-label" for="searchAuthor">#{messages['Page.author']}</label>
+			           <div class="controls">
+			               <input type="text" class="input-xlarge" id="searchAuthor" />
+			           </div>
+			       </div>
+			       <div class="control-group">
+			           <label class="control-label" for="searchKeywords">#{messages['Page.keywords']}</label>
+			           <div class="controls">
+			               <input type="text" class="input-xlarge" id="searchKeywords" />
+			           </div>
+			       </div>
+			       <div class="control-group">
+			           <label class="control-label">#{messages['Page.Create.date']}</label>
+			           <label class="control-label" for="searchDateInputDate">#{messages['Page.Date.from']}</label>
+			           <div class="controls">
+			               <rich:calendar id="searchDate" popup="true" datePattern="dd.MM.yyyy" styleClass="input-xlarge"/>
+				       </div>
+			       </div>
+			       <div class="control-group">
+			           <label class="control-label" for="searchDateToInputDate">#{messages['Page.Date.to']}</label>
+			           <div class="controls">
+			               <rich:calendar id="searchDateTo" popup="true" datePattern="dd.MM.yyyy" styleClass="input-xlarge"/>
+				       </div>
+			       </div>
+			       <div class="control-group"><div class="controls">
+			           <a href="javascript:searchAdvanced();" class="btn btn-info">
+			               <i class="icon-white icon-search"/>#{messages['Page.Search']}
+			           </a></div>
+			       </div>
+			   </fieldset>
+			</form>
+				
+				
 				<a:form id="articleListForm">
 					<a:outputPanel id="articleListPanel">
 						<ui:repeat var="art" value="#{articleManager.getArticles()}">
@@ -149,19 +255,30 @@
 									<img class="size32" src="#{author.avatar}" style="display: inline-block; vertical-align: top; margin-right: 5px;" title="#{author.realname}"/>
 								</ui:repeat>
 						 	
-			           			<div>
-									<h:outputText escape="false" value="#{art.content}"/>
-								</div>
 								<img class="news200" src="#{art.icon}"/>
+								<p class="resource-card-tags" id="tagsview#{art.id}"></p>
+			            
 								<br/>
 								<h:outputText value="#{art.date}" />
 				            </div>
+				            <script type="text/javascript">
+							//<![CDATA[
+								var tags = "#{art.keywords}";
+								if(tags!=""){
+									var tagsAr = tags.split(",");
+									for(var i =0; i<tagsAr.length; i++){
+										jQuery("#tagsview#{art.id}").append('<span style="margin-right: 5px;" class="label label-info">'+tagsAr[i]+'</span>');
+									}
+								}
+							// ]]>
+				            </script>
 						</ui:repeat>
 					</a:outputPanel>
 					
 				 	<a:commandLink styleClass="btn btn-small" value="#{messages['Page.create']}" rendered="#{identity.hasRole('admin') or identity.hasRole('manager')}"
 								   action="#{articleManager.preparePage('createArticle')}" reRender="createArticlePanel" 
 								   oncomplete="javascript: prepareModal();"/>
+				
 				</a:form>
 			</div>
 		</div>
@@ -172,6 +289,15 @@
 					  oncomplete="loadScripts();">
 			<a:actionparam name="searchText" assignTo="#{articleBean.searchText}" />
 		</a:jsFunction>
+		
+		 <a:jsFunction name="searchAdv" action="#{articleManager.preparePage('searchArticleAdv')}" reRender="articleListPanel" ajaxSingle="true" oncomplete="loadScripts(); afterSearch();" status="globalStatus">
+            <a:actionparam name="title" assignTo="#{articleBean.title}" />
+            <a:actionparam name="author" assignTo="#{articleBean.author}" />
+            <a:actionparam name="dateFrom" assignTo="#{articleBean.dateFrom}" />
+            <a:actionparam name="dateTo" assignTo="#{articleBean.dateTo}" />
+            <a:actionparam name="keywords" assignTo="#{articleBean.keywords}" />
+            <a:actionparam name="searchText" assignTo="#{articleBean.searchText}" />
+        </a:jsFunction>
 	</a:form>
 
 	<h:form id="createArticleForm" enctype="multipart/form-data">
@@ -199,6 +325,14 @@
 						        	<button class="btn fakefile" >#{messages['Page.icon.add']}</button>
 								</span>
 							</div>
+					</div>
+					
+					<div class="control-group">
+						<h:outputLabel for="keywordsField" value="#{messages['Page.keywords']}" styleClass="control-label"/>
+						<div class="controls">
+							<input name="tags" id="tags" value="#{article.keywords}" style="width: 500px"/>
+							<h:inputText id="keywordsField" value="#{article.keywords}" class="input" style="display: none;"/>
+						</div>
 					</div>
 					
 					<div class="control-group">

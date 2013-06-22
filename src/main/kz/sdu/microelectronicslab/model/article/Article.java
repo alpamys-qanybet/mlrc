@@ -29,6 +29,7 @@ public class Article implements Serializable
 	private String icon;
 	private WebSite webSite;
 	private Date date;
+	private String keywords;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -108,5 +109,14 @@ public class Article implements Serializable
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	@Column(name="KEYWORDS_", nullable = true)
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
 	}
 }

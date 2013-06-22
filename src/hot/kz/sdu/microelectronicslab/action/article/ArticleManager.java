@@ -2,6 +2,8 @@ package kz.sdu.microelectronicslab.action.article;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -161,6 +163,107 @@ public class ArticleManager implements Serializable
 				}
 			}
 		}
+		
+		else if (content.equals("searchArticleAdv"))
+		{
+			String author = articleBean.getAuthor();
+			boolean searchIsRelatedWithAuthor = false;
+			List<BigInteger> searchByAuthorList = new ArrayList<BigInteger>();
+			try {
+				User user = (User) em.createQuery("FROM User "+
+												  "WHERE realname like '%" +author+ "%' ")
+								   .getSingleResult();
+				
+				log.info("username #0 userId #1", user.getUsername(), user.getId());
+				
+				searchByAuthorList = em.createNativeQuery("SELECT article_id " +
+														  "FROM ARTICLE_AUTHOR " +
+						                                  "WHERE user_id = :userId")
+						                                  .setParameter("userId", user.getId())
+						                                  .getResultList();
+				
+				searchIsRelatedWithAuthor = true;
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				searchIsRelatedWithAuthor = false;
+			}
+			
+			
+			try {
+			log.info("searchArticle " + articleBean.getSearchText());
+			String searchText = articleBean.getSearchText();
+			String title = articleBean.getTitle();
+			String keywords = articleBean.getKeywords();
+			String dateFrom = articleBean.getDateFrom();
+			String dateTo = articleBean.getDateTo();
+			
+			if (dateFrom.isEmpty())
+				dateFrom = "01.01.1987";
+			
+			if (dateTo.isEmpty()) {
+				Date now = new Date();
+				dateTo = now.getDate()+"." + (now.getMonth()+1)+"."+ (now.getYear()+1900);
+			}
+			
+			DateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+			Date startDate = (Date) format.parse(dateFrom+" 00:00:00");
+			Date endDate = (Date) format.parse(dateTo+" 23:59:59");
+			
+			articles = em.createQuery(
+					"select s " + 
+					"from Article s " + 
+					"where " + 
+					"	COALESCE(lower(s.title),'') like lower(:title)" + 
+					"	and COALESCE(lower(s.keywords),'') like (:keywords) " + 
+//					"	and COALESCE(lower(s.author),'') like lower(:author) " +
+					"   and s.date >= :begin " +
+					"   and s.date <= :end "
+					)
+					.setParameter("keywords", "%" + keywords + "%")
+					.setParameter("title", "%" + title + "%")
+//					.setParameter("author", "%" + author + "%")
+					.setParameter("begin", startDate)
+					.setParameter("end", endDate)
+					.getResultList();
+			}
+			catch (Exception e){ e.printStackTrace(); }
+			
+			if (searchIsRelatedWithAuthor)
+			{
+				if (articles.isEmpty())
+				{
+					for (BigInteger articleId : searchByAuthorList)
+						articles.add( em.find(Article.class, articleId.longValue()) );
+					
+					log.info("articles size B " + articles.size());
+				}
+				else
+				{
+					List<Article> listTemp = new ArrayList<Article>();
+					
+					for (Article art: articles)
+					{
+						boolean exists = false;
+						long artId = 0;
+						for (BigInteger articleId : searchByAuthorList)
+							if (art.getId() == articleId.longValue())
+							{
+								exists = true;
+								artId = articleId.longValue();
+								break;
+							}
+				
+						if (!exists)
+							listTemp.add( em.find(Article.class, artId) );
+					}
+					
+					articles.addAll(listTemp);
+					
+					log.info("articles size C " + articles.size());
+				}
+			}
+		}
 	}
 	
 	public List<Article> getArticles() {
@@ -217,7 +320,7 @@ public class ArticleManager implements Serializable
 	
 	public void create()
 	{
-		log.info("create {0}", article.getContent() );
+		log.info("create {0}\n|{1}|", article.getContent(), article.getKeywords() );
 		
 		User user = (User) em.createQuery("FROM User WHERE username=:username")
 							.setParameter("username", identity.getUsername())
@@ -278,6 +381,7 @@ public class ArticleManager implements Serializable
 //		User author = article.getAuthor();
 		String icon = article.getIcon();
 		Date date = article.getDate();
+		String keywords = article.getKeywords();
 		
 		article = em.find(Article.class, article.getId());
 		
@@ -286,6 +390,7 @@ public class ArticleManager implements Serializable
 //		article.setAuthor(author);
 		article.setIcon(icon);
 		article.setDate(date);
+		article.setKeywords(keywords);
 		
 		em.merge(article);
 		

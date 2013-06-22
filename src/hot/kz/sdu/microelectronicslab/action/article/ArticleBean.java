@@ -11,6 +11,11 @@ public class ArticleBean
 	private long articleId;
 	private boolean isRequestFromModal;
 	private String searchText;
+	private String			title;
+	private String			author;
+	private String			keywords;
+	private String dateFrom, dateTo;
+	
 
 	public long getArticleId() {
 		return articleId;
@@ -34,5 +39,45 @@ public class ArticleBean
 
 	public void setSearchText(String searchText) {
 		this.searchText = searchText;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+
+	public String getDateFrom() {
+		return dateFrom;
+	}
+
+	public void setDateFrom(String dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+
+	public String getDateTo() {
+		return dateTo;
+	}
+
+	public void setDateTo(String dateTo) {
+		this.dateTo = dateTo;
 	}
 }

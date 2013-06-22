@@ -52,7 +52,7 @@ public class SettingsManager implements Serializable
         		roles.add(role);
         }
 		
-		String rolename = null;
+		String rolename = "developer";
 		
 		if ( identity.hasRole("admin") )
 			rolename = "admin";

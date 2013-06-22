@@ -11,6 +11,9 @@
     template="/layout/template.xhtml">
     
 <ui:define name="body">
+	<a:loadScript src="/js/jquery/tagsinput/jquery.tagsinput.js" />
+	<a:loadStyle src="/stylesheet/tagsinput/jquery.tagsinput.css" />
+	
 	<style>
 	.btn-control-left {
    		margin-left: 5px;
@@ -39,6 +42,31 @@
         -ms-filter: "FlipH";
    	}
 	</style>
+	
+	<script type="text/javascript">
+	//<![CDATA[
+	function transformTagsInput(){
+		jQuery('#tags').tagsInput({
+			'defaultText':'',
+			'removeWithBackspace' : true,
+			'onAddTag': transformTags,
+			'onRemoveTag': transformTags
+		});
+		jQuery('#tags').importTags(jQuery('[id$=keywordsField]').val());
+		transformTags();
+	}
+	function transformTags(){
+		jQuery('.tag a').attr({
+			  href: '#',
+			  title: '#{messages["Page.tagsinput.removingtag"]}'
+			}).text('x');
+		submitTags();
+	}
+	function submitTags(){
+		jQuery('[id$=keywordsField]').val(jQuery('#tags').val());
+	}
+	// ]]>
+	</script>
 	<div class="page-canvas-wide">
 		<div class="signup-wrapper-wide">
 			#{articleManager.preparePage('viewArticle')}
@@ -60,6 +88,7 @@
 								<h:outputText escape="false" value="#{article.content}"/>
 							</div>
 							<img class="news200" src="#{article.icon}"/>
+							<p class="resource-card-tags" id="tagsview"></p>
 			            </div>
 			            
 			            <div style="margin-top:10px;">
@@ -173,6 +202,13 @@
 				       </div>
 			       </div>
 			       
+			       <div class="control-group">
+						<h:outputLabel for="keywordsField" value="#{messages['Page.keywords']}" styleClass="control-label"/>
+						<div class="controls">
+							<input name="tags" id="tags" value="#{article.keywords}" style="width: 500px"/>
+							<h:inputText id="keywordsField" value="#{article.keywords}" class="input" style="display: none;"/>
+						</div>
+					</div>
 					
 					<div class="control-group">
 						<h:inputTextarea id="varContent" name="varContent" rows="15" cols="80" style="width: 70%" value="#{article.content}"/>
@@ -186,6 +222,9 @@
 						        action="#{articleManager.edit()}" 
 						        oncomplete="javascript: jQuery('#editArticleModal').modal('hide');" />
 			</div>
+			<script>
+				transformTagsInput();
+			</script>
 		</a:outputPanel>
 	</div>
 	</h:form>
@@ -252,6 +291,7 @@
 	</a:form>
 	
 	<script type="text/javascript">
+	//<![CDATA[
 		jQuery(document).ready(function() {
 		   		// navs: make current active 
 			jQuery('#navArticles').addClass('active');
@@ -273,6 +313,14 @@
 			jQuery('.article').mouseout(function() {
 	   	    	jQuery('.edit').hide();
 			});
+
+			var tags = "#{article.keywords}";
+			if(tags!=""){
+				var tagsAr = tags.split(",");
+				for(var i =0; i<tagsAr.length; i++){
+					jQuery("#tagsview").append('<span style="margin-right: 5px;" class="label label-info">'+tagsAr[i]+'</span>');
+				}
+			}
 
 			jQuery('div.content').hide();
 			jQuery('#container').show();
@@ -317,6 +365,7 @@
 				}
 			});
 		}
+		// ]]>
 	</script>
 </ui:define>
 </ui:composition>
